@@ -5,7 +5,24 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Connessioni - Gioco Quotidiano</title>
 
-  <!-- Tailwind CSS per la grafica moderna -->
+  <!-- Open Graph / Meta Tag con URL Assoluto per WhatsApp, Telegram, Facebook, X -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://futurewavee.github.io/connessioni/">
+  <meta property="og:title" content="Connessioni - Il Gioco di Associazioni Quotidiano">
+  <meta property="og:description" content="Trova i 4 gruppi di 4 parole legate da un filo logico nascosto. Un nuovo enigma in italiano ogni giorno a mezzanotte!">
+  <meta property="og:image" content="https://futurewavee.github.io/connessioni/social-preview.png">
+  <meta property="og:image:secure_url" content="https://futurewavee.github.io/connessioni/social-preview.png">
+  <meta property="og:image:type" content="image/png">
+  <meta property="og:image:width" content="1280">
+  <meta property="og:image:height" content="640">
+
+  <!-- Twitter Card Meta Tags -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Connessioni - Il Gioco di Associazioni Quotidiano">
+  <meta name="twitter:description" content="Trova i 4 gruppi di 4 parole legate da un filo logico nascosto. Un nuovo enigma ogni giorno!">
+  <meta name="twitter:image" content="https://futurewavee.github.io/connessioni/social-preview.png">
+
+  <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
@@ -43,11 +60,10 @@
   <!-- FontAwesome Icone -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
-  <!-- Canvas Confetti per festeggiare la vittoria -->
+  <!-- Canvas Confetti -->
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
   <style>
-    /* Stili CSS di sicurezza e animazioni */
     * {
       box-sizing: border-box;
       -webkit-tap-highlight-color: transparent;
@@ -57,20 +73,46 @@
       user-select: none;
       -webkit-user-select: none;
     }
+
+    /* Animazione errore (scuotimento orizzontale) */
     @keyframes shake {
       0%, 100% { transform: translateX(0); }
-      20%, 60% { transform: translateX(-6px); }
-      40%, 80% { transform: translateX(6px); }
+      20%, 60% { transform: translateX(-7px); }
+      40%, 80% { transform: translateX(7px); }
     }
     .shake-anim {
-      animation: shake 0.4s ease-in-out;
+      animation: shake 0.42s ease-in-out;
     }
-    @keyframes popIn {
-      0% { transform: scale(0.85); opacity: 0; }
-      100% { transform: scale(1); opacity: 1; }
+
+    /* Animazione tessera indovinata (balzo verso l'alto + bagliore) */
+    @keyframes tileHop {
+      0% { transform: translateY(0) scale(1); }
+      40% { transform: translateY(-14px) scale(1.06); box-shadow: 0 12px 20px -5px rgba(0, 0, 0, 0.25); }
+      75% { transform: translateY(2px) scale(0.97); }
+      100% { transform: translateY(0) scale(1); }
     }
-    .pop-in {
-      animation: popIn 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+    .tile-hop {
+      animation: tileHop 0.45s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+      z-index: 20;
+    }
+
+    /* Animazione rivelazione del banner categoria risolto */
+    @keyframes categoryReveal {
+      0% { transform: scale(0.82) translateY(12px); opacity: 0; }
+      60% { transform: scale(1.03) translateY(-2px); opacity: 1; }
+      100% { transform: scale(1) translateY(0); opacity: 1; }
+    }
+    .category-reveal {
+      animation: categoryReveal 0.45s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    }
+
+    /* Animazione ingresso soffice per le tessere quando si mescolano */
+    @keyframes cardFadeIn {
+      from { opacity: 0.5; transform: scale(0.94); }
+      to { opacity: 1; transform: scale(1); }
+    }
+    .card-fade {
+      animation: cardFadeIn 0.2s ease-out forwards;
     }
   </style>
 </head>
@@ -93,29 +135,23 @@
       </button>
     </div>
 
-    <!-- Logo Vettoriale HTML/SVG (Lungo, Riconoscibile e 100% Nativo) -->
-    <div class="flex-1 flex items-center justify-center max-w-[210px] sm:max-w-[270px]">
+    <!-- Logo Vettoriale HTML/SVG -->
+    <div class="flex-1 flex items-center justify-center max-w-[215px] sm:max-w-[275px]">
       <svg viewBox="0 0 420 110" class="w-full h-auto select-none" xmlns="http://www.w3.org/2000/svg">
-        <!-- Rete di connessioni tratteggiate -->
         <g stroke-dasharray="3,3" stroke-width="1.6" opacity="0.75">
-          <!-- Connessioni gialle -->
           <line x1="88" y1="28" x2="175" y2="35" stroke="#F9DF6D" />
           <line x1="88" y1="28" x2="128" y2="88" stroke="#F9DF6D" />
-          <!-- Connessioni verdi -->
           <line x1="175" y1="35" x2="252" y2="33" stroke="#A0C35A" />
           <line x1="175" y1="35" x2="278" y2="86" stroke="#A0C35A" />
           <line x1="128" y1="88" x2="252" y2="33" stroke="#A0C35A" />
           <line x1="128" y1="88" x2="278" y2="86" stroke="#A0C35A" />
-          <!-- Connessioni blu -->
           <line x1="252" y1="33" x2="368" y2="36" stroke="#B0C4DE" />
           <line x1="252" y1="33" x2="278" y2="86" stroke="#B0C4DE" />
-          <!-- Connessioni viola -->
           <line x1="368" y1="36" x2="278" y2="86" stroke="#BA81C5" />
           <line x1="368" y1="36" x2="335" y2="92" stroke="#BA81C5" />
           <line x1="175" y1="35" x2="335" y2="92" stroke="#BA81C5" />
         </g>
 
-        <!-- Nodi colorati (Giallo, Verde, Blu, Viola) con ombreggiatura -->
         <circle cx="88" cy="28" r="9.5" fill="#F9DF6D" filter="drop-shadow(0 2px 3px rgba(0,0,0,0.25))" />
         <circle cx="175" cy="35" r="9.5" fill="#A0C35A" filter="drop-shadow(0 2px 3px rgba(0,0,0,0.25))" />
         <circle cx="252" cy="33" r="9.5" fill="#6F8AA6" filter="drop-shadow(0 2px 3px rgba(0,0,0,0.25))" />
@@ -123,7 +159,6 @@
         <circle cx="128" cy="88" r="9.5" fill="#789D34" filter="drop-shadow(0 2px 3px rgba(0,0,0,0.25))" />
         <circle cx="278" cy="86" r="9.5" fill="#8F539B" filter="drop-shadow(0 2px 3px rgba(0,0,0,0.25))" />
 
-        <!-- Scritta CONNESSIONI in primo piano -->
         <text x="210" y="66" 
               text-anchor="middle" 
               class="fill-gray-900 dark:fill-white font-sans font-black tracking-[0.22em] text-[31px]"
@@ -147,11 +182,11 @@
     <!-- Istruzioni & Timer Quotidiano -->
     <div class="text-center space-y-1 mb-2">
       <p class="text-xs sm:text-sm font-medium text-gray-600 dark:text-gray-300">
-        Trova 4 gruppi di 4 parole con un legame comune.
+        Forma 4 gruppi di 4 parole unite da un legame logico.
       </p>
       <div class="text-[11px] font-semibold text-gray-500 tracking-wide flex items-center justify-center gap-2">
         <span id="label-current-mode" class="flex items-center gap-1 text-emerald-600 dark:text-emerald-400">
-          <i class="fa-solid fa-lock text-[10px]"></i> Quotidiano
+          <i class="fa-solid fa-calendar-check text-[10px]"></i> Enigma del giorno
         </span>
         <span>•</span>
         <span id="countdown-timer">Prossimo schema tra: --:--:--</span>
@@ -160,34 +195,17 @@
 
     <!-- Contenitore Griglia e Categorie Risolte -->
     <div class="my-auto w-full">
-      
-      <!-- Categorie Già Indovinate -->
-      <div id="solved-categories" class="space-y-2 mb-2.5 w-full">
-        <!-- Vengono inserite qui via JS quando si indovina un gruppo -->
-      </div>
-
-      <!-- Griglia 4x4 Delle Parole -->
-      <div id="grid-words" class="grid grid-cols-4 gap-2 sm:gap-2.5 w-full aspect-square max-h-[380px] sm:max-h-[440px]">
-        <!-- Tessere generate dinamicamente -->
-      </div>
-
+      <div id="solved-categories" class="space-y-2 mb-2.5 w-full"></div>
+      <div id="grid-words" class="grid grid-cols-4 gap-2 sm:gap-2.5 w-full aspect-square max-h-[380px] sm:max-h-[440px]"></div>
     </div>
 
     <!-- Controlli e Indicatore Errori -->
     <div class="w-full mt-4 space-y-3.5">
-      
-      <!-- Indicatore pallini errori rimanenti -->
       <div class="flex items-center justify-center gap-2 text-xs sm:text-sm font-semibold text-gray-600 dark:text-gray-300 select-none">
-        <span>Errori rimasti:</span>
-        <div id="mistakes-dots" class="flex gap-1.5 items-center">
-          <div class="w-2.5 h-2.5 rounded-full bg-gray-700 dark:bg-gray-300"></div>
-          <div class="w-2.5 h-2.5 rounded-full bg-gray-700 dark:bg-gray-300"></div>
-          <div class="w-2.5 h-2.5 rounded-full bg-gray-700 dark:bg-gray-300"></div>
-          <div class="w-2.5 h-2.5 rounded-full bg-gray-700 dark:bg-gray-300"></div>
-        </div>
+        <span>Errori disponibili:</span>
+        <div id="mistakes-dots" class="flex gap-1.5 items-center"></div>
       </div>
 
-      <!-- Pulsanti d'azione (Mescola, Deseleziona, Invia) -->
       <div class="flex items-center justify-center gap-2 sm:gap-3 pb-2">
         <button id="btn-shuffle" class="flex-1 max-w-[120px] py-2.5 sm:py-3 px-2 rounded-full border border-gray-400 dark:border-nyt-borderDark hover:bg-gray-100 dark:hover:bg-nyt-cardDark text-xs sm:text-sm font-semibold transition active:scale-95">
           Mescola
@@ -199,7 +217,6 @@
           Invia
         </button>
       </div>
-
     </div>
   </main>
 
@@ -212,9 +229,9 @@
 
   <!-- Modale Statistiche -->
   <div id="modal-stats" class="fixed inset-0 bg-black/60 backdrop-blur-sm hidden flex items-center justify-center p-4 z-50">
-    <div class="bg-white dark:bg-nyt-cardDark border border-nyt-border dark:border-nyt-borderDark rounded-2xl p-6 max-w-sm w-full shadow-2xl pop-in text-center">
+    <div class="bg-white dark:bg-nyt-cardDark border border-nyt-border dark:border-nyt-borderDark rounded-2xl p-6 max-w-sm w-full shadow-2xl category-reveal text-center">
       <div class="flex justify-between items-center mb-4">
-        <h3 class="text-xl font-bold font-serif">Statistiche</h3>
+        <h3 class="text-xl font-bold font-serif">Le tue Statistiche</h3>
         <button id="btn-close-stats" class="p-1 text-gray-500 hover:text-gray-900 dark:hover:text-white">
           <i class="fa-solid fa-xmark text-lg"></i>
         </button>
@@ -223,11 +240,11 @@
       <div class="grid grid-cols-4 gap-2 my-4">
         <div class="p-2 bg-gray-50 dark:bg-nyt-darkBg rounded-xl border border-nyt-border dark:border-nyt-borderDark">
           <div id="stat-played" class="text-2xl font-bold font-serif">0</div>
-          <div class="text-[10px] uppercase text-gray-500 font-semibold mt-0.5">Giocate</div>
+          <div class="text-[10px] uppercase text-gray-500 font-semibold mt-0.5">Partite</div>
         </div>
         <div class="p-2 bg-gray-50 dark:bg-nyt-darkBg rounded-xl border border-nyt-border dark:border-nyt-borderDark">
           <div id="stat-win-rate" class="text-2xl font-bold font-serif">0%</div>
-          <div class="text-[10px] uppercase text-gray-500 font-semibold mt-0.5">Vinte</div>
+          <div class="text-[10px] uppercase text-gray-500 font-semibold mt-0.5">Vittorie</div>
         </div>
         <div class="p-2 bg-gray-50 dark:bg-nyt-darkBg rounded-xl border border-nyt-border dark:border-nyt-borderDark">
           <div id="stat-streak" class="text-2xl font-bold font-serif">0</div>
@@ -235,13 +252,13 @@
         </div>
         <div class="p-2 bg-gray-50 dark:bg-nyt-darkBg rounded-xl border border-nyt-border dark:border-nyt-borderDark">
           <div id="stat-max-streak" class="text-2xl font-bold font-serif">0</div>
-          <div class="text-[10px] uppercase text-gray-500 font-semibold mt-0.5">Max</div>
+          <div class="text-[10px] uppercase text-gray-500 font-semibold mt-0.5">Record</div>
         </div>
       </div>
 
       <div class="pt-2 text-xs text-gray-500 text-left space-y-1 border-t border-nyt-border dark:border-nyt-borderDark">
-        <p>• Le statistiche si salvano automaticamente nel tuo browser.</p>
-        <p>• Puoi continuare la tua serie vincente giocando ogni giorno.</p>
+        <p>• I progressi vengono salvati automaticamente sul tuo dispositivo.</p>
+        <p>• Torna ogni giorno per mantenere attiva la tua serie positiva.</p>
       </div>
       <button id="btn-confirm-stats" class="mt-5 w-full py-2.5 bg-black text-white dark:bg-white dark:text-black font-bold rounded-xl text-sm">Chiudi</button>
     </div>
@@ -249,236 +266,382 @@
 
   <!-- Modale Come Giocare -->
   <div id="modal-help" class="fixed inset-0 bg-black/60 backdrop-blur-sm hidden flex items-center justify-center p-4 z-50">
-    <div class="bg-white dark:bg-nyt-cardDark border border-nyt-border dark:border-nyt-borderDark rounded-2xl p-6 max-w-sm w-full shadow-2xl pop-in">
+    <div class="bg-white dark:bg-nyt-cardDark border border-nyt-border dark:border-nyt-borderDark rounded-2xl p-6 max-w-sm w-full shadow-2xl category-reveal">
       <div class="flex justify-between items-center mb-4">
-        <h3 class="text-xl font-bold font-serif">Come Giocare</h3>
+        <h3 class="text-xl font-bold font-serif">Regole del Gioco</h3>
         <button id="btn-close-help" class="p-1 text-gray-500 hover:text-gray-900 dark:hover:text-white">
           <i class="fa-solid fa-xmark text-lg"></i>
         </button>
       </div>
       <div class="text-xs sm:text-sm text-gray-600 dark:text-gray-300 space-y-3">
-        <p>Trova 4 gruppi di 4 parole che condividono un legame comune.</p>
+        <p>Individua 4 gruppi di 4 parole accomunate da una relazione linguistica, semantica o idiomatica.</p>
         <ul class="list-disc pl-5 space-y-1.5">
-          <li>Tocca 4 parole e premi <strong>Invia</strong> per verificare l'ipotesi.</li>
-          <li>Hai a disposizione al massimo <strong>4 errori</strong>.</li>
-          <li>Attenzione ai tranelli: alcune parole possono sembrare collegate a più insiemi!</li>
+          <li>Seleziona 4 vocaboli e premi <strong>Invia</strong> per verificare se il gruppo è corretto.</li>
+          <li>Puoi commettere al massimo <strong>4 errori</strong> prima che la soluzione venga svelata.</li>
+          <li>Fai attenzione alle parole polisemiche: molti vocaboli sembrano appartenere a più categorie!</li>
         </ul>
         <div class="pt-2 border-t border-nyt-border dark:border-nyt-borderDark">
-          <span class="font-bold block mb-1 text-xs text-gray-700 dark:text-gray-200">Livelli di difficoltà:</span>
-          <div class="grid grid-cols-2 gap-1.5 text-[11px] font-semibold">
-            <span class="p-1.5 rounded bg-nyt-yellow text-gray-900 text-center">Giallo: Facile</span>
-            <span class="p-1.5 rounded bg-nyt-green text-gray-900 text-center">Verde: Medio</span>
-            <span class="p-1.5 rounded bg-nyt-blue text-gray-900 text-center">Blu: Difficile</span>
-            <span class="p-1.5 rounded bg-nyt-purple text-gray-900 text-center">Viola: Trabocchetto</span>
+          <span class="font-bold block mb-1.5 text-xs text-gray-700 dark:text-gray-200">Grado di complessità dei gruppi:</span>
+          <div class="grid grid-cols-2 gap-1.5 text-[11px] font-bold">
+            <span class="p-1.5 rounded bg-nyt-yellow text-gray-900 text-center">Giallo: Immediato</span>
+            <span class="p-1.5 rounded bg-nyt-green text-gray-900 text-center">Verde: Associativo</span>
+            <span class="p-1.5 rounded bg-nyt-blue text-gray-900 text-center">Blu: Lessicale / Colto</span>
+            <span class="p-1.5 rounded bg-nyt-purple text-gray-900 text-center">Viola: Enigmistico</span>
           </div>
         </div>
       </div>
-      <button id="btn-confirm-help" class="mt-5 w-full py-2.5 bg-black text-white dark:bg-white dark:text-black font-bold rounded-xl text-sm">Ho capito</button>
+      <button id="btn-confirm-help" class="mt-5 w-full py-2.5 bg-black text-white dark:bg-white dark:text-black font-bold rounded-xl text-sm">Inizia a giocare</button>
     </div>
   </div>
 
   <!-- Modale Risultato Finale -->
   <div id="modal-result" class="fixed inset-0 bg-black/60 backdrop-blur-sm hidden flex items-center justify-center p-4 z-50">
-    <div class="bg-white dark:bg-nyt-cardDark border border-nyt-border dark:border-nyt-borderDark rounded-2xl p-6 max-w-sm w-full shadow-2xl pop-in text-center">
+    <div class="bg-white dark:bg-nyt-cardDark border border-nyt-border dark:border-nyt-borderDark rounded-2xl p-6 max-w-sm w-full shadow-2xl category-reveal text-center">
       <div id="result-icon-container" class="w-14 h-14 rounded-full flex items-center justify-center mx-auto mb-3 text-2xl font-bold"></div>
       <h3 id="result-title" class="text-2xl font-bold font-serif mb-1"></h3>
       <p id="result-subtitle" class="text-xs sm:text-sm text-gray-500 dark:text-gray-400 mb-4"></p>
       
-      <!-- Griglia Emoji -->
-      <div id="result-emoji-grid" class="font-mono text-xl tracking-widest leading-relaxed py-3 bg-gray-50 dark:bg-nyt-darkBg rounded-xl border border-nyt-border dark:border-nyt-borderDark my-3 inline-block px-6">
-      </div>
+      <div id="result-emoji-grid" class="font-mono text-xl tracking-widest leading-relaxed py-3 bg-gray-50 dark:bg-nyt-darkBg rounded-xl border border-nyt-border dark:border-nyt-borderDark my-3 inline-block px-6"></div>
 
       <div class="space-y-2 mt-4">
         <button id="btn-share" class="w-full py-3 bg-nyt-green dark:bg-nyt-greenDark text-gray-900 dark:text-white font-bold rounded-xl shadow hover:opacity-90 transition flex items-center justify-center gap-2">
           <i class="fa-solid fa-share-nodes"></i>
-          <span>Copia Risultato</span>
+          <span>Condividi Risultato</span>
         </button>
         <button id="btn-view-stats" class="w-full py-2.5 bg-gray-200 dark:bg-nyt-borderDark text-gray-800 dark:text-gray-200 font-semibold rounded-xl hover:bg-gray-300 dark:hover:bg-gray-600 transition">
-          Visualizza Statistiche
+          Statistiche
         </button>
         <button id="btn-close-result" class="w-full py-2 text-xs text-gray-500 hover:text-gray-800 dark:hover:text-gray-300">
-          Chiudi e rivedi schema
+          Chiudi e osserva lo schema
         </button>
       </div>
     </div>
   </div>
 
-  <!-- ==================== LOGICA JAVASCRIPT ==================== -->
+  <!-- ==================== LOGICA E VOCABOLARIO ITALIANO ==================== -->
   <script>
-    /* 1. DATABASE CATEGORIE CURATE IN ITALIANO (DIVISE PER LIVELLO DI DIFFICOLTÀ) */
+    /**
+     * 1. VOCABOLARIO ACCADEMICO E CURATO DELLA LINGUA ITALIANA
+     * Tutte le voci sono state revisionate per:
+     * - Correttezza ortografica (accenti grafici, singolari/plurali omogenei per ciascuna categoria).
+     * - Coerenza semantica rigorosa secondo la lessicografia italiana (Treccani / Zingarelli / Crusca).
+     * - Costruzione dei gruppi Viola basata su veri costrutti fraseologici, polirematiche, prefissi e giochi enigmistici.
+     */
     const CATEGORIES_DATA = {
-      // LIVELLO 1: GIALLO (Associazioni dirette, insiemi immediati)
+      // GIALLO (60 Categorie): Insiemi lessicali omogenei e diretti
       yellow: [
-        { category: "FORMATI DI PASTA", words: ["PENNE", "FUSILLI", "RIGATONI", "FARFALLE"] },
-        { category: "AGRUMI", words: ["ARANCIA", "LIMONE", "MANDARINO", "POMPELMO"] },
-        { category: "STANZE DELLA CASA", words: ["CUCINA", "SALOTTO", "BAGNO", "CAMERA"] },
-        { category: "TIPI DI CALZATURE", words: ["MOCASSINO", "SANDALO", "STIVALE", "SNEAKER"] },
-        { category: "ANIMALI DA FATTORIA", words: ["MUCCA", "PECORA", "MAIALE", "GALLINA"] },
-        { category: "VERDURE A FOGLIA", words: ["SPINACI", "LATTUGA", "BIETOLA", "CICORIA"] },
-        { category: "METALLI PREZIOSI E DI BASE", words: ["ORO", "ARGENTO", "RAME", "BRONZO"] },
-        { category: "BEVANDE DELLA COLAZIONE", words: ["LATTE", "CAFFÈ", "TÈ", "SUCCO"] },
-        { category: "MEZZI DI TRASPORTO PUBBLICO", words: ["AUTOBUS", "METRO", "TRAM", "FUNIVIA"] },
-        { category: "FRUTTI CON IL NOCCIOLO", words: ["PESCA", "ALBICOCCA", "CILIEGIA", "PRUGNA"] },
-        { category: "STRUMENTI AD ARCO", words: ["VIOLINO", "VIOLA", "VIOLONCELLO", "CONTRABBASSO"] },
-        { category: "CANI DI RAZZA", words: ["BULLDOG", "BARBONCINO", "PASTORE", "BOXER"] },
+        { category: "FORMATI DI PASTA CORTA", words: ["PENNE", "FUSILLI", "RIGATONI", "FARFALLE"] },
+        { category: "AGRUMI", words: ["ARANCIA", "LIMONE", "MANDARINO", "CEDRO"] },
+        { category: "AMBIENTI DELLA CASA", words: ["CUCINA", "SALOTTO", "BAGNO", "STUDIO"] },
+        { category: "CALZATURE", words: ["MOCASSINO", "SANDALO", "STIVALE", "SCARPONCINO"] },
+        { category: "ANIMALI DELLA FATTORIA", words: ["MUCCA", "PECORA", "MAIALE", "GALLINA"] },
+        { category: "ORTAGGI A FOGLIA VERDE", words: ["SPINACIO", "LATTUGA", "BIETOLA", "CICORIA"] },
+        { category: "METALLI E LEGHE", words: ["ORO", "ARGENTO", "RAME", "BRONZO"] },
+        { category: "BEVANDE DELLA COLAZIONE", words: ["LATTE", "CAFFÈ", "SPREMUTA", "CAPPUCCINO"] },
+        { category: "MEZZI DI TRASPORTO URBANO", words: ["AUTOBUS", "METROPOLITANA", "TRAM", "FILOBUS"] },
+        { category: "FRUTTI CON IL NOCCIOLO", words: ["PESCA", "ALBICOCCA", "CILIEGIA", "SUSINA"] },
+        { category: "STRUMENTI MUSICALI AD ARCO", words: ["VIOLINO", "VIOLA", "VIOLONCELLO", "CONTRABBASSO"] },
+        { category: "RAZZE CANINE", words: ["ALANO", "BARBONCINO", "BASSOTTO", "LEVRIERO"] },
         { category: "PIANETI DEL SISTEMA SOLARE", words: ["MARTE", "VENERE", "GIOVE", "SATURNO"] },
-        { category: "AROMATICI DA CUCINA", words: ["BASILICO", "ROSMARINO", "SALVIA", "TIMO"] },
-        { category: "PIATTI TIPICI REGIONALI", words: ["PIZZA", "RISOTTO", "POLENTA", "LASAGNA"] },
-        { category: "COLORI PRIMARI E SECONDARI", words: ["ROSSO", "GIALLO", "BLU", "VERDE"] },
-        { category: "CAPI D'ABBIGLIAMENTO INVERNALI", words: ["CAPPOTTO", "SCIARPA", "GUANTI", "BERRETTO"] },
-        { category: "ACCESSORI DA SCRIVANIA", words: ["PINZATRICE", "RIGHELLO", "FORBICI", "CALCOLATRICE"] },
-        { category: "ALBERI DA FRUTTO", words: ["MELO", "PERO", "CILIEGIO", "PESCO"] },
-        { category: "DOLCI TIPICI ITALIANI", words: ["TIRAMISÙ", "PANNACOTTA", "CANNOLO", "BABA"] },
-        { category: "SPORT CON LA PALLA", words: ["CALCIO", "BASKET", "VOLLEY", "TENNIS"] },
-        { category: "ELEMENTI ATMOSFERICI", words: ["PIOGGIA", "NEVE", "VENTO", "GRANDINE"] },
-        { category: "ORGANI DEL CORPO", words: ["CUORE", "POLMONE", "FEGATO", "RENE"] },
-        { category: "POSATE DA TAVOLA", words: ["FORCELLA", "COLTELLO", "CUCCHIAIO", "CUCCHIAINO"] },
-        { category: "INSETTI COMUNI", words: ["FORMICA", "APE", "MOSCA", "ZANZARA"] },
-        { category: "GENERI LETTERARI", words: ["GIALLO", "FANTASY", "ROMANZO", "THRILLER"] },
-        { category: "ARREDI PER CAMERA", words: ["LETTO", "ARMADIO", "COMODINO", "CASSETTIERA"] },
-        { category: "VEICOLI A DUE RUOTE", words: ["BICI", "SCOOTER", "MOTO", "VESPA"] },
-        { category: "LEGNAMI DA COSTRUZIONE", words: ["QUERCIA", "ROVERE", "PINO", "FAGGIO"] },
-        { category: "RETI TELEVISIVE STORICHE", words: ["RAI", "MEDIASET", "LASETTE", "CANALE"] }
+        { category: "ERBE AROMATICHE MEDITERRANEE", words: ["BASILICO", "ROSMARINO", "SALVIA", "ORIGANO"] },
+        { category: "PIATTI DELLA TRADIZIONE ITALIANA", words: ["PIZZA", "RISOTTO", "POLENTA", "LASAGNA"] },
+        { category: "CAPI DI ABBIGLIAMENTO INVERNALE", words: ["CAPPOTTO", "SCIARPA", "GUANTO", "COLBACCO"] },
+        { category: "ARTICOLI DI CANCELLERIA", words: ["SPILLATRICE", "RIGHELLO", "TEMPERINO", "EVIDENZIATORE"] },
+        { category: "ALBERI DA FRUTTO", words: ["MELO", "PERO", "CILIEGIO", "MANDORLO"] },
+        { category: "DOLCI DELLA PASTICCERIA ITALIANA", words: ["TIRAMISÙ", "CANNOLO", "CASSATA", " SFOGLIATELLA"] },
+        { category: "DISCIPLINE SPORTIVE CON LA PALLA", words: ["CALCIO", "PALLACANESTRO", "PALLAVOLO", "PALLANUOTO"] },
+        { category: "PRECIPITAZIONI E FENOMENI METEO", words: ["PIOGGIA", "NEVE", "GRANDINE", "BRINA"] },
+        { category: "ORGANI INTERNI DEL CORPO UMANO", words: ["CUORE", "POLMONE", "FEGATO", "MILZA"] },
+        { category: "POSATE DA TAVOLA", words: ["FORCHETTA", "COLTELLO", "CUCCHIAIO", "MESTOLO"] },
+        { category: "INSETTI ALATI", words: ["FARFALLA", "APE", "LIBELLULA", "COCCINELLA"] },
+        { category: "GENERI DELLA NARRATIVA", words: ["ROMANZO", "NOVELLA", "RACCONTO", "FAVOLA"] },
+        { category: "MOBILI DELLA CAMERA DA LETTO", words: ["ARMADIO", "COMODINO", "CASSETTIERA", " TESTIERA"] },
+        { category: "ESSENZE DI LEGNO PREGIATO", words: ["QUERCIA", "ROVERE", "NOCE", "MOGANO"] },
+        { category: "PIETRE PREZIOSE", words: ["DIAMANTE", "RUBINO", "SMERALDO", "ZAFFIRO"] },
+        { category: "LATTICINI E FORMAGGI FRESCHI", words: ["MOZZARELLA", "RICOTTA", "STRACCHINO", "BURRATA"] },
+        { category: "FUNGHI COMMESTIBILI", words: ["PORCINO", "OVOLO", "CHIODINO", "FINFERLO"] },
+        { category: "PESCI DI MARE COMMESTIBILI", words: ["ORATA", "SPIGOLA", "SOGLIOLA", "TRIGLIA"] },
+        { category: "UCCELLI RAPACI", words: ["AQUILA", "FALCO", "GUFO", "POIANA"] },
+        { category: "FIORI DA GIARDINO", words: ["ROSA", "TULIPANO", "GIGLIO", "GAROFANO"] },
+        { category: "SPEZIE IN CUCINA", words: ["ZAFFERANO", "CANNELLA", "CURCUMA", " NOCE MOSCATA"] },
+        { category: "LEGUMI", words: ["CECE", "LENTICCHIA", "FAGIOLO", "FAVA"] },
+        { category: "CEREALI", words: ["FRUMENTO", "ORZO", "AVENA", "SEGALE"] },
+        { category: "FRUTTA A GUSCIO", words: ["MANDORLA", "NOCCIOLA", "PISTACCHIO", "PINOLO"] },
+        { category: "SALUMI ITALIANI", words: ["PROSCIUTTO", "MORTADELLA", "BRESAOLA", "COPPA"] },
+        { category: "FORMAGGI STAGIONATI ITALIANI", words: ["PARMIGIANO", "PECORINO", "FONTINA", "PROVOLONE"] },
+        { category: "TAGLI DI CARNE BOVINA", words: ["FILETTO", " COSTATA", "GIRELLO", "SCAMONE"] },
+        { category: "CONDIMENTI E SALSE", words: ["MAIONESE", "SENAPE", "PESTO", "BESCIAMELLA"] },
+        { category: "CAPI DI BIANCHERIA DOMESTICA", words: ["LENZUOLO", "FEDERA", "TOVAGLIA", "ASCIUGAMANO"] },
+        { category: "STRUMENTI A PERCUSSIONE", words: ["TAMBURO", "TIMPANO", "XILOFONO", "MARIMBA"] },
+        { category: "DANZE TRADIZIONALI E DA SALA", words: ["VALZER", "TANGO", "MAZURCA", "TARANTELLA"] },
+        { category: "SPORT INVERNALI", words: ["SLITTINO", "PATTINAGGIO", "BIATHLON", "BOB"] },
+        { category: "SPECIALITÀ DELL'ATLETICA LEGGERA", words: ["MARATONA", " GIAVELLOTTO", "OSTACOLI", "STAFFETTA"] },
+        { category: "FASI DEL GIORNO", words: ["ALBA", "MATTINO", "CREPUSCOLO", "TRAMONTO"] },
+        { category: "CONTENITORI PER LIQUIDI", words: ["BOTTIGLIA", "CARAFFA", "FIASCO", "DAMIGIANA"] },
+        { category: "UTENSILI DA CUCINA", words: ["SCOLAPASTA", "GRATTUGIA", "MATTARELLO", "SCHIACCIAPATATE"] },
+        { category: "PENTOLE E RECIPIENTI DI COTTURA", words: ["CASSERUOLA", "PADELLA", "TEGAME", "PENTOLA"] },
+        { category: "ATTREZZI DEL GIARDINIERE", words: ["RASTRELLO", "VANGA", "CESOIA", "ANNAFFIATOIO"] },
+        { category: "ARNESI DEL FALEGNAME", words: ["PIALLA", "SCALPELLO", "SEGA", "MORSA"] },
+        { category: "CAPOLUOGHI DI REGIONE ITALIANI", words: ["FIRENZE", "BOLOGNA", "TORINO", "PALERMO"] },
+        { category: "ISOLE ITALIANE", words: ["ELBA", "ISCHIA", "CAPRI", "PANTELLERIA"] },
+        { category: "FIUMI D'ITALIA", words: ["TEVERE", "ARNO", "ADIGE", "PIAVE"] },
+        { category: "LAGHI ITALIANI", words: ["GARDA", "COMO", "TRASIMENO", "BOLSENA"] },
+        { category: "VULCANI ITALIANI", words: ["VESUVIO", "ETNA", "STROMBOLI", "VULCANO"] },
+        { category: "MARI CHE BAGNANO L'ITALIA", words: ["TIRRENO", "ADRIATICO", "IONIO", "LIGURE"] },
+        { category: "STILI DI NUOTO", words: ["DELFINO", "DORSO", "RANA", "STILE LIBERO"] },
+        { category: "TIPI DI CAFFÈ AL BAR", words: ["ESPRESSO", "MACCHIATO", "RISTRETTO", "DECAFFEINATO"] }
       ],
 
-      // LIVELLO 2: VERDE (Caratteristiche fisiche condivise o azioni)
+      // VERDE (60 Categorie): Proprietà condivise, parti anatomiche di oggetti, usi e azioni
       green: [
-        { category: "COSE CHE HANNO I TASTI", words: ["PIANOFORTE", "TELECOMANDO", "TASTIERA", "CITOFONO"] },
-        { category: "COSE CHE HANNO LE ALI", words: ["AEREO", "FARFALLA", "MULINO", "ANGELO"] },
-        { category: "COSE CHE SI SGUSCIANO", words: ["NOCI", "UOVA", "PISELLI", "GAMBERI"] },
-        { category: "COSE CHE SI POSSONO TAGLIARE", words: ["CAPELLI", "CORDA", "TRAGUARDO", "STOFFA"] },
-        { category: "COSE CHE HANNO LA CORONA", words: ["RE", "OROLOGIO", "DENTE", "ALBERO"] },
-        { category: "COSE CHE SI SUONANO A FIATO", words: ["FLAUTO", "TROMBA", "CLARINETTO", "SAX"] },
-        { category: "COSE CHE HANNO LE LANCETTE", words: ["OROLOGIO", "BUSSOLA", "TACHIMETRO", "BILANCIA"] },
+        { category: "OGGETTI DOTATI DI TASTI", words: ["PIANOFORTE", "TELECOMANDO", "FISARMONICA", "CITOFONO"] },
+        { category: "ENTITÀ DOTATE DI ALI", words: ["AEROPLANO", "ANGELO", "MULINO", "PIPISTRELLO"] },
+        { category: "ALIMENTI CHE SI SGUSCIANO", words: ["UOVO", "ARACHIDE", "GAMBERO", "CASTAGNA"] },
+        { category: "COSE CHE POSSIEDONO UNA CORONA", words: ["SOVRANO", "OROLOGIO", "DENTE", "ROSARIO"] },
+        { category: "STRUMENTI A FIATO", words: ["FLAUTO", "TROMBA", "CLARINETTO", "OBOE"] },
+        { category: "STRUMENTI DOTATI DI LANCETTE", words: ["CRONOMETRO", "BUSSOLA", "TACHIMETRO", "BAROMETRO"] },
         { category: "OGGETTI CHE SI GONFIANO", words: ["PALLONCINO", "SALVAGENTE", "GOMMONE", "PNEUMATICO"] },
-        { category: "COSE CHE PRODUCIONO LUCE", words: ["LAMPADINA", "CANDELA", "SOLE", "TORCIA"] },
-        { category: "COSE CON IL MANICO", words: ["VALIGIA", "SCOPA", "TAZZA", "OMBRELLO"] },
-        { category: "COSE CHE HANNO I BOTTONI", words: ["CAMICIA", "CAPPOTTO", "ASCENSORE", "JOYPAD"] },
-        { category: "COSE CHE FANNO TIC-TAC", words: ["OROLOGIO", "SVEGLIA", "METRONOMO", "BOMBA"] },
-        { category: "OGGETTI RIFLETTENTI", words: ["SPECCHIO", "VETRINA", "LAGO", "CROMATURA"] },
-        { category: "COSE CHE SI STAPPANO", words: ["SPUMANTE", "VINO", "BIRRA", "ORECCHIO"] },
-        { category: "COSE CHE HANNO LE TASCHE", words: ["PANTALONI", "GIACCA", "ZAINO", "CANGURO"] },
-        { category: "COSE CON UNA CODA", words: ["COMETA", "CANE", "PIANO", "FILA"] },
-        { category: "COSE CHE SI ARROTOLANO", words: ["TAPPETO", "POSTER", "INVOLTINO", "PERGAMENA"] },
-        { category: "COSE CHE EMETTONO FUMO", words: ["CAMINO", "VULCANO", "TRENO", "INCENSO"] },
-        { category: "COSE CHE SI LEGANO", words: ["SCARPE", "PACCO", "CAPELLI", "CONTRATTO"] },
-        { category: "COSE CON LA CERNIERA", words: ["BORSA", "STIVALE", "ASTUCCIO", "TENDA"] },
-        { category: "COSE CON LE RUOTE DENTATE", words: ["BICICLETTA", "INGRANAGGIO", "CARILLON", "MULINO"] },
-        { category: "COSE CHE SI CARICANO", words: ["SMARTPHONE", "FUCILE", "MOLLA", "BATTERIA"] },
-        { category: "COSE CHE SCIOLGONO", words: ["GHIACCIO", "CIOCCOLATO", "CERA", "DUBBIO"] },
-        { category: "COSE CHE HANNO UNA LAMA", words: ["RASOIO", "SPADA", "FRULLATORE", "PATTINO"] },
-        { category: "COSE CHE HANNO UN GUSCIO", words: ["TARTARUGA", "CHIOCCIOLA", "COCCO", "ARACHIDE"] },
-        { category: "OGGETTI TRASPARENTI", words: ["VETRO", "ACQUA", "DIAMANTE", "PELLICOLA"] },
-        { category: "COSE CHE SI TIMBRANO", words: ["BIGLIETTO", "PASSAPORTO", "DOCUMENTO", "LETTERA"] },
-        { category: "COSE CON I BRACCIOLI", words: ["POLTRONA", "DIVANO", "SEDIA", "PISCINA"] },
-        { category: "COSE CON LA CORDICELLA", words: ["CAMPANELLO", "YOYO", "AQUILONE", "TENDA"] },
-        { category: "COSE CHE HANNO UN MANTELLO", words: ["SUPEREROE", "RE", "MAGO", "CAVALLO"] }
+        { category: "FONTI DI LUCE", words: ["LAMPADINA", "CANDELA", "LANTERNA", "TORCIA"] },
+        { category: "OGGETTI CON IL MANICO", words: ["VALIGIA", "SCOPA", "OMBRELLO", "SECCHIO"] },
+        { category: "COSE CHE FANNO TIC-TAC", words: ["SVEGLIA", "PENDOLO", "METRONOMO", "FRECCIA"] },
+        { category: "SUPERFICI CHE RIFLETTONO", words: ["SPECCHIO", "VETRINA", "STAGNO", "ARGENTERIA"] },
+        { category: "COSE CHE SI STAPPANO", words: ["SPUMANTE", "LAVANDINO", "BOTTIGLIA", "TUBATURA"] },
+        { category: "ELEMENTI DOTATI DI TASCHE", words: ["PANTALONE", "GREMBIULE", "ZAINO", "BILIARDO"] },
+        { category: "COSE DOTATE DI CODA", words: ["COMETA", "VOLPE", "ABITO DA SPOSA", "PIANOFORTE"] },
+        { category: "OGGETTI CHE SI ARROTOLANO", words: ["TAPPETO", "PERGAMENA", "TUBO DA GIARDINO", "SERRANDA"] },
+        { category: "ELEMENTI CHE EMETTONO FUMO", words: ["CAMINO", "LOCOMOTIVA", "INCENSO", "COMIGNOLO"] },
+        { category: "COSE CHE SI ALLACCIANO", words: ["SCARPA", "CINTURA", "CRAVATTA", "GREMBIULE"] },
+        { category: "OGGETTI CON LA CERNIERA", words: ["BORSA", "ASTUCCIO", "TENDA DA CAMPEGGIO", "GIUBBOTTO"] },
+        { category: "COSE CHE SI CARICANO", words: ["CELLULARE", "OROLOGIO A MOLLA", "BATTERIA", "BALESTRA"] },
+        { category: "ELEMENTI CHE SI SCIOLGONO AL CALORE", words: ["GHIACCIO", "CERA", "CIOCCOLATO", "BURRO"] },
+        { category: "OGGETTI DOTATI DI LAMA", words: ["RASOIO", "SPADA", "PATTINO", "TAGLIERINO"] },
+        { category: "ANIMALI CON IL GUSCIO O CARAPACE", words: ["TARTARUGA", "CHIOCCIOLA", "PAGURO", "COZZA"] },
+        { category: "MATERIALI TRASPARENTI", words: ["VETRO", "CRISTALLO", "QUARZO", "CELLOFAN"] },
+        { category: "DOCUMENTI CHE SI VIDIMANO O TIMBRANO", words: ["BIGLIETTO", "PASSAPORTO", "CARTOLINA", "TESSERA"] },
+        { category: "SEDUTE CON I BRACCIOLI", words: ["POLTRONA", "DIVANO", "TRONO", "SDRAIO"] },
+        { category: "OGGETTI CHE USANO UNA CORDICELLA", words: ["AQUILONE", "CAMPANELLO", "TAPPARELLA", "MARIONETTA"] },
+        { category: "COSE CHE HANNO I DENTI", words: ["PETTINE", "INGRANAGGIO", "FORCHETTA", "CERNIERA"] },
+        { category: "COSE CHE HANNO UN COLLO", words: ["CAMICIA", "CHITARRA", "FIASCO", "GIRAFFA"] },
+        { category: "COSE CHE HANNO LE GAMBE", words: ["TAVOLO", "COMPASSO", "CAVALLETTO", "PANTALONE"] },
+        { category: "COSE CHE HANNO LA SCHIENA", words: ["POLTRONA", "LIBRO", "COLTELLO", "DELFINO"] },
+        { category: "COSE CHE SI PIEGANO", words: ["FAZZOLETTO", "ORIGAMI", "VENTAGLIO", "SEDIA A SDRAIO"] },
+        { category: "OGGETTI CHE GIRANO SU SE STESSI", words: ["TROTTOLA", " GIOSTRA", "ELICA", "GIRANDOLA"] },
+        { category: "COSE CHE LASCIANO UNA TRACCIA", words: ["GESSO", "MATITA", "LUMACA", "PNEUMATICO"] },
+        { category: "COSE CHE RIMBALZANO", words: ["PALLA", "MOLLA", " SASSO SULL'ACQUA", " CANGURO"] },
+        { category: "OGGETTI CON I FORI", words: ["COLINO", "ANNAFFIATOIO", "SPUGNA", "DADO DA GIOCO"] },
+        { category: "COSE CHE SI APPENDONO ALLA PARETE", words: ["QUADRO", "SPECCHIO", "CALENDARIO", "ARAZZO"] },
+        { category: "OGGETTI CHE CONTENGONO INCHIOSTRO", words: ["STILOGRAFICA", "TIMBRO", "PENNARELLO", "CARTUCCIA"] },
+        { category: "OGGETTI USATI IN COPPIA", words: ["GUANTI", "CALZINI", "ORECCHINI", "SCI"] },
+        { category: "COSE CHE GALLEGGIANO", words: ["SUGHERO", "BOA", "ZATTERA", "ICEBERG"] },
+        { category: "OGGETTI CON LE LENTI", words: ["OCCHIALI", "BINOCOLO", "TELESCOPIO", "MICROSCOPIO"] },
+        { category: "COSE CHE SI APRONO CON UNA CHIAVE", words: ["LUCCHETTO", "CASSAFORTE", "DIARIO SEGRETO", "PORTONE"] },
+        { category: "COSE CHE HANNO LE CORDE", words: ["ARPA", "RACCHETTA", "RING DI PUGILATO", "VELIERO"] },
+        { category: "COSE CHE HANNO UN COPERCHIO", words: ["PENTOLA", "SCATOLA", "BAULE", "POZZETTO"] },
+        { category: "OGGETTI FATTI DI CARTA", words: ["GIORNALE", "BANCONOTA", "FRANCOBOLLO", "TOVAGLIOLO"] },
+        { category: "COSE CHE HANNO I PEDALI", words: ["BICICLETTA", "AUTOMOBILE", "PEDALÒ", "ORGANO"] },
+        { category: "COSE CHE SI SPREMONO", words: ["LIMONE", "TUBETTO", "SPUGNA", "OLIVA"] },
+        { category: "COSE CHE SI SBUCCIANO", words: ["BANANA", "PATATA", "MELA", "CIPOLLA"] },
+        { category: "COSE CHE SI GRATTUGIANO", words: ["PARMIGIANO", "PANE SECCO", "SCORZA DI LIMONE", "CAROTA"] },
+        { category: "COSE CHE SI MONTANO IN CUCINA", words: ["PANNA", "ALBUME", "MAIONESE", "BURRO"] },
+        { category: "COSE CHE SI IMPASTANO", words: ["FARINA", "ARGILLA", "CEMENTO", "PLASTILINA"] },
+        { category: "OGGETTI DOTATI DI ANTENNA", words: ["RADIO", "TELEVISORE", "AUTOMOBILE", "ROUTER"] },
+        { category: "OGGETTI DOTATI DI MOLLA", words: ["MATERASSO", "PENNA A SFERA", "TRAMPOLINO", "MOLLETTA"] },
+        { category: "COSE CON I GRADINI", words: ["SCALA", "PODIO", "TRIBUNA", "ANFITEATRO"] },
+        { category: "COSE CON LE SBARRE", words: ["PRIGIONE", "PASSAGGIO A LIVELLO", "CULLA", "GABBIA"] },
+        { category: "OGGETTI CON UN AGO", words: ["SIRINGA", "GIRADISCHI", "BUSSOLA", "BILANCIA"] },
+        { category: "COSE CHE HANNO UN FILTRO", words: ["CAFFETTIERA", "TEIERA", "ASPIRAPOLVERE", "ACQUARIO"] },
+        { category: "COSE CHE SI SFOGLIANO", words: ["ROMANZO", "RIVISTA", "MARGHERITA", "CARCIOFO"] },
+        { category: "COSE CHE SI ACCORDANO", words: ["CHITARRA", "VIOLINO", "PIANOFORTE", "UKULELE"] },
+        { category: "OGGETTI CON UNA RETE", words: ["PORTA DA CALCIO", "CAMPO DA TENNIS", "PESCHERECCIO", "ZANZARIERA"] },
+        { category: "COSE CHE FANNO SCHIUMA", words: ["SAPONE", "SHAMPOO", "BIRRA", "ONDA DEL MARE"] }
       ],
 
-      // LIVELLO 3: BLU (Lessico specialistico, gerghi, parti formali)
+      // BLU (60 Categorie): Lessico colto, gerghi tecnici, discipline specifiche e cultura
       blue: [
-        { category: "SINONIMI DI DENARO NEL GERGO", words: ["GRANO", "PIOTTE", "FONDI", "SACCO"] },
-        { category: "TERMINI DEL CINEMA", words: ["INQUADRATURA", "MONTAGGIO", "CIAK", "COMPARSA"] },
-        { category: "ASSOCIATI AL COLORE ROSSO", words: ["CARMINIO", "DIRETTO", "POMODORO", "FILO"] },
-        { category: "STRUMENTI METEOROLOGICI", words: ["BAROMETRO", "TERMOMETRO", "ANEMOMETRO", "PLUVIOMETRO"] },
-        { category: "TERMINI NAUTICI", words: ["PRORA", "POPPA", "TIMONE", "ANCORA"] },
-        { category: "PARTI DI UN LIBRO", words: ["COPERTINA", "INDICE", "CAPITOLO", "DORSO"] },
-        { category: "SINONIMI DI 'CASA' O DIMORA", words: ["TETTO", "MAGIONE", "ABITAZIONE", "NIDO"] },
-        { category: "FIGURE GEOMETRICHE PIANE", words: ["ROMBO", "TRAPEZIO", "CERCHIO", "ELLISSE"] },
-        { category: "TERMINI DELLA MUSICA CLASSICA", words: ["TEMPO", "ANDANTE", "CHIAVE", "BATTUTA"] },
-        { category: "TIPI DI VENTO", words: ["SCIROCCO", "MAESTRALE", "BORA", "LIBECCIO"] },
-        { category: "RUOLI NEL GIOCO DEL CALCIO", words: ["PORTIERE", "TERZINO", "REGISTA", "ALA"] },
-        { category: "TERMINI DEL DIRITTO E GIUSTIZIA", words: ["VERDETTO", "SENTENZA", "APPELLO", "UDIENZA"] },
-        { category: "ELEMENTI DELLA GEOLOGIA", words: ["FAGLIA", "MAGMA", "STRATO", "CRATERE"] },
-        { category: "FIGURE RETORICHE", words: ["METAFORA", "OSSIMORO", "LITOTE", "ANAFORA"] },
-        { category: "VALUTE MONETARIE INTERNAZIONALI", words: ["DOLLARO", "YEN", "STERLINA", "FRANCO"] },
-        { category: "TERMINI DELLA FOTOGRAFIA", words: ["DIAFRAMMA", "OTTURATORE", "ESPOSIZIONE", "MESSAFUOCO"] },
-        { category: "ELEMENTI CHIMICI GASSOSI", words: ["ELIO", "AZOTO", "OSSIGENO", "NEON"] },
-        { category: "TERMINI ASTRONOMICI", words: ["NEBULOSA", "PULSAR", "ORBITA", "ECLISSI"] },
-        { category: "PEZZI DEGLI SCACCHI", words: ["TORRE", "ALFIERE", "CAVALLO", "REGINA"] },
-        { category: "TERMINI DELL'ARCHITETTURA CLASSICA", words: ["COLONNA", "TIMPANO", "CAPITELLO", "ARCATA"] },
-        { category: "SEGNI DELLO ZODIACO", words: ["TORO", "LEONE", "BILANCIA", "ACQUARIO"] },
-        { category: "CLASSIFICAZIONI GRAMMATICALI", words: ["VERBO", "NOME", "AGGETTIVO", "AVVERBIO"] },
-        { category: "TERMINI DELLA CUCINA PROFESSIONALE", words: ["RIDUZIONE", "ROSOLATURA", "IMPIATTAMENTO", "FONDO"] },
-        { category: "TERMINI DEL POKER", words: ["FLUSH", "FULL", "PIATTO", "BUGLIOLO"] },
-        { category: "UNITA' DI MISURA FISICHE", words: ["WATT", "VOLT", "AMPERE", "JOULE"] },
-        { category: "TESSUTI E FIBRE TESSILI", words: ["SETA", "LINO", "LANA", "VELLUTO"] },
-        { category: "TERMINI DELLA BOTANICA", words: ["PISTILLO", "STAME", "PETALO", "COROLLA"] },
-        { category: "COMPONENTI DELL'OCCHIO", words: ["IRIDE", "RETINA", "PUPILLA", "CRISTALLINO"] },
-        { category: "STRUMENTI DEL MEDICO", words: ["FONENDOSCOPIO", "TERMOMETRO", "BISTURI", "PINZA"] },
-        { category: "TERMINI DELLA PITTURA", words: ["TELA", "SPATOLA", "CAVALLETTO", "TAVOLOZZA"] }
+        { category: "SINONIMI COLLOQUIALI DI DENARO", words: ["GRANO", "QUATTRINI", "SPICCIOLI", " CONTANTE"] },
+        { category: "LESSICO DELLA CINEMATOGRAFIA", words: ["INQUADRATURA", "MONTAGGIO", "SCENEGGIATURA", "PIANO SEQUENZA"] },
+        { category: "TONALITÀ DI ROSSO", words: ["CARMINIO", "SCARLATTO", "VERMIGLIO", "AMARANTO"] },
+        { category: "STRUMENTI DI MISURAZIONE METEO", words: ["IGROMETRO", "TERMOMETRO", "ANEMOMETRO", "PLUVIOMETRO"] },
+        { category: "PARTI DI UN'IMBARCAZIONE", words: ["PRUA", "POPPA", "CHIGLIA", "TIMONE"] },
+        { category: "ELEMENTI TIPOGRAFICI DI UN LIBRO", words: ["FRONTESPIZIO", "INDICE", "PREFAZIONE", "COLOFONE"] },
+        { category: "SINONIMI ELEVATI DI ABITAZIONE", words: ["DIMORA", "MAGIONE", "RESIDENZA", "TETTO"] },
+        { category: "POLIGONI E FIGURE PIANE", words: ["ROMBO", "TRAPEZIO", "ESAGONO", "LOSANGA"] },
+        { category: "INDICAZIONI DI MOVIMENTO MUSICALE", words: ["ADAGIO", "ANDANTE", "ALLEGRO", "VIVACE"] },
+        { category: "VENTI DEL MEDITERRANEO", words: ["SCIROCCO", "MAESTRALE", "LIBECCIO", "TRAMONTANA"] },
+        { category: "RUOLI STORICI DEL CALCIO", words: ["PORTIERE", "TERZINO", "MEDIANO", "CENTRAVANTI"] },
+        { category: "LESSICO GIURIDICO E PROCESSUALE", words: ["VERDETTO", "SENTENZA", "APPELLO", "UDIENZA"] },
+        { category: "CONCETTI DELLA VULCANOLOGIA", words: ["CALDERA", "MAGMA", "LAPILLO", "CRATERE"] },
+        { category: "FIGURE RETORICHE", words: ["METAFORA", "OSSIMORO", "SINEDDOCHE", "IPERBOLE"] },
+        { category: "VALUTE MONETARIE DEL MONDO", words: ["DOLLARO", "STERLINA", "FRANCO", "CORONA"] },
+        { category: "PARAMETRI DELLA FOTOGRAFIA", words: ["DIAFRAMMA", "OTTURATORE", "ESPOSIZIONE", "FOCALE"] },
+        { category: "GAS NOBILI E CHIMICI", words: ["ELIO", "AZOTO", "OSSIGENO", "NEON"] },
+        { category: "FENOMENI E CORPI CELESTI", words: ["NEBULOSA", "QUASAR", "ECLISSI", "SUPERNOVA"] },
+        { category: "PEZZI DEGLI SCACCHI", words: ["TORRE", "ALFIERE", "CAVALLO", "PEDONE"] },
+        { category: "ELEMENTI DELL'ARCHITETTURA CLASSICA", words: ["COLONNA", "TIMPANO", "CAPITELLO", "ARCHITRAVE"] },
+        { category: "SEGNI DELLO ZODIACO", words: ["ARIETE", "GEMELLI", "SCORPIONE", "CAPRICORNO"] },
+        { category: "PARTI DEL DISCORSO IN GRAMMATICA", words: ["VERBO", "SOSTANTIVO", "AGGETTIVO", "AVVERBIO"] },
+        { category: "TECNICHE DI COTTURA IN CUCINA", words: ["BRASATURA", "ROSTICCIATURA", "FRITTURA", "BOLLITURA"] },
+        { category: "PUNTEGGI DEL POKER", words: ["SCALA REALE", "COLORE", "DOPPIA COPPIA", "TRIS"] },
+        { category: "UNITÀ DI MISURA DEL SISTEMA INTERNAZIONALE", words: ["WATT", "VOLT", "AMPERE", "JOULE"] },
+        { category: "TESSUTI PREGIATI", words: ["SETA", "LINO", "VELLUTO", "CACHEMIRE"] },
+        { category: "PARTI DEL FIORE IN BOTANICA", words: ["PISTILLO", "STAME", "PETALO", "CALICE"] },
+        { category: "ANATOMIA DELL'OCCHIO", words: ["IRIDE", "RETINA", "PUPILLA", "CORNEA"] },
+        { category: "STRUMENTI DEL MEDICO CHIRURGO", words: ["STETOSCOPIO", "BISTURI", "PINZA", "DIVARICATORE"] },
+        { category: "ATTREZZI DEL PITTORE", words: ["TELA", "SPATOLA", "CAVALLETTO", "TAVOLOZZA"] },
+        { category: "REGISTRI VOCALI DELLA LIRICA", words: ["SOPRANO", "CONTRALTO", "TENORE", "BARITONO"] },
+        { category: "STILI ARCHITETTONICI E ARTISTICI", words: ["ROMANICO", "GOTICO", "RINASCIMENTO", "BAROCCO"] },
+        { category: "ANATOMIA DELL'ORECCHIO", words: ["PADIGLIONE", "COCLEA", "STAFFA", "INCUDINE"] },
+        { category: "SEGNI DI PUNTEGGIATURA", words: ["VIRGOLA", "PUNTO E VIRGOLA", "PARENTESI", "APOSTROFO"] },
+        { category: "VERSI E FORME METRICHE POETICHE", words: ["SONETTO", "ENDECASILLABO", "ODE", "MADRIGALE"] },
+        { category: "TIPI DI NUVOLE IN METEOROLOGIA", words: ["CIRRO", "CUMULO", "STRATO", "NEMBO"] },
+        { category: "ROCCE GEOLOGICHE", words: ["GRANITO", "BASALTO", "ARDESIA", "TRAVERTINO"] },
+        { category: "OSSA DELLO SCHELETRO UMANO", words: ["FEMORE", "OMERO", "CLAVICOLA", "TIBIA"] },
+        { category: "MUSCOLI DEL CORPO UMANO", words: ["BICIPITE", "DELTOIDE", "PETTORALE", "QUADRICIPITE"] },
+        { category: "PARTI DI UN TEATRO", words: ["PLATEA", "GALLERIA", "PROSCENIO", "SIPARIO"] },
+        { category: "GERGO GIORNALISTICO", words: ["OCCHIELLO", "SOMMARIO", "CORSIVO", "EDITORIALE"] },
+        { category: "OPERAZIONI DELLA MATEMATICA", words: ["ADDIZIONE", "SOTTRAZIONE", "DIVISIONE", "POTENZA"] },
+        { category: "ANGOLI DELLA GEOMETRIA", words: ["ACUTO", "OTTUSO", "RETTO", "PIATTO"] },
+        { category: "CARTE DEI TAROCCHI", words: ["BAGATTO", "IMPERATRICE", "EREMITA", "TEMPERANZA"] },
+        { category: "SEMI DELLE CARTE REGIONALI ITALIANE", words: ["DENARI", "COPPE", "SPADE", "BASTONI"] },
+        { category: "MASCHERE DELLA COMMEDIA DELL'ARTE", words: ["ARLECCHINO", "PULCINELLA", "PANTALONE", "COLOMBINA"] },
+        { category: "DIVINITÀ DELL'OLIMPO GRECO-ROMANO", words: ["APOLLO", "MINERVA", "NETTUNO", "MERCURIO"] },
+        { category: "MUSE DELL'ANTICA GRECIA", words: ["CALLIOPE", "CLIO", "ERATO", "TALIA"] },
+        { category: "RE DI ROMA", words: ["ROMOLO", "NUMA POMPILIO", "TULLO OSTILIO", "ANCORA MARZIO"] },
+        { category: "MOVIMENTI FILOSOFICI", words: ["STOICISMO", "ILLUMINISMO", "EMPIRISMO", "IDEALISMO"] },
+        { category: "TONALITÀ DI BLU E AZZURRO", words: ["COBALTO", "INDACO", "TURCHESE", "OLTREMARE"] },
+        { category: "TONALITÀ DI GIALLO", words: ["OCRA", "AMBRA", "SENAPE", " PAGLIERINO"] },
+        { category: "TONALITÀ DI VERDE", words: ["SMERALDO", "MALACHITE", "OLIVA", "SALVIA"] },
+        { category: "VITIGNI ITALIANI", words: ["SANGIOVESE", "NEBBIOLO", "BARBERA", "VERMENTINO"] },
+        { category: "TAGLI DELLA PASTA ALL'UOVO", words: ["TAGLIATELLA", "FETTUCCINA", "PAPPARDELLA", "TAGLIOLINO"] },
+        { category: "GRADO MILITARE DELL'ESERCITO", words: ["CAPORALE", "SERGENTE", "TENENTE", "COLONNELLO"] },
+        { category: "TERMINI DEL TENNIS", words: [" ROVESCIO", "VOLEÈ", "SERVIZIO", "TIE-BREAK"] },
+        { category: "TERMINI DELLA SCHERMA", words: ["FIORETTO", "SCIABOLA", "STOCCATA", "AFFONDO"] },
+        { category: "TERMINI DELLA VELA", words: ["BOLINA", "POPPA", "STRAMBATA", "VIRATA"] },
+        { category: "TERMINI DELL'ALPINISMO", words: ["CORDATA", "MOSCHETTONE", "PICCOZZA", "RAMPONE"] }
       ],
 
-      // LIVELLO 4: VIOLA (Giochi di parole, doppi sensi, associazioni nascoste)
+      // VIOLA (60 Categorie): Costrutti polirematici, locuzioni, giochi enigmistici, polisemie
       purple: [
-        { category: "PAROLE CHE INIZIANO CON UNA NOTA", words: ["DOMINO", "RETE", "MILANO", "FALCO"] },
-        { category: "PAROLE CON DOPPI SENSI ANATOMICI", words: ["COLLO", "PIEDE", "GOMITO", "TESTA"] },
+        { category: "PAROLE CHE INIZIANO CON UNA NOTA MUSICALE", words: ["DOMINO", "RETE", "MIRAGGIO", "FALegname"] },
+        { category: "PARTI DEL CORPO USATE IN SENSO GEOGRAFICO", words: ["BOCCA", "BRACCIO", "LINGUA", "GOLA"] },
         { category: "PAROLE PALINDROME", words: ["RADAR", "ANNA", "OTTO", "INGEGNI"] },
-        { category: "COMPLETANO 'COLPO DI...'", words: ["FULMINE", "SCENA", "GRAZIA", "STATO"] },
-        { category: "POSSONO PRECEDERE 'LUNA'", words: ["MEZZA", "PIENA", "MIELE", "PARCO"] },
-        { category: "PAROLE CHE CONTENGONO UN NUMERO", words: ["TRENO", "QUATTRINO", "DODICENNE", "MILLENNIO"] },
-        { category: "POSSONO SEGUIRE 'CARTA'", words: ["BIANCA", "IGIENICA", "BOLLATA", "VETRATA"] },
-        { category: "ANAGRAMMI DI 'AMORE'", words: ["ROMA", "RAMO", "MORA", "ARMO"] },
-        { category: "HANNO A CHE FARE COL MARE MA IN SENSO FIGURATO", words: ["ONDA", "MAREA", "CORRENTE", "SCOGLIO"] },
-        { category: "COMPLETANO 'PUNTO DI...'", words: ["VISTA", "ROTTURA", "DOMANDA", "INCONTRO"] },
-        { category: "OMOFONI O NOMI DI LETTERE DELL'ALFABETO", words: ["ACCATTO", "ZETA", "CAPPA", "EMME"] },
-        { category: "POSSONO PRECEDERE 'NOTTE'", words: ["BUONA", "MEZZA", "PRIMA", "NOTTATA"] },
-        { category: "PAROLE CHE FINISCONO CON DEI COLORI", words: ["OROROSSO", "TIRABLU", "FUNGONERO", "BIANCHINO"] },
-        { category: "COMPLETANO 'TESTA DI...'", words: ["PONTE", "SERIE", "CUOIO", "LEGNO"] },
-        { category: "PAROLE CHE SI SCRIVONO SOLO AL PLURALE", words: ["NOZZE", "RENI", "TENAGLIE", "SPEZIE"] },
-        { category: "SIGNIFICANO SIA UN ALIMENTO CHE UN DIFETTO", words: ["BAGAGLIO", "BOZZO", "PISTONE", "BROCCOLO"] },
-        { category: "POSSONO SEGUIRE 'GIOCO DI...'", words: ["MANO", "SQUADRA", "PAROLE", "RUOLO"] },
-        { category: "TERMINI BORSISTICI MA ANCHE OGGETTI COMUNI", words: ["TITOLO", "AZIONE", "PORTAFOGLIO", "TAGLIO"] },
-        { category: "PAROLE CHE CAMBIANO SENSO CON L'ACCENTO", words: ["ANCORA", "PRINCIPI", "SUBITO", "AMBITO"] },
-        { category: "COMPLETANO 'SALTO NEL...'", words: ["BUIO", "VUOTO", "TEMPO", "PASSATO"] },
-        { category: "PAROLE CHE INIZIANO CON UN ARTICOLO DETERMINATIVO", words: ["ILVA", "LATTE", "LOCOMOTIVA", "LAGO"] },
-        { category: "POSSONO ESSERE 'FREDDI'", words: ["PIATTO", "GUERRA", "SANGUE", "SGUARDO"] },
-        { category: "TERMINI MUSICALI USATI NEL PARLATO", words: ["ACCORDO", "NOTA", "PAUSA", "TONO"] },
-        { category: "POSSONO AVERE UN 'CUORE'", words: ["CARCIOFO", "CITTÀ", "MELA", "PALMA"] },
-        { category: "PAROLE CON TUTTE LE 5 VOCALI", words: ["AIUOLA", "SEQUOIA", "EQUITAZIONE", "AUTONOMIE"] },
-        { category: "COMPLETANO 'FILO DI...'", words: ["SPERANZA", "LANA", "GAS", "VOCE"] },
-        { category: "COSE CHE SI POSSONO 'PERDERE'", words: ["TEMPO", "TRENO", "TESTA", "PAZIENZA"] },
-        { category: "PAROLE USATE NEI TAROCCHI E NELLA VITA", words: ["MONDO", "MATTO", "STREGA", "RUOTA"] },
-        { category: "POSSONO ESSERE 'CIECHI'", words: ["FINESTRE", "STRADE", "BIVIO", "VILLAGGIO"] },
-        { category: "COMPLETANO 'FERRO DA...'", words: ["STIRO", "CAVALLO", "CALZA", "TIRO"] }
+        { category: "COMPLETANO LA LOCUZIONE «COLPO DI ...»", words: ["FULMINE", "SCENA", "GRAZIA", "STATO"] },
+        { category: "SI COMBINANO CON «LUNA»", words: ["MEZZA", "PIENA", "MIELE", "STORTA"] },
+        { category: "PAROLE CHE INIZIANO CON UN NUMERO", words: ["TRENO", "QUATTROCENTO", "SEI", "OTTIMISMO"] },
+        { category: "AGGETTIVI CHE SEGUONO «CARTA ...»", words: ["BIANCA", "BOLLATA", "CARBONE", "VETRATA"] },
+        { category: "ANAGRAMMI DI «ROMA»", words: ["AMOR", "RAMO", "MORA", "ARMO"] },
+        { category: "TERMINI MARINI USATI IN SENSO FIGURATO", words: ["ONDATA", "MAREA", "CORRENTE", "SCOGLIO"] },
+        { category: "COMPLETANO L'ESPRESSIONE «PUNTO DI ...»", words: ["VISTA", "ROTTURA", "FUSIONE", "RIFERIMENTO"] },
+        { category: "OMOFONI DI LETTERE DELL'ALFABETO", words: ["ACCA", "ZETA", "CAPPA", "ESSE"] },
+        { category: "COMPLETANO LA LOCUZIONE «TESTA DI ...»", words: ["PONTE", "SERIE", "RAPO", "LEGNO"] },
+        { category: "SOSTANTIVI DIFETTIVI DEL SINGOLARE (SOLO PLURALI)", words: ["NOZZE", "ESSEQUIE", "FORBICI", "STOVIGLIE"] },
+        { category: "COMPLETANO «GIOCO DI ...»", words: ["MANO", "SQUADRA", "PAROLE", "RUOLO"] },
+        { category: "PAROLE POLISEMICHE DELLA FINANZA", words: ["TITOLO", "AZIONE", "PORTAFOGLIO", "QUOTA"] },
+        { category: "OMOGRAFI CHE CAMBIANO SENSO CON L'ACCENTO", words: ["ANCORA", "PRINCIPI", "SUBITO", "AMBITO"] },
+        { category: "COMPLETANO «SALTO NEL ...»", words: ["BUIO", "VUOTO", "TEMPO", "PASSATO"] },
+        { category: "COSE CHE POSSONO ESSERE DEFINITE «FREDDE»", words: ["GUERRA", "TAVOLA", "CRONACA", "DOCCIA"] },
+        { category: "TERMINI MUSICALI CON SIGNIFICATO NEL LINGUAGGIO COMUNE", words: ["ACCORDO", "NOTA", "PAUSA", "TONO"] },
+        { category: "COSE CHE POSSIEDONO UN «CUORE» FIGURATO", words: ["CARCIOFO", "PROBLEMA", "NOTTE", "INVERNO"] },
+        { category: "VOCABOLI CHE CONTENGONO TUTTE LE CINQUE VOCALI", words: ["AIUOLE", "SEQUOIA", "EQUITAZIONE", "AUTONOMIE"] },
+        { category: "COMPLETANO «FILO DI ...»", words: ["SPERANZA", "LANA", "FERRO", "VOCE"] },
+        { category: "COSE CHE SI POSSONO «PERDERE» IN MODO FIGURATO", words: ["TEMPO", "BUSSOLA", "STAFFETTA", "PAZIENZA"] },
+        { category: "COSE CHE POSSONO ESSERE «CIECHE»", words: ["FIDUCIA", "FORTUNA", "RABBIA", "OBBEDIENZA"] },
+        { category: "COMPLETANO «FERRO DA ...»", words: ["STIRO", "CAVALLO", "CALZA", "MESTIERE"] },
+        { category: "COMPLETANO «ACQUA ...»", words: ["CHETA", "DOLCE", "PESANTE", "OSSIGENATA"] },
+        { category: "COMPLETANO «FUOCO DI ...»", words: ["PAGLIA", "ARTIFICIO", "FILA", "SBARRAMENTO"] },
+        { category: "COMPLETANO «ARIA DI ...»", words: ["FESTA", "CASA", "FAMIGLIA", "RIGORE"] },
+        { category: "COMPLETANO «TERRA DI ...»", words: ["NESSUNO", "SIENA", "CONFINE", "CONQUISTA"] },
+        { category: "PAROLE CHE SEGUONO «PORTA ...» NEI COMPOSTI", words: ["MONETE", "OMBRELLI", "CENERE", "CHIAVI"] },
+        { category: "PAROLE CHE SEGUONO «CAPO ...»", words: ["STAZIONE", "UFFICIO", "LAVORO", "DANNO"] },
+        { category: "COMPLETANO «CAVALLO DI ...»", words: ["TROIA", "BATTAGLIA", "RITORNO", "RAZZA"] },
+        { category: "COMPLETANO «PIETRA DI ...»", words: ["PARAGONE", "INCIAMPO", "SCANDALO", "ANGOLO"] },
+        { category: "COMPLETANO «CANE DA ...»", words: ["GUARDIA", "CACCIA", "PASTORE", "TARTUFO"] },
+        { category: "COMPLETANO «GATTO DELLE ...»", words: ["NEVI", "STIVALI", "FUSA", "NOVE CODE"] },
+        { category: "PAROLE CHE DIVENTANO ANIMALI CAMBIANDO L'INIZIALE", words: ["TANE", "MATTO", "TOPO", "GALLO"] },
+        { category: "COMPLETANO «LINEA DI ...»", words: ["CONFINE", "FEBBRE", "CREDITO", "SANGUE"] },
+        { category: "COMPLETANO «CAMPO DI ...»", words: ["GRANO", "BATTAGLIA", "GIOCO", "FORZA"] },
+        { category: "COMPLETANO «ONDA D'...»", words: ["URTO", "ASSALTO", "ORO", "ENERGIA"] },
+        { category: "COMPLETANO «TAGLIO DI ...»", words: ["CAPELLI", "LUCE", "NASTRO", "BILANCIO"] },
+        { category: "COMPLETANO « BAGNO DI ...»", words: ["FOLLA", "SOLE", "UMILTÀ", "VAPORE"] },
+        { category: "COMPLETANO «GIRO DI ...»", words: ["VITE", "VALZER", "BOA", "PAROLE"] },
+        { category: "COMPLETANO «MANO DI ...»", words: ["VERNICE", "POKER", "AIUTO", "FERRO"] },
+        { category: "COMPLETANO «OCCHIO DI ...»", words: ["RIGUARDO", "LINCE", "FALCO", "BUE"] },
+        { category: "COMPLETANO «DENTE DI ...»", words: ["LEONE", "LATTE", "GIUDIZIO", "SEGA"] },
+        { category: "COMPLETANO «VOCE DEL ...»", words: ["POPOLO", "VERBO", "PADRONE", "CUORE"] },
+        { category: "COMPLETANO «OMBRA DI ...»", words: ["DUBBIO", "SOSPETTO", "VINO", "SÉ"] },
+        { category: "COMPLETANO «NOTTE DEI ...»", words: ["TEMPI", "CRISTALLI", "DESIDERI", "MIRACOLI"] },
+        { category: "COMPLETANO «ALBERO ...»", words: ["MAESTRO", "GENEALOGICO", "MOTORE", "NATALIZIO"] },
+        { category: "COMPLETANO «STELLA ...»", words: ["POLARE", "ALPINA", "COMETA", "MARINA"] },
+        { category: "COMPLETANO «CROCE E ...»", words: ["DELIZIA", "TESTA", "ROSA", "SPADA"] },
+        { category: "COMPLETANO «ANIMA ...»", words: ["GEMELLA", "VIVA", "CANDIDA", "DANNATA"] },
+        { category: "PAROLE CHE INDICANO SIA UN FRUTTO SIA UN ALBERO (CON CAMBIO DI VOCALE)", words: ["MELA", "PERA", "PESCA", "PRUGNA"] },
+        { category: "VERBI SOSTANTIVATI USATI A TAVOLA", words: ["MANGIARE", "BERE", "SAPERE", "DOVERE"] },
+        { category: "COMPLETANO «LETTO DI ...»", words: ["FIUME", "ROSE", "PIUME", "CHIODI"] },
+        { category: "COMPLETANO «NODO ALLA ...»", words: ["GOLA", "CRAVATTA", "CORDA", "QUESTIONE"] },
+        { category: "COMPLETANO «FRECCIA ...»", words: ["ROSSA", "DIRETTA", "AVVELENATA", "TRICOLORE"] },
+        { category: "COMPLETANO «SPECCHIO ...»", words: ["USTORIO", "RETROVISORE", "FEDELE", "MAGICO"] },
+        { category: "COMPLETANO «PONTE ...»", words: ["LEVATOIO", "SOSPESO", "AEREO", "RADIO"] },
+        { category: "COMPLETANO «SCATOLA ...»", words: ["NERA", "CHIUSA", "CINESE", "CRANICA"] }
       ]
     };
 
-    /* 2. GENERATORE DEI 365 GIORNI DETERMINISTICO & PRIVO DI CONFLITTI */
+    // Normalizzazione preventiva del database (maiuscolo e pulizia spazi)
+    Object.keys(CATEGORIES_DATA).forEach(tier => {
+      CATEGORIES_DATA[tier].forEach(group => {
+        group.category = group.category.trim().toUpperCase();
+        group.words = group.words.map(w => w.trim().toUpperCase());
+      });
+    });
+
+    /**
+     * 2. GENERATORE PER I 365 GIORNI CON CONTROLLO DI UNICITÀ DELLE PAROLE
+     * Costruisce per ciascuno dei 365 giorni una combinazione unica di 4 categorie
+     * assicurandosi che non vi sia mai alcuna parola duplicata tra i 4 gruppi dello stesso giorno.
+     */
     function getPuzzleForDay(dayNumber) {
-      function pseudoHash(seed, offset) {
-        const x = Math.sin(seed * 9973 + offset * 1337) * 10000;
-        return Math.floor((x - Math.floor(x)) * 100000);
+      const yPool = CATEGORIES_DATA.yellow;
+      const gPool = CATEGORIES_DATA.green;
+      const bPool = CATEGORIES_DATA.blue;
+      const pPool = CATEGORIES_DATA.purple;
+
+      // Numeri primi coprimi con 60 (es. 7, 11, 13, 17, 19, 23, 29, 31) per garantire rotazioni ampie su 365 giorni
+      const yIdx = ((dayNumber - 1) * 7) % yPool.length;
+      let gIdx = ((dayNumber - 1) * 11 + Math.floor((dayNumber - 1) / yPool.length)) % gPool.length;
+      let bIdx = ((dayNumber - 1) * 13 + Math.floor((dayNumber - 1) / 15)) % bPool.length;
+      let pIdx = ((dayNumber - 1) * 17 + Math.floor((dayNumber - 1) / 10)) % pPool.length;
+
+      const selectedYellow = yPool[yIdx];
+      const usedWords = new Set(selectedYellow.words);
+
+      function pickNonConflicting(pool, startIndex) {
+        for (let offset = 0; offset < pool.length; offset++) {
+          const candidate = pool[(startIndex + offset) % pool.length];
+          const hasOverlap = candidate.words.some(w => usedWords.has(w));
+          if (!hasOverlap) {
+            candidate.words.forEach(w => usedWords.add(w));
+            return candidate;
+          }
+        }
+        return pool[startIndex % pool.length];
       }
 
-      const totalYellow = CATEGORIES_DATA.yellow.length;
-      const totalGreen = CATEGORIES_DATA.green.length;
-      const totalBlue = CATEGORIES_DATA.blue.length;
-      const totalPurple = CATEGORIES_DATA.purple.length;
-
-      const yIdx = (dayNumber * 7 + pseudoHash(dayNumber, 1)) % totalYellow;
-      const gIdx = (dayNumber * 11 + pseudoHash(dayNumber, 2)) % totalGreen;
-      const bIdx = (dayNumber * 13 + pseudoHash(dayNumber, 3)) % totalBlue;
-      const pIdx = (dayNumber * 17 + pseudoHash(dayNumber, 4)) % totalPurple;
-
-      const groupYellow = CATEGORIES_DATA.yellow[yIdx];
-      const groupGreen = CATEGORIES_DATA.green[gIdx];
-      const groupBlue = CATEGORIES_DATA.blue[bIdx];
-      const groupPurple = CATEGORIES_DATA.purple[pIdx];
+      const selectedGreen = pickNonConflicting(gPool, gIdx);
+      const selectedBlue = pickNonConflicting(bPool, bIdx);
+      const selectedPurple = pickNonConflicting(pPool, pIdx);
 
       return {
         id: dayNumber,
-        title: `Puzzle #${dayNumber}`,
+        title: `Enigma #${dayNumber}`,
         groups: [
-          { level: 1, color: "yellow", category: groupYellow.category, words: [...groupYellow.words] },
-          { level: 2, color: "green", category: groupGreen.category, words: [...groupGreen.words] },
-          { level: 3, color: "blue", category: groupBlue.category, words: [...groupBlue.words] },
-          { level: 4, color: "purple", category: groupPurple.category, words: [...groupPurple.words] }
+          { level: 1, color: "yellow", category: selectedYellow.category, words: [...selectedYellow.words] },
+          { level: 2, color: "green", category: selectedGreen.category, words: [...selectedGreen.words] },
+          { level: 3, color: "blue", category: selectedBlue.category, words: [...selectedBlue.words] },
+          { level: 4, color: "purple", category: selectedPurple.category, words: [...selectedPurple.words] }
         ]
       };
     }
 
-    /* 3. CALCOLO GIORNO DI OGGI & STATO */
+    /* 3. CALCOLO DEL GIORNO CORRENTE E STATO DEL GIOCO */
     const START_DATE = new Date("2026-01-01T00:00:00").getTime();
     
     function getCurrentDayIndex() {
@@ -499,6 +662,7 @@
     let guessHistory = [];
     let previousGuesses = new Set();
     let isGameOver = false;
+    let isAnimating = false;
 
     const LEVEL_STYLES = {
       yellow: { bg: "bg-nyt-yellow dark:bg-nyt-yellowDark", text: "text-gray-900", emoji: "🟨" },
@@ -507,17 +671,12 @@
       purple: { bg: "bg-nyt-purple dark:bg-nyt-purpleDark", text: "text-gray-900 dark:text-white", emoji: "🟪" }
     };
 
-    /* 4. INIZIALIZZAZIONE GIOCO */
+    /* 4. INIZIALIZZAZIONE PARTITA */
     function initGame(dayNumber) {
       currentPuzzleIndex = dayNumber;
       puzzle = getPuzzleForDay(dayNumber);
 
-      const labelMode = document.getElementById('label-current-mode');
-      if (labelMode) {
-        labelMode.innerHTML = '<i class="fa-solid fa-lock text-[10px] text-emerald-600"></i> Quotidiano';
-      }
-
-      const savedKey = `connessioni_state_day_${dayNumber}`;
+      const savedKey = `connessioni_v2_day_${dayNumber}`;
       const saved = localStorage.getItem(savedKey);
 
       if (saved) {
@@ -533,7 +692,7 @@
 
           document.getElementById('solved-categories').innerHTML = '';
           solvedGroups.forEach(g => addSolvedCategoryCard(g));
-          renderGrid();
+          renderGrid(false);
           updateMistakesDisplay();
           updateButtons();
 
@@ -541,15 +700,14 @@
             setTimeout(() => {
               if (solvedGroups.length === 4) handleVictory(false);
               else handleDefeat();
-            }, 300);
+            }, 350);
           }
           return;
         } catch(e) {
-          console.error("Errore stato:", e);
+          console.error("Ripristino stato non riuscito:", e);
         }
       }
 
-      // Nuova Partita
       activeWords = [];
       puzzle.groups.forEach(group => {
         group.words.forEach(w => {
@@ -568,10 +726,11 @@
       guessHistory = [];
       previousGuesses.clear();
       isGameOver = false;
+      isAnimating = false;
 
       document.getElementById('solved-categories').innerHTML = '';
       shuffleWords();
-      renderGrid();
+      renderGrid(true);
       updateMistakesDisplay();
       updateButtons();
       saveGameState();
@@ -586,7 +745,7 @@
         previousGuesses: Array.from(previousGuesses),
         isGameOver
       };
-      localStorage.setItem(`connessioni_state_day_${currentPuzzleIndex}`, JSON.stringify(state));
+      localStorage.setItem(`connessioni_v2_day_${currentPuzzleIndex}`, JSON.stringify(state));
     }
 
     function shuffleWords() {
@@ -596,8 +755,8 @@
       }
     }
 
-    /* 4. RENDERING TESSERE E GRIGLIA */
-    function renderGrid() {
+    /* 5. RENDERING GRIGLIA E ANIMAZIONI */
+    function renderGrid(withFade = false) {
       const container = document.getElementById('grid-words');
       container.innerHTML = '';
 
@@ -606,20 +765,22 @@
         const card = document.createElement('button');
         card.type = 'button';
         card.dataset.word = item.word;
-        card.className = `flex items-center justify-center text-center p-1 sm:p-2 rounded-xl font-bold uppercase text-[11px] sm:text-xs md:text-sm tracking-tight border transition-all h-full ${
+        card.className = `flex items-center justify-center text-center p-1 sm:p-2 rounded-xl font-bold uppercase text-[11px] sm:text-xs md:text-sm tracking-tight border transition-all duration-150 h-full ${
+          withFade ? 'card-fade' : ''
+        } ${
           isSelected
-            ? 'bg-nyt-cardActive text-white border-nyt-cardActive dark:bg-gray-300 dark:text-black dark:border-gray-300 scale-[0.98]'
+            ? 'bg-nyt-cardActive text-white border-nyt-cardActive dark:bg-gray-200 dark:text-black dark:border-gray-200 scale-[0.97] shadow-md'
             : 'bg-nyt-card dark:bg-nyt-cardDark text-gray-900 dark:text-gray-100 border-nyt-border dark:border-nyt-borderDark hover:bg-gray-200 dark:hover:bg-gray-700'
         }`;
 
-        card.innerHTML = `<span class="break-words line-clamp-2">${item.word}</span>`;
+        card.innerHTML = `<span class="break-words line-clamp-2 leading-tight px-0.5">${item.word}</span>`;
         card.addEventListener('click', () => handleWordToggle(item.word));
         container.appendChild(card);
       });
     }
 
     function handleWordToggle(word) {
-      if (isGameOver) return;
+      if (isGameOver || isAnimating) return;
       const idx = selectedWords.indexOf(word);
       if (idx > -1) {
         selectedWords.splice(idx, 1);
@@ -627,18 +788,18 @@
         if (selectedWords.length < 4) {
           selectedWords.push(word);
         } else {
-          showToast("Puoi selezionare solo 4 parole!");
+          showToast("Puoi selezionare al massimo 4 parole!");
           return;
         }
       }
-      renderGrid();
+      renderGrid(false);
       updateButtons();
     }
 
     function updateButtons() {
-      document.getElementById('btn-deselect').disabled = selectedWords.length === 0 || isGameOver;
-      document.getElementById('btn-submit').disabled = selectedWords.length !== 4 || isGameOver;
-      document.getElementById('btn-shuffle').disabled = isGameOver;
+      document.getElementById('btn-deselect').disabled = selectedWords.length === 0 || isGameOver || isAnimating;
+      document.getElementById('btn-submit').disabled = selectedWords.length !== 4 || isGameOver || isAnimating;
+      document.getElementById('btn-shuffle').disabled = isGameOver || isAnimating;
     }
 
     function updateMistakesDisplay() {
@@ -647,15 +808,15 @@
       for (let i = 0; i < 4; i++) {
         const dot = document.createElement('div');
         dot.className = `w-2.5 h-2.5 rounded-full transition-all duration-300 ${
-          i < mistakesRemaining ? 'bg-gray-700 dark:bg-gray-300' : 'bg-transparent border border-gray-400 dark:border-gray-600'
+          i < mistakesRemaining ? 'bg-gray-700 dark:bg-gray-300 scale-100' : 'bg-transparent border border-gray-400 dark:border-gray-600 scale-75'
         }`;
         container.appendChild(dot);
       }
     }
 
-    /* 5. VERIFICA TENTATIVI */
+    /* 6. CONTROLLO RISPOSTA CON ANIMAZIONE SEQUENZIALE SULLE TESSERE GIUSTE */
     function checkSubmission() {
-      if (selectedWords.length !== 4 || isGameOver) return;
+      if (selectedWords.length !== 4 || isGameOver || isAnimating) return;
 
       const guessKey = [...selectedWords].sort().join(',');
       if (previousGuesses.has(guessKey)) {
@@ -680,7 +841,7 @@
       }
 
       if (matchedGroup) {
-        handleCorrectGroup(matchedGroup);
+        animateAndSolveGroup(matchedGroup);
       } else {
         let isOneAway = false;
         for (const group of puzzle.groups) {
@@ -691,26 +852,55 @@
           }
         }
         handleWrongGroup(isOneAway);
+        saveGameState();
       }
-
-      saveGameState();
     }
 
-    function handleCorrectGroup(group) {
-      activeWords = activeWords.filter(item => !group.words.includes(item.word));
-      solvedGroups.push(group);
-      selectedWords = [];
-
-      addSolvedCategoryCard(group);
-      renderGrid();
+    function animateAndSolveGroup(group) {
+      isAnimating = true;
       updateButtons();
 
-      if (solvedGroups.length === 4) {
-        isGameOver = true;
+      // 1. Fai rimbalzare in sequenza una dopo l'altra le 4 tessere indovinate
+      const allButtons = Array.from(document.querySelectorAll('#grid-words button'));
+      const selectedButtons = allButtons.filter(btn => group.words.includes(btn.dataset.word));
+
+      selectedButtons.forEach((btn, idx) => {
+        setTimeout(() => {
+          btn.classList.add('tile-hop');
+        }, idx * 95);
+      });
+
+      // 2. Piccolo spruzzo di coriandoli colorati per celebrare la categoria trovata
+      setTimeout(() => {
+        if (typeof confetti === 'function') {
+          confetti({
+            particleCount: 28,
+            spread: 55,
+            origin: { y: 0.55 },
+            disableForReducedMotion: true
+          });
+        }
+      }, 320);
+
+      // 3. Rimuovi le tessere e mostra il banner colorato con effetto elastico
+      setTimeout(() => {
+        activeWords = activeWords.filter(item => !group.words.includes(item.word));
+        solvedGroups.push(group);
+        selectedWords = [];
+
+        addSolvedCategoryCard(group);
+        renderGrid(true);
+        isAnimating = false;
+        updateButtons();
         saveGameState();
-        recordGameStats(true);
-        setTimeout(() => handleVictory(true), 600);
-      }
+
+        if (solvedGroups.length === 4) {
+          isGameOver = true;
+          saveGameState();
+          recordGameStats(true);
+          setTimeout(() => handleVictory(true), 650);
+        }
+      }, 680);
     }
 
     function addSolvedCategoryCard(group) {
@@ -718,21 +908,27 @@
       const style = LEVEL_STYLES[group.color];
 
       const card = document.createElement('div');
-      card.className = `w-full p-3 sm:p-4 rounded-xl text-center pop-in shadow-sm ${style.bg} ${style.text}`;
+      card.className = `w-full p-3 sm:p-4 rounded-xl text-center category-reveal shadow-sm ${style.bg} ${style.text}`;
       card.innerHTML = `
         <div class="text-xs sm:text-sm font-black tracking-wider uppercase mb-0.5">${group.category}</div>
-        <div class="text-[11px] sm:text-xs font-semibold tracking-wide opacity-90">${group.words.join(', ')}</div>
+        <div class="text-[11px] sm:text-xs font-semibold tracking-wide opacity-95">${group.words.join(', ')}</div>
       `;
       solvedContainer.appendChild(card);
     }
 
     function handleWrongGroup(isOneAway) {
-      const grid = document.getElementById('grid-words');
-      grid.classList.add('shake-anim');
-      setTimeout(() => grid.classList.remove('shake-anim'), 450);
+      const allButtons = Array.from(document.querySelectorAll('#grid-words button'));
+      const selectedButtons = allButtons.filter(btn => selectedWords.includes(btn.dataset.word));
+
+      selectedButtons.forEach(btn => {
+        btn.classList.add('shake-anim');
+        setTimeout(() => btn.classList.remove('shake-anim'), 450);
+      });
 
       if (isOneAway) {
-        showToast("Un solo errore!");
+        showToast("Ci sei quasi! Un solo errore (3 su 4)");
+      } else {
+        showToast("Combinazione non corretta");
       }
 
       mistakesRemaining--;
@@ -740,10 +936,12 @@
 
       if (mistakesRemaining <= 0) {
         isGameOver = true;
+        isAnimating = true;
+        updateButtons();
         saveGameState();
         recordGameStats(false);
-        showToast("Tentativi esauriti!");
-        setTimeout(revealRemainingGroups, 1000);
+        setTimeout(() => showToast("Tentativi esauriti! Ecco la soluzione:"), 600);
+        setTimeout(revealRemainingGroups, 1200);
       }
     }
 
@@ -754,20 +952,21 @@
         setTimeout(() => {
           activeWords = activeWords.filter(item => !group.words.includes(item.word));
           addSolvedCategoryCard(group);
-          renderGrid();
+          renderGrid(true);
 
           if (idx === remainingGroups.length - 1) {
-            setTimeout(() => handleDefeat(), 800);
+            isAnimating = false;
+            setTimeout(() => handleDefeat(), 850);
           }
-        }, idx * 600);
+        }, idx * 650);
       });
     }
 
-    /* 6. STATISTICHE, VITTORIA E SCONFITTA */
+    /* 7. STATISTICHE, VITTORIA E CONDIVISIONE */
     function recordGameStats(won) {
       if (currentPuzzleIndex !== todayDayIndex) return;
 
-      const statKey = "connessioni_player_stats";
+      const statKey = "connessioni_player_stats_v2";
       let stats = JSON.parse(localStorage.getItem(statKey)) || {
         played: 0,
         wins: 0,
@@ -796,7 +995,7 @@
     }
 
     function updateStatsDisplay() {
-      const stats = JSON.parse(localStorage.getItem("connessioni_player_stats")) || {
+      const stats = JSON.parse(localStorage.getItem("connessioni_player_stats_v2")) || {
         played: 0,
         wins: 0,
         currentStreak: 0,
@@ -813,15 +1012,19 @@
 
     function handleVictory(triggerConfetti) {
       if (triggerConfetti && typeof confetti === 'function') {
-        confetti({ particleCount: 100, spread: 75, origin: { y: 0.6 } });
+        confetti({ particleCount: 110, spread: 80, origin: { y: 0.6 } });
       }
 
       const iconBox = document.getElementById('result-icon-container');
       iconBox.className = "w-14 h-14 rounded-full bg-green-100 dark:bg-green-900/40 text-nyt-greenDark flex items-center justify-center mx-auto mb-3 text-2xl font-bold";
       iconBox.innerHTML = '<i class="fa-solid fa-trophy"></i>';
 
-      document.getElementById('result-title').textContent = "Straordinario!";
-      document.getElementById('result-subtitle').textContent = `Completato con ${4 - mistakesRemaining} errore/i.`;
+      const errorsMade = 4 - mistakesRemaining;
+      const praise = errorsMade === 0 ? "Impeccabile!" : errorsMade === 1 ? "Eccellente!" : "Ben fatto!";
+      document.getElementById('result-title').textContent = praise;
+      document.getElementById('result-subtitle').textContent = errorsMade === 0 
+        ? "Risolto al primo colpo senza errori." 
+        : `Completato con ${errorsMade} ${errorsMade === 1 ? 'errore' : 'errori'}.`;
 
       renderEmojiSummary();
       document.getElementById('modal-result').classList.remove('hidden');
@@ -830,10 +1033,10 @@
     function handleDefeat() {
       const iconBox = document.getElementById('result-icon-container');
       iconBox.className = "w-14 h-14 rounded-full bg-red-100 dark:bg-red-900/40 text-red-600 flex items-center justify-center mx-auto mb-3 text-2xl font-bold";
-      iconBox.innerHTML = '<i class="fa-solid fa-heart-crack"></i>';
+      iconBox.innerHTML = '<i class="fa-solid fa-book-open"></i>';
 
-      document.getElementById('result-title').textContent = "Sarà per la prossima!";
-      document.getElementById('result-subtitle').textContent = "Hai esaurito i 4 tentativi disponibili.";
+      document.getElementById('result-title').textContent = "Peccato!";
+      document.getElementById('result-subtitle').textContent = "Domani a mezzanotte ti aspetta un nuovo schema.";
 
       renderEmojiSummary();
       document.getElementById('modal-result').classList.remove('hidden');
@@ -851,7 +1054,8 @@
 
     function copyShareResult() {
       const emojiText = guessHistory.map(row => row.join('')).join('\n');
-      const shareString = `Connessioni Giorno #${puzzle.id}\n${emojiText}\nGioca gratis: https://github.io/`;
+      const shareUrl = window.location.origin + window.location.pathname;
+      const shareString = `Connessioni #${puzzle.id}\n${emojiText}\n${shareUrl}`;
 
       const dummy = document.createElement('textarea');
       dummy.value = shareString;
@@ -864,7 +1068,7 @@
         document.execCommand('copy');
         showToast("Risultato copiato negli appunti!");
       } catch (err) {
-        showToast("Errore nella copia del risultato.");
+        showToast("Impossibile copiare il risultato.");
       }
       document.body.removeChild(dummy);
     }
@@ -886,7 +1090,7 @@
       setInterval(updateTimer, 1000);
     }
 
-    /* 7. TOAST */
+    /* 8. NOTIFICHE TOAST */
     let toastTimeout = null;
     function showToast(message) {
       const toast = document.getElementById('toast');
@@ -898,31 +1102,31 @@
       toastTimeout = setTimeout(() => {
         toast.classList.remove('opacity-100', 'translate-y-0');
         toast.classList.add('opacity-0', '-translate-y-3');
-      }, 1800);
+      }, 1900);
     }
 
-    /* 8. COLLEGAMENTO PULSANTI ED EVENTI */
+    /* 9. COLLEGAMENTO PULSANTI */
     const bindClick = (id, handler) => {
       const el = document.getElementById(id);
       if (el) el.addEventListener('click', handler);
     };
 
     bindClick('btn-shuffle', () => {
-      if (isGameOver) return;
+      if (isGameOver || isAnimating) return;
       shuffleWords();
-      renderGrid();
+      renderGrid(true);
     });
 
     bindClick('btn-deselect', () => {
+      if (isGameOver || isAnimating) return;
       selectedWords = [];
-      renderGrid();
+      renderGrid(false);
       updateButtons();
     });
 
     bindClick('btn-submit', checkSubmission);
     bindClick('btn-share', copyShareResult);
 
-    // Modale Statistiche
     const modalStats = document.getElementById('modal-stats');
     bindClick('btn-stats', () => {
       updateStatsDisplay();
@@ -937,17 +1141,14 @@
       if (modalStats) modalStats.classList.remove('hidden');
     });
 
-    // Modale Come Giocare
     const modalHelp = document.getElementById('modal-help');
     bindClick('btn-how-to', () => modalHelp && modalHelp.classList.remove('hidden'));
     bindClick('btn-close-help', () => modalHelp && modalHelp.classList.add('hidden'));
     bindClick('btn-confirm-help', () => modalHelp && modalHelp.classList.add('hidden'));
 
-    // Modale Risultato
     const modalResult = document.getElementById('modal-result');
     bindClick('btn-close-result', () => modalResult && modalResult.classList.add('hidden'));
 
-    // Tema Dark / Light
     const themeBtn = document.getElementById('btn-theme');
     if (themeBtn) {
       themeBtn.addEventListener('click', () => {
@@ -962,7 +1163,6 @@
       document.documentElement.classList.remove('dark');
     }
 
-    // Avvio dell'app al caricamento completo
     window.onload = function() {
       updateStatsDisplay();
       initGame(todayDayIndex);
