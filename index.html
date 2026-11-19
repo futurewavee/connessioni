@@ -558,7 +558,7 @@
   <div id="modal-stats" role="dialog" aria-modal="true" aria-labelledby="modal-stats-title" class="fixed inset-0 bg-black/60 backdrop-blur-sm hidden flex items-center justify-center p-4 z-50">
     <div class="bg-white dark:bg-nyt-cardDark border border-nyt-border dark:border-nyt-borderDark rounded-2xl p-6 max-w-sm w-full shadow-2xl category-reveal text-center max-h-[90vh] overflow-y-auto">
       <div class="flex justify-between items-center mb-3">
-        <h3 id="modal-stats-title" class="text-lg font-bold tracking-wider uppercase mx-auto">Statistiche & Community</h3>
+        <h3 id="modal-stats-title" class="text-lg font-bold tracking-wider uppercase mx-auto">Le Tue Statistiche</h3>
         <button id="btn-close-stats" type="button" aria-label="Chiudi statistiche" class="p-1 text-gray-500 hover:text-gray-900 dark:hover:text-white">
           <i class="fa-solid fa-xmark text-lg" aria-hidden="true"></i>
         </button>
@@ -599,15 +599,11 @@
       </div>
 
       <div class="mt-4 pt-3 border-t border-nyt-border dark:border-nyt-borderDark text-left">
-        <div class="flex items-center justify-between mb-2">
-          <h4 class="text-xs font-extrabold uppercase tracking-wider text-gray-700 dark:text-gray-200">
-            <i class="fa-solid fa-users mr-1 text-emerald-600" aria-hidden="true"></i>
-            Community • <span id="stats-community-day">Enigma #1</span>
-          </h4>
-          <span id="stats-community-players" class="text-[10px] font-semibold text-gray-500"></span>
-        </div>
-        <div id="stats-community-bars" class="space-y-1.5 text-xs"></div>
-        <p id="stats-community-insight" class="mt-2.5 text-[11px] text-gray-600 dark:text-gray-300 bg-gray-100 dark:bg-nyt-darkBg p-2 rounded-lg"></p>
+        <h4 class="text-xs font-extrabold uppercase tracking-wider text-gray-700 dark:text-gray-200 mb-2">
+          <i class="fa-solid fa-chart-bar mr-1 text-emerald-600" aria-hidden="true"></i>
+          Distribuzione tuoi tentativi
+        </h4>
+        <div id="stats-personal-bars" class="space-y-1.5 text-xs"></div>
       </div>
 
       <button id="btn-confirm-stats" type="button" class="mt-5 w-full py-2.5 bg-black text-white dark:bg-white dark:text-black font-bold rounded-xl text-sm">Chiudi</button>
@@ -674,15 +670,6 @@
       </div>
 
       <div id="result-dynamic-comment" class="inline-block px-3 py-1 rounded-full bg-amber-100/80 dark:bg-amber-900/30 text-amber-900 dark:text-amber-200 text-xs font-bold mb-3"></div>
-
-      <div class="bg-gray-50 dark:bg-nyt-darkBg border border-nyt-border dark:border-nyt-borderDark rounded-xl p-3 mb-3 text-left">
-        <div class="flex items-center justify-between text-[11px] font-extrabold uppercase tracking-wider text-gray-600 dark:text-gray-300 mb-2">
-          <span><i class="fa-solid fa-chart-bar mr-1 text-emerald-600" aria-hidden="true"></i> Gli altri giocatori oggi</span>
-          <span id="res-community-winrate" class="text-emerald-600 dark:text-emerald-400"></span>
-        </div>
-        <div id="res-community-bars" class="space-y-1 text-[11px]"></div>
-        <div id="res-community-hardest" class="mt-2 pt-1.5 border-t border-gray-200 dark:border-gray-800 text-[11px] text-gray-500 dark:text-gray-400"></div>
-      </div>
 
       <div id="result-emoji-grid" class="font-mono text-base sm:text-lg tracking-widest leading-snug py-2 bg-gray-50 dark:bg-nyt-darkBg rounded-xl border border-nyt-border dark:border-nyt-borderDark mb-3 inline-block px-5"></div>
 

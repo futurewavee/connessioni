@@ -1360,37 +1360,30 @@ document.addEventListener('DOMContentLoaded', () => {
     showToast(`Enigma #${getPuzzleNumber(chosen)} (${formatDateIT(chosen)})`);
   }
 
-  // ==================== STATISTICHE & COMMUNITY ====================
-  function getSimulatedCommunityStats(puzzleNum) {
-    const rng = mulberry32(puzzleNum * 7919 + 13);
-    const totalPlayers = 1240 + Math.floor(rng() * 1850);
-    const winRate = 68 + Math.floor(rng() * 22);
-    const perfectPct = 14 + Math.floor(rng() * 18);
-    const oneMistakePct = 24 + Math.floor(rng() * 15);
-    const twoMistakesPct = 20 + Math.floor(rng() * 12);
-    const threeMistakesPct = Math.max(5, winRate - perfectPct - oneMistakePct - twoMistakesPct);
-    const lostPct = 100 - winRate;
+  // ==================== STATISTICHE PERSONALI REALI ====================
+  function getPersonalDistribution() {
+    const games = loadAllGames();
+    const counts = { 0: 0, 1: 0, 2: 0, 3: 0 };
 
-    const hardestIdx = rng() > 0.25 ? 3 : 2;
-    const hardestTier = TIER_ORDER[hardestIdx];
+    Object.values(games).forEach((rec) => {
+      if (rec && rec.status === 'won') {
+        const mistakes = Math.min(3, Math.max(0, MAX_MISTAKES - (rec.mistakesLeft ?? MAX_MISTAKES)));
+        counts[mistakes]++;
+      }
+    });
 
-    return {
-      totalPlayers,
-      winRate,
-      hardestTier,
-      distribution: [
-        { label: '0 errori (Perfetto)', pct: perfectPct, color: 'bg-emerald-500' },
-        { label: '1 errore', pct: oneMistakePct, color: 'bg-lime-500' },
-        { label: '2 errori', pct: twoMistakesPct, color: 'bg-amber-500' },
-        { label: '3 errori', pct: threeMistakesPct, color: 'bg-orange-500' },
-        { label: 'Non risolto', pct: lostPct, color: 'bg-rose-500' }
-      ]
-    };
+    const maxVal = Math.max(1, ...Object.values(counts));
+    return [
+      { label: '0 errori (Perfetto)', count: counts[0], pct: Math.round((counts[0] / maxVal) * 100), color: 'bg-emerald-500' },
+      { label: '1 errore', count: counts[1], pct: Math.round((counts[1] / maxVal) * 100), color: 'bg-lime-500' },
+      { label: '2 errori', count: counts[2], pct: Math.round((counts[2] / maxVal) * 100), color: 'bg-amber-500' },
+      { label: '3 errori', count: counts[3], pct: Math.round((counts[3] / maxVal) * 100), color: 'bg-orange-500' }
+    ];
   }
 
   function openStatsModal() {
     const stats = calculateStatsAndStreaks();
-    const comm = getSimulatedCommunityStats(currentPuzzle.number);
+    const personalDist = getPersonalDistribution();
 
     document.getElementById('stat-played').textContent = stats.played;
     document.getElementById('stat-win-rate').textContent = `${stats.winRate}%`;
@@ -1409,27 +1402,22 @@ document.addEventListener('DOMContentLoaded', () => {
           : 'Risolvi lo schema di oggi per iniziare una nuova serie.';
     }
 
-    document.getElementById('stats-community-day').textContent = `Enigma #${currentPuzzle.number}`;
-    document.getElementById('stats-community-players').textContent = `${comm.totalPlayers.toLocaleString('it-IT')} giocatori`;
-
-    const barsContainer = document.getElementById('stats-community-bars');
-    barsContainer.innerHTML = '';
-    comm.distribution.forEach((row) => {
-      const div = document.createElement('div');
-      div.className = 'flex items-center gap-2';
-      div.innerHTML = `
-        <span class="w-28 text-[11px] font-semibold text-gray-600 dark:text-gray-300 truncate">${row.label}</span>
-        <div class="flex-1 h-2.5 bg-gray-200 dark:bg-gray-800 rounded-full overflow-hidden">
-          <div class="h-full ${row.color} rounded-full" style="width: ${row.pct}%"></div>
-        </div>
-        <span class="w-8 text-right font-mono font-bold text-[11px]">${row.pct}%</span>
-      `;
-      barsContainer.appendChild(div);
-    });
-
-    const hardestGroup = currentPuzzle.groups[comm.hardestTier];
-    document.getElementById('stats-community-insight').innerHTML =
-      `<i class="fa-solid fa-fire-flame-curved text-purple-500 mr-1"></i> Il gruppo più ostico per la community è stato <strong>${hardestGroup.category}</strong> (${TIER_STYLES[comm.hardestTier].label}).`;
+    const barsContainer = document.getElementById('stats-personal-bars');
+    if (barsContainer) {
+      barsContainer.innerHTML = '';
+      personalDist.forEach((row) => {
+        const div = document.createElement('div');
+        div.className = 'flex items-center gap-2';
+        div.innerHTML = `
+          <span class="w-32 text-[11px] font-semibold text-gray-600 dark:text-gray-300 truncate">${row.label}</span>
+          <div class="flex-1 h-2.5 bg-gray-200 dark:bg-gray-800 rounded-full overflow-hidden">
+            <div class="h-full ${row.color} rounded-full transition-all duration-300" style="width: ${row.count > 0 ? Math.max(8, row.pct) : 0}%"></div>
+          </div>
+          <span class="w-6 text-right font-mono font-bold text-[11px]">${row.count}</span>
+        `;
+        barsContainer.appendChild(div);
+      });
+    }
 
     openModal('modal-stats');
   }
@@ -1437,7 +1425,6 @@ document.addEventListener('DOMContentLoaded', () => {
   // ==================== MODALE RISULTATO & CONDIVISIONE LEGAMI ====================
   function openResultModal() {
     const stats = calculateStatsAndStreaks();
-    const comm = getSimulatedCommunityStats(currentPuzzle.number);
     const isWon = gameStatus === 'won';
     const mistakesMade = MAX_MISTAKES - mistakesLeft;
 
@@ -1470,26 +1457,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     document.getElementById('result-streak-value').textContent = `${stats.currentStreak} gg`;
-    document.getElementById('res-community-winrate').textContent = `${comm.winRate}% risolto`;
-
-    const resBars = document.getElementById('res-community-bars');
-    resBars.innerHTML = '';
-    comm.distribution.slice(0, 4).forEach((row) => {
-      const div = document.createElement('div');
-      div.className = 'flex items-center gap-2';
-      div.innerHTML = `
-        <span class="w-24 text-gray-600 dark:text-gray-300 truncate">${row.label}</span>
-        <div class="flex-1 h-2 bg-gray-200 dark:bg-gray-800 rounded-full overflow-hidden">
-          <div class="h-full ${row.color} rounded-full" style="width: ${row.pct}%"></div>
-        </div>
-        <span class="w-7 text-right font-mono font-bold">${row.pct}%</span>
-      `;
-      resBars.appendChild(div);
-    });
-
-    const hardestGroup = currentPuzzle.groups[comm.hardestTier];
-    document.getElementById('res-community-hardest').innerHTML =
-      `Categoria più difficile: <strong>${hardestGroup.category}</strong>`;
 
     const emojiGrid = document.getElementById('result-emoji-grid');
     emojiGrid.innerHTML = guessHistory
