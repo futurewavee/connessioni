@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Connessioni - Gioco Quotidiano</title>
 
-  <!-- Open Graph / Meta Tag con URL Assoluto per WhatsApp, Telegram, Facebook, X -->
+  <!-- Open Graph / Meta Tag con URL Assoluto -->
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://futurewavee.github.io/connessioni/">
   <meta property="og:title" content="Connessioni - Il Gioco di Associazioni Quotidiano">
@@ -75,7 +75,6 @@
       -webkit-user-select: none;
     }
 
-    /* Animazione errore (scuotimento orizzontale) */
     @keyframes shake {
       0%, 100% { transform: translateX(0); }
       20%, 60% { transform: translateX(-7px); }
@@ -85,7 +84,6 @@
       animation: shake 0.42s ease-in-out;
     }
 
-    /* Animazione tessera indovinata (balzo verso l'alto + bagliore) */
     @keyframes tileHop {
       0% { transform: translateY(0) scale(1); }
       40% { transform: translateY(-14px) scale(1.07); box-shadow: 0 12px 24px -5px rgba(0, 0, 0, 0.28); }
@@ -97,7 +95,6 @@
       z-index: 20;
     }
 
-    /* Animazione rivelazione del banner categoria risolto */
     @keyframes categoryReveal {
       0% { transform: scale(0.84) translateY(12px); opacity: 0; }
       60% { transform: scale(1.03) translateY(-2px); opacity: 1; }
@@ -107,7 +104,6 @@
       animation: categoryReveal 0.46s cubic-bezier(0.22, 1, 0.36, 1) forwards;
     }
 
-    /* Animazione ingresso soffice per le tessere quando si mescolano */
     @keyframes cardFadeIn {
       from { opacity: 0.5; transform: scale(0.94); }
       to { opacity: 1; transform: scale(1); }
@@ -116,7 +112,6 @@
       animation: cardFadeIn 0.2s ease-out forwards;
     }
 
-    /* Regola rigida anti-a-capo per smartphone */
     .word-fit {
       white-space: nowrap !important;
       word-break: keep-all !important;
@@ -133,24 +128,27 @@
 <body class="h-full bg-white dark:bg-nyt-darkBg text-gray-900 dark:text-gray-100 font-sans flex flex-col justify-between transition-colors duration-200">
 
   <!-- Toast Notifiche Fluttuante -->
-  <div id="toast" class="fixed top-14 left-1/2 -translate-x-1/2 z-50 pointer-events-none transition-all duration-300 opacity-0 -translate-y-3 bg-black/95 dark:bg-white/95 text-white dark:text-black text-xs sm:text-sm font-bold px-4 py-2.5 rounded-xl shadow-xl text-center max-w-[85%]">
+  <div id="toast" role="status" aria-live="polite" aria-atomic="true" class="fixed top-14 left-1/2 -translate-x-1/2 z-50 pointer-events-none transition-all duration-300 opacity-0 -translate-y-3 bg-black/95 dark:bg-white/95 text-white dark:text-black text-xs sm:text-sm font-bold px-4 py-2.5 rounded-xl shadow-xl text-center max-w-[85%]">
     Notifica
   </div>
 
   <!-- Header Superiore -->
-  <header class="border-b border-nyt-border dark:border-nyt-borderDark px-3 sm:px-4 py-2.5 max-w-xl w-full mx-auto flex items-center justify-between gap-2">
-    <div class="flex items-center gap-1">
-      <button id="btn-how-to" class="p-2 text-gray-600 dark:text-gray-300 hover:text-black dark:hover:text-white transition" title="Come giocare">
-        <i class="fa-regular fa-circle-question text-lg sm:text-xl"></i>
+  <header class="border-b border-nyt-border dark:border-nyt-borderDark px-2 sm:px-4 py-2 max-w-xl w-full mx-auto flex items-center justify-between gap-1">
+    <div class="flex items-center gap-0.5 sm:gap-1">
+      <button id="btn-how-to" type="button" aria-label="Regole del gioco" class="p-2 text-gray-600 dark:text-gray-300 hover:text-black dark:hover:text-white transition" title="Come giocare">
+        <i class="fa-regular fa-circle-question text-lg" aria-hidden="true"></i>
       </button>
-      <button id="btn-stats" class="p-2 text-gray-600 dark:text-gray-300 hover:text-black dark:hover:text-white transition" title="Statistiche">
-        <i class="fa-solid fa-chart-simple text-lg sm:text-xl"></i>
+      <button id="btn-archive" type="button" aria-label="Calendario mensile e archivio" class="p-2 text-gray-600 dark:text-gray-300 hover:text-black dark:hover:text-white transition" title="Calendario Giornate">
+        <i class="fa-regular fa-calendar-days text-lg" aria-hidden="true"></i>
+      </button>
+      <button id="btn-stats" type="button" aria-label="Statistiche e confronto community" class="p-2 text-gray-600 dark:text-gray-300 hover:text-black dark:hover:text-white transition" title="Statistiche e Community">
+        <i class="fa-solid fa-chart-simple text-lg" aria-hidden="true"></i>
       </button>
     </div>
 
-    <!-- Logo Vettoriale HTML/SVG Largo e Riconoscibile -->
-    <div class="flex-1 flex items-center justify-center max-w-[225px] sm:max-w-[285px]">
-      <svg viewBox="0 0 420 110" class="w-full h-auto select-none" xmlns="http://www.w3.org/2000/svg">
+    <!-- Logo Vettoriale -->
+    <div class="flex-1 flex items-center justify-center max-w-[180px] sm:max-w-[245px]">
+      <svg viewBox="0 0 420 110" role="img" aria-label="Connessioni" class="w-full h-auto select-none" xmlns="http://www.w3.org/2000/svg">
         <g stroke-dasharray="3,3" stroke-width="1.6" opacity="0.78">
           <line x1="88" y1="28" x2="175" y2="35" stroke="#F9DF6D" />
           <line x1="88" y1="28" x2="128" y2="88" stroke="#F9DF6D" />
@@ -172,8 +170,8 @@
         <circle cx="128" cy="88" r="9.5" fill="#789D34" filter="drop-shadow(0 2px 3px rgba(0,0,0,0.25))" />
         <circle cx="278" cy="86" r="9.5" fill="#8F539B" filter="drop-shadow(0 2px 3px rgba(0,0,0,0.25))" />
 
-        <text x="210" y="66" 
-              text-anchor="middle" 
+        <text x="210" y="66"
+              text-anchor="middle"
               class="fill-gray-900 dark:fill-white font-sans font-black tracking-[0.22em] text-[31px]"
               style="letter-spacing: 0.22em;">
           CONNESSIONI
@@ -182,116 +180,196 @@
     </div>
 
     <div class="flex items-center gap-1">
-      <button id="btn-theme" class="p-2 text-gray-600 dark:text-gray-300 hover:text-black dark:hover:text-white transition" title="Tema chiaro/scuro">
-        <i class="fa-solid fa-moon dark:hidden text-lg sm:text-xl"></i>
-        <i class="fa-solid fa-sun hidden dark:inline text-lg sm:text-xl text-yellow-400"></i>
+      <!-- Icona Streak sempre visibile nell'header (apre il calendario) -->
+      <button id="header-streak-badge" type="button" aria-label="Serie di vittorie consecutive" title="Serie giornaliera (Streak)" class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-extrabold border border-gray-300 dark:border-gray-700 bg-gray-100 dark:bg-nyt-cardDark text-gray-500 dark:text-gray-400 transition">
+        <i id="header-streak-flame" class="fa-solid fa-fire text-gray-400" aria-hidden="true"></i>
+        <span id="header-streak-count">0</span>
+      </button>
+
+      <button id="btn-theme" type="button" aria-label="Cambia tema chiaro o scuro" class="p-2 text-gray-600 dark:text-gray-300 hover:text-black dark:hover:text-white transition" title="Tema chiaro/scuro">
+        <i class="fa-solid fa-moon dark:hidden text-lg" aria-hidden="true"></i>
+        <i class="fa-solid fa-sun hidden dark:inline text-lg text-yellow-400" aria-hidden="true"></i>
       </button>
     </div>
   </header>
 
   <!-- Area Principale di Gioco -->
-  <main class="flex-1 max-w-xl w-full mx-auto px-2 sm:px-4 py-2 sm:py-4 flex flex-col justify-between">
+  <main class="flex-1 max-w-xl w-full mx-auto px-2 sm:px-4 py-2 sm:py-3 flex flex-col justify-between overflow-y-auto">
     
-    <!-- Istruzioni & Timer Quotidiano -->
+    <!-- Barra Info Partita: Data / Enigma, Ritorno ad Oggi e Timer -->
     <div class="text-center space-y-1 mb-2">
-      <p class="text-xs sm:text-sm font-medium text-gray-600 dark:text-gray-300">
-        Forma 4 gruppi di 4 parole unite da un legame logico.
-      </p>
-      <div class="text-[11px] font-semibold text-gray-500 tracking-wide flex items-center justify-center gap-2">
-        <span class="flex items-center gap-1 text-emerald-600 dark:text-emerald-400">
-          <i class="fa-solid fa-calendar-check text-[10px]"></i> Enigma del giorno
+      <div class="flex items-center justify-center gap-2 flex-wrap">
+        <span id="puzzle-badge" class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-emerald-100 text-emerald-800 dark:bg-emerald-900/40 dark:text-emerald-300">
+          <i class="fa-solid fa-calendar-check text-[10px]" aria-hidden="true"></i>
+          <span id="puzzle-number-label">19/11/2026 • Enigma #1</span>
         </span>
+        <button id="btn-back-today" type="button" class="hidden inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-black text-white dark:bg-white dark:text-black hover:opacity-85 transition">
+          <i class="fa-solid fa-rotate-left text-[9px]" aria-hidden="true"></i> Torna a oggi
+        </button>
+      </div>
+
+      <div class="text-[11px] font-semibold text-gray-500 tracking-wide flex items-center justify-center gap-2">
+        <span id="game-stopwatch" class="font-mono"><i class="fa-regular fa-clock mr-1" aria-hidden="true"></i>00:00</span>
         <span>•</span>
-        <span id="countdown-timer">Prossimo schema tra: --:--:--</span>
+        <span id="countdown-timer">Prossimo tra: --:--:--</span>
       </div>
     </div>
 
     <!-- Contenitore Griglia e Categorie Risolte -->
     <div class="my-auto w-full">
-      <div id="solved-categories" class="space-y-2 mb-2 w-full"></div>
-      <div id="grid-words" class="grid grid-cols-4 gap-1.5 sm:gap-2.5 w-full aspect-square max-h-[380px] sm:max-h-[440px]"></div>
+      <div id="solved-categories" class="space-y-2 mb-2 w-full" aria-label="Categorie risolte"></div>
+      <div id="grid-words" role="group" aria-label="Griglia delle parole da abbinare" class="grid grid-cols-4 gap-1.5 sm:gap-2.5 w-full aspect-square max-h-[370px] sm:max-h-[430px]"></div>
     </div>
 
     <!-- Controlli e Indicatore Errori -->
-    <div class="w-full mt-3 sm:mt-4 space-y-3">
+    <div class="w-full mt-2.5 sm:mt-3 space-y-2.5">
       <div class="flex items-center justify-center gap-2 text-xs sm:text-sm font-semibold text-gray-600 dark:text-gray-300 select-none">
-        <span>Errori disponibili:</span>
-        <div id="mistakes-dots" class="flex gap-1.5 items-center"></div>
+        <span id="mistakes-label">Errori disponibili:</span>
+        <div id="mistakes-dots" role="status" aria-labelledby="mistakes-label" class="flex gap-1.5 items-center"></div>
       </div>
 
-      <div class="flex items-center justify-center gap-2 sm:gap-3 pb-2">
-        <button id="btn-shuffle" class="flex-1 max-w-[120px] py-2.5 sm:py-3 px-2 rounded-full border border-gray-400 dark:border-nyt-borderDark hover:bg-gray-100 dark:hover:bg-nyt-cardDark text-xs sm:text-sm font-semibold transition active:scale-95">
+      <div class="flex items-center justify-center gap-2 sm:gap-3 pb-1">
+        <button id="btn-shuffle" type="button" aria-label="Mescola le parole nella griglia" class="flex-1 max-w-[115px] py-2.5 px-2 rounded-full border border-gray-400 dark:border-nyt-borderDark hover:bg-gray-100 dark:hover:bg-nyt-cardDark text-xs sm:text-sm font-semibold transition active:scale-95">
           Mescola
         </button>
-        <button id="btn-deselect" class="flex-1 max-w-[140px] py-2.5 sm:py-3 px-2 rounded-full border border-gray-400 dark:border-nyt-borderDark hover:bg-gray-100 dark:hover:bg-nyt-cardDark text-xs sm:text-sm font-semibold transition active:scale-95 disabled:opacity-40 disabled:pointer-events-none" disabled>
+        <button id="btn-deselect" type="button" aria-label="Deseleziona tutte le parole" class="flex-1 max-w-[130px] py-2.5 px-2 rounded-full border border-gray-400 dark:border-nyt-borderDark hover:bg-gray-100 dark:hover:bg-nyt-cardDark text-xs sm:text-sm font-semibold transition active:scale-95 disabled:opacity-40 disabled:pointer-events-none" disabled>
           Deseleziona
         </button>
-        <button id="btn-submit" class="flex-1 max-w-[120px] py-2.5 sm:py-3 px-2 rounded-full bg-black text-white dark:bg-white dark:text-black hover:opacity-90 text-xs sm:text-sm font-bold transition active:scale-95 disabled:opacity-40 disabled:pointer-events-none" disabled>
+        <button id="btn-submit" type="button" aria-label="Invia la combinazione selezionata" class="flex-1 max-w-[115px] py-2.5 px-2 rounded-full bg-black text-white dark:bg-white dark:text-black hover:opacity-90 text-xs sm:text-sm font-bold transition active:scale-95 disabled:opacity-40 disabled:pointer-events-none" disabled>
           Invia
         </button>
       </div>
     </div>
   </main>
 
-  <!-- Footer Minimale -->
-  <footer class="py-2.5 border-t border-nyt-border dark:border-nyt-borderDark text-center text-xs text-gray-500">
-    <p>Nuovo enigma ogni giorno a mezzanotte</p>
+  <!-- Footer Minimale con Accesso Rapido al Calendario -->
+  <footer class="py-2 border-t border-nyt-border dark:border-nyt-borderDark text-center text-xs text-gray-500 flex items-center justify-center gap-3">
+    <span>Dal 19/11/2026 • Nuovo enigma a mezzanotte</span>
+    <span>•</span>
+    <button id="btn-footer-archive" type="button" class="font-semibold text-gray-700 dark:text-gray-300 hover:underline">
+      Calendario mensile →
+    </button>
   </footer>
 
   <!-- ==================== MODALI ==================== -->
 
-  <!-- Modale Statistiche -->
-  <div id="modal-stats" class="fixed inset-0 bg-black/60 backdrop-blur-sm hidden flex items-center justify-center p-4 z-50">
-    <div class="bg-white dark:bg-nyt-cardDark border border-nyt-border dark:border-nyt-borderDark rounded-2xl p-6 max-w-sm w-full shadow-2xl category-reveal text-center">
-      <div class="flex justify-between items-center mb-4">
-        <h3 class="text-lg font-bold tracking-wider uppercase mx-auto">Statistiche</h3>
-        <button id="btn-close-stats" class="p-1 text-gray-500 hover:text-gray-900 dark:hover:text-white">
-          <i class="fa-solid fa-xmark text-lg"></i>
+  <!-- Modale Calendario Reale Mese per Mese (dal 19/11/2026) -->
+  <div id="modal-archive" role="dialog" aria-modal="true" aria-labelledby="modal-archive-title" class="fixed inset-0 bg-black/60 backdrop-blur-sm hidden flex items-center justify-center p-4 z-50">
+    <div class="bg-white dark:bg-nyt-cardDark border border-nyt-border dark:border-nyt-borderDark rounded-2xl p-5 max-w-md w-full shadow-2xl category-reveal flex flex-col max-h-[90vh]">
+      <div class="flex justify-between items-start mb-3">
+        <div>
+          <div class="flex items-center gap-2 flex-wrap">
+            <h3 id="modal-archive-title" class="text-lg font-extrabold uppercase tracking-wider">Calendario Giornate</h3>
+            <span class="px-2.5 py-0.5 rounded-full text-[11px] font-extrabold bg-orange-100 text-orange-800 dark:bg-orange-900/40 dark:text-orange-300 inline-flex items-center gap-1">
+              <i class="fa-solid fa-fire text-orange-500" aria-hidden="true"></i>
+              <span>Streak: <span id="archive-streak-val">0 gg</span></span>
+            </span>
+          </div>
+          <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">Naviga mese per mese dal 19/11/2026 e mantieni accesa la tua serie</p>
+        </div>
+        <button id="btn-close-archive" type="button" aria-label="Chiudi calendario" class="p-1.5 text-gray-500 hover:text-gray-900 dark:hover:text-white">
+          <i class="fa-solid fa-xmark text-lg" aria-hidden="true"></i>
         </button>
       </div>
+
+      <!-- Pulsante Sfida Casuale -->
+      <button id="btn-random-puzzle" type="button" class="w-full py-2.5 px-4 mb-3 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-bold text-xs sm:text-sm shadow flex items-center justify-center gap-2 transition active:scale-98">
+        <i class="fa-solid fa-shuffle" aria-hidden="true"></i>
+        <span>Gioca un Enigma Casuale</span>
+      </button>
+
+      <!-- Contenitore Calendario Reale Mese per Mese (popolato dinamicamente da game.js) -->
+      <div id="archive-grid" class="flex flex-col gap-2.5 overflow-y-auto pr-0.5 py-1 flex-1"></div>
+
+      <!-- Legenda Stati & Streak -->
+      <div class="mt-3 pt-2.5 border-t border-nyt-border dark:border-nyt-borderDark grid grid-cols-2 sm:flex sm:items-center sm:justify-between text-[11px] text-gray-500 dark:text-gray-400 gap-1.5">
+        <span class="flex items-center gap-1"><i class="fa-solid fa-fire text-orange-500" aria-hidden="true"></i> In streak</span>
+        <span class="flex items-center gap-1"><i class="fa-solid fa-circle-check text-emerald-500" aria-hidden="true"></i> Completato</span>
+        <span class="flex items-center gap-1"><i class="fa-solid fa-circle-xmark text-rose-500" aria-hidden="true"></i> Non risolto</span>
+        <span class="flex items-center gap-1"><i class="fa-solid fa-clock text-amber-500" aria-hidden="true"></i> In corso</span>
+        <span class="flex items-center gap-1"><i class="fa-regular fa-circle text-gray-400" aria-hidden="true"></i> Da fare</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modale Statistiche & Confronto Community -->
+  <div id="modal-stats" role="dialog" aria-modal="true" aria-labelledby="modal-stats-title" class="fixed inset-0 bg-black/60 backdrop-blur-sm hidden flex items-center justify-center p-4 z-50">
+    <div class="bg-white dark:bg-nyt-cardDark border border-nyt-border dark:border-nyt-borderDark rounded-2xl p-6 max-w-sm w-full shadow-2xl category-reveal text-center max-h-[90vh] overflow-y-auto">
+      <div class="flex justify-between items-center mb-3">
+        <h3 id="modal-stats-title" class="text-lg font-bold tracking-wider uppercase mx-auto">Statistiche & Community</h3>
+        <button id="btn-close-stats" type="button" aria-label="Chiudi statistiche" class="p-1 text-gray-500 hover:text-gray-900 dark:hover:text-white">
+          <i class="fa-solid fa-xmark text-lg" aria-hidden="true"></i>
+        </button>
+      </div>
+
+      <!-- Banner Streak in evidenza -->
+      <div id="stats-streak-banner" class="mb-3 p-3 rounded-xl border border-orange-200 dark:border-orange-800/60 bg-orange-50/70 dark:bg-orange-950/30 flex items-center justify-between text-left">
+        <div class="flex items-center gap-2.5">
+          <div class="w-9 h-9 rounded-full bg-orange-500/15 text-orange-500 flex items-center justify-center text-lg shrink-0">
+            <i class="fa-solid fa-fire" aria-hidden="true"></i>
+          </div>
+          <div>
+            <div class="text-xs font-extrabold uppercase tracking-wide">Serie Giornaliera</div>
+            <div id="stats-streak-sub" class="text-[11px] text-gray-500 dark:text-gray-400">Gioca ogni giorno per far crescere la fiamma</div>
+          </div>
+        </div>
+        <div class="text-right pl-2 shrink-0">
+          <div id="stats-streak-big" class="text-xl font-black text-orange-500">0 gg</div>
+        </div>
+      </div>
       
-      <div class="grid grid-cols-4 gap-2 my-4">
-        <div class="p-2">
-          <div id="stat-played" class="text-3xl font-bold">0</div>
+      <!-- Statistiche Personali -->
+      <div class="grid grid-cols-4 gap-2 my-3">
+        <div class="p-1.5">
+          <div id="stat-played" class="text-2xl sm:text-3xl font-bold">0</div>
           <div class="text-[11px] text-gray-500 dark:text-gray-400 mt-1">Partite</div>
         </div>
-        <div class="p-2">
-          <div id="stat-win-rate" class="text-3xl font-bold">0</div>
+        <div class="p-1.5">
+          <div id="stat-win-rate" class="text-2xl sm:text-3xl font-bold">0%</div>
           <div class="text-[11px] text-gray-500 dark:text-gray-400 mt-1">% Vittorie</div>
         </div>
-        <div class="p-2">
-          <div id="stat-streak" class="text-3xl font-bold">0</div>
-          <div class="text-[11px] text-gray-500 dark:text-gray-400 mt-1">Vinte di fila</div>
+        <div class="p-1.5">
+          <div id="stat-streak" class="text-2xl sm:text-3xl font-bold">0</div>
+          <div class="text-[11px] text-gray-500 dark:text-gray-400 mt-1">Streak</div>
         </div>
-        <div class="p-2">
-          <div id="stat-max-streak" class="text-3xl font-bold">0</div>
-          <div class="text-[11px] text-gray-500 dark:text-gray-400 mt-1 leading-tight">Record di vittorie</div>
+        <div class="p-1.5">
+          <div id="stat-max-streak" class="text-2xl sm:text-3xl font-bold">0</div>
+          <div class="text-[11px] text-gray-500 dark:text-gray-400 mt-1 leading-tight">Record streak</div>
         </div>
       </div>
 
-      <div class="pt-3 text-xs text-gray-500 text-left space-y-1 border-t border-nyt-border dark:border-nyt-borderDark">
-        <p>• I progressi vengono salvati automaticamente sul tuo dispositivo.</p>
-        <p>• Torna ogni giorno per mantenere attiva la tua serie positiva.</p>
+      <!-- Sezione Confronto con gli altri giocatori -->
+      <div class="mt-4 pt-3 border-t border-nyt-border dark:border-nyt-borderDark text-left">
+        <div class="flex items-center justify-between mb-2">
+          <h4 class="text-xs font-extrabold uppercase tracking-wider text-gray-700 dark:text-gray-200">
+            <i class="fa-solid fa-users mr-1 text-emerald-600" aria-hidden="true"></i>
+            Community • <span id="stats-community-day">Enigma #1</span>
+          </h4>
+          <span id="stats-community-players" class="text-[10px] font-semibold text-gray-500"></span>
+        </div>
+        <div id="stats-community-bars" class="space-y-1.5 text-xs"></div>
+        <p id="stats-community-insight" class="mt-2.5 text-[11px] text-gray-600 dark:text-gray-300 bg-gray-100 dark:bg-nyt-darkBg p-2 rounded-lg"></p>
       </div>
-      <button id="btn-confirm-stats" class="mt-5 w-full py-2.5 bg-black text-white dark:bg-white dark:text-black font-bold rounded-xl text-sm">Chiudi</button>
+
+      <button id="btn-confirm-stats" type="button" class="mt-5 w-full py-2.5 bg-black text-white dark:bg-white dark:text-black font-bold rounded-xl text-sm">Chiudi</button>
     </div>
   </div>
 
   <!-- Modale Come Giocare -->
-  <div id="modal-help" class="fixed inset-0 bg-black/60 backdrop-blur-sm hidden flex items-center justify-center p-4 z-50">
+  <div id="modal-help" role="dialog" aria-modal="true" aria-labelledby="modal-help-title" class="fixed inset-0 bg-black/60 backdrop-blur-sm hidden flex items-center justify-center p-4 z-50">
     <div class="bg-white dark:bg-nyt-cardDark border border-nyt-border dark:border-nyt-borderDark rounded-2xl p-6 max-w-sm w-full shadow-2xl category-reveal">
       <div class="flex justify-between items-center mb-4">
-        <h3 class="text-xl font-bold font-serif">Regole del Gioco</h3>
-        <button id="btn-close-help" class="p-1 text-gray-500 hover:text-gray-900 dark:hover:text-white">
-          <i class="fa-solid fa-xmark text-lg"></i>
+        <h3 id="modal-help-title" class="text-xl font-bold font-serif">Regole del Gioco</h3>
+        <button id="btn-close-help" type="button" aria-label="Chiudi regole" class="p-1 text-gray-500 hover:text-gray-900 dark:hover:text-white">
+          <i class="fa-solid fa-xmark text-lg" aria-hidden="true"></i>
         </button>
       </div>
-      <div class="text-xs sm:text-sm text-gray-600 dark:text-gray-300 space-y-3">
+      <div class="text-xs sm:text-sm text-gray-600 dark:text-gray-300 space-y-2.5">
         <p>Individua 4 gruppi di 4 parole accomunate da una relazione linguistica, semantica o idiomatica.</p>
         <ul class="list-disc pl-5 space-y-1.5">
-          <li>Seleziona 4 vocaboli e premi <strong>Invia</strong> per verificare se il gruppo è corretto.</li>
-          <li>Puoi commettere al massimo <strong>4 errori</strong> prima che la soluzione venga svelata.</li>
-          <li>Fai attenzione alle parole polisemiche: molti vocaboli sembrano appartenere a più categorie!</li>
+          <li>Seleziona 4 vocaboli e premi <strong>Invia</strong> (o <kbd class="px-1.5 py-0.5 text-[10px] bg-gray-100 dark:bg-gray-800 rounded border">Invio</kbd> da tastiera).</li>
+          <li>Completa l'enigma quotidiano per far salire la tua <strong>streak</strong> (<i class="fa-solid fa-fire text-orange-500" aria-hidden="true"></i>) e accendere i giorni consecutivi nel calendario mensile.</li>
+          <li>A fine partita scopri le <strong>curiosità linguistiche</strong> e confronta il tuo risultato con gli altri giocatori.</li>
         </ul>
         <div class="pt-2 border-t border-nyt-border dark:border-nyt-borderDark">
           <span class="font-bold block mb-1.5 text-xs text-gray-700 dark:text-gray-200">Grado di complessità dei gruppi:</span>
@@ -303,63 +381,67 @@
           </div>
         </div>
       </div>
-      <button id="btn-confirm-help" class="mt-5 w-full py-2.5 bg-black text-white dark:bg-white dark:text-black font-bold rounded-xl text-sm">Inizia a giocare</button>
+      <button id="btn-confirm-help" type="button" class="mt-5 w-full py-2.5 bg-black text-white dark:bg-white dark:text-black font-bold rounded-xl text-sm">Inizia a giocare</button>
     </div>
   </div>
 
-  <!-- Modale Risultato Finale (Stile Parle con Timer affiancato e bottone CONDIVIDI nativo) -->
-  <div id="modal-result" class="fixed inset-0 bg-black/70 backdrop-blur-sm hidden flex items-center justify-center p-4 z-50">
-    <div class="bg-white dark:bg-[#1A1A1B] border border-nyt-border dark:border-nyt-borderDark rounded-2xl p-6 max-w-sm w-full shadow-2xl category-reveal text-center relative">
+  <!-- Modale Risultato Finale con Streak + Confronto Community -->
+  <div id="modal-result" role="dialog" aria-modal="true" aria-labelledby="result-title" class="fixed inset-0 bg-black/70 backdrop-blur-sm hidden flex items-center justify-center p-4 z-50">
+    <div class="bg-white dark:bg-[#1A1A1B] border border-nyt-border dark:border-nyt-borderDark rounded-2xl p-5 sm:p-6 max-w-sm w-full shadow-2xl category-reveal text-center relative max-h-[92vh] overflow-y-auto">
       
-      <!-- Pulsante X in alto a destra -->
-      <button id="btn-close-result" class="absolute top-4 right-4 p-1.5 text-gray-400 hover:text-gray-800 dark:hover:text-white transition">
-        <i class="fa-solid fa-xmark text-xl"></i>
+      <button id="btn-close-result" type="button" aria-label="Chiudi riepilogo e leggi le curiosità" class="absolute top-3.5 right-3.5 p-1.5 text-gray-400 hover:text-gray-800 dark:hover:text-white transition">
+        <i class="fa-solid fa-xmark text-xl" aria-hidden="true"></i>
       </button>
 
-      <!-- Intestazione Esito -->
-      <div id="result-icon-container" class="w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-2 text-xl font-bold"></div>
+      <div id="result-icon-container" class="w-11 h-11 rounded-full flex items-center justify-center mx-auto mb-1.5 text-xl font-bold"></div>
       <h3 id="result-title" class="text-xl font-extrabold uppercase tracking-wider mb-0.5"></h3>
-      <p id="result-subtitle" class="text-xs text-gray-500 dark:text-gray-400 mb-4"></p>
+      <p id="result-subtitle" class="text-xs text-gray-500 dark:text-gray-400 mb-2"></p>
 
-      <!-- Sezione Statistiche integrate come in Parle -->
-      <h4 class="text-xs font-extrabold tracking-widest uppercase text-gray-500 dark:text-gray-300 mb-2">Statistiche</h4>
-      <div class="grid grid-cols-4 gap-1 mb-4">
-        <div>
-          <div id="res-stat-played" class="text-2xl sm:text-3xl font-bold">0</div>
-          <div class="text-[10px] text-gray-500 dark:text-gray-400">Partite</div>
+      <!-- Badge Streak nella modale risultato -->
+      <div id="result-streak-pill" class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-orange-100 dark:bg-orange-900/40 text-orange-700 dark:text-orange-300 text-xs font-extrabold mb-2 mr-1">
+        <i class="fa-solid fa-fire" aria-hidden="true"></i>
+        <span>Streak: <strong id="result-streak-value">0 gg</strong></span>
+      </div>
+
+      <!-- Badge Reazione Dinamica -->
+      <div id="result-dynamic-comment" class="inline-block px-3 py-1 rounded-full bg-amber-100/80 dark:bg-amber-900/30 text-amber-900 dark:text-amber-200 text-xs font-bold mb-3"></div>
+
+      <!-- Confronto rapido con gli altri giocatori su questo schema -->
+      <div class="bg-gray-50 dark:bg-nyt-darkBg border border-nyt-border dark:border-nyt-borderDark rounded-xl p-3 mb-3 text-left">
+        <div class="flex items-center justify-between text-[11px] font-extrabold uppercase tracking-wider text-gray-600 dark:text-gray-300 mb-2">
+          <span><i class="fa-solid fa-chart-bar mr-1 text-emerald-600" aria-hidden="true"></i> Gli altri giocatori oggi</span>
+          <span id="res-community-winrate" class="text-emerald-600 dark:text-emerald-400"></span>
         </div>
-        <div>
-          <div id="res-stat-win-rate" class="text-2xl sm:text-3xl font-bold">0</div>
-          <div class="text-[10px] text-gray-500 dark:text-gray-400">% Vittorie</div>
-        </div>
-        <div>
-          <div id="res-stat-streak" class="text-2xl sm:text-3xl font-bold">0</div>
-          <div class="text-[10px] text-gray-500 dark:text-gray-400">Vinte di fila</div>
-        </div>
-        <div>
-          <div id="res-stat-max-streak" class="text-2xl sm:text-3xl font-bold">0</div>
-          <div class="text-[10px] text-gray-500 dark:text-gray-400 leading-tight">Record di vittorie</div>
-        </div>
+        <div id="res-community-bars" class="space-y-1 text-[11px]"></div>
+        <div id="res-community-hardest" class="mt-2 pt-1.5 border-t border-gray-200 dark:border-gray-800 text-[11px] text-gray-500 dark:text-gray-400"></div>
       </div>
 
       <!-- Griglia Emoji -->
-      <div id="result-emoji-grid" class="font-mono text-lg tracking-widest leading-snug py-2.5 bg-gray-50 dark:bg-nyt-darkBg rounded-xl border border-nyt-border dark:border-nyt-borderDark mb-5 inline-block px-5"></div>
+      <div id="result-emoji-grid" class="font-mono text-base sm:text-lg tracking-widest leading-snug py-2 bg-gray-50 dark:bg-nyt-darkBg rounded-xl border border-nyt-border dark:border-nyt-borderDark mb-3 inline-block px-5"></div>
 
-      <!-- Sezione Inferiore: PROSSIMO CONNESSIONI + Linea Verticale + Pulsante Verde CONDIVIDI -->
+      <!-- Azione secondaria: apri calendario mensile -->
+      <div class="mb-3">
+        <button id="btn-play-next-archive" type="button" class="w-full py-2 px-3 rounded-xl border border-gray-300 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-800 text-xs font-bold transition flex items-center justify-center gap-1.5">
+          <i class="fa-regular fa-calendar-days" aria-hidden="true"></i>
+          <span>Apri Calendario Mensile (dal 19/11/2026)</span>
+        </button>
+      </div>
+
+      <!-- Sezione Inferiore: Countdown + Condividi -->
       <div class="flex items-center justify-between pt-3 border-t border-nyt-border dark:border-nyt-borderDark">
         <div class="flex-1 pr-3 text-center">
-          <div class="text-[10px] sm:text-xs font-extrabold uppercase tracking-wider text-gray-600 dark:text-gray-300 mb-1">
+          <div class="text-[10px] font-extrabold uppercase tracking-wider text-gray-600 dark:text-gray-300 mb-0.5">
             Prossimo Schema
           </div>
-          <div id="modal-countdown-timer" class="text-2xl sm:text-3xl font-bold font-mono tracking-tight">
+          <div id="modal-countdown-timer" class="text-xl sm:text-2xl font-bold font-mono tracking-tight">
             00:00:00
           </div>
         </div>
 
-        <div class="w-px h-14 bg-gray-300 dark:bg-gray-600"></div>
+        <div class="w-px h-12 bg-gray-300 dark:bg-gray-600"></div>
 
         <div class="flex-1 pl-3 flex justify-center">
-          <button id="btn-share" class="w-full py-3.5 px-4 bg-[#538D4E] hover:bg-[#467a42] active:scale-95 text-white font-extrabold text-sm sm:text-base uppercase tracking-wider rounded-lg shadow-md transition flex items-center justify-center gap-2">
+          <button id="btn-share" type="button" aria-label="Condividi il risultato della partita" class="w-full py-3 px-4 bg-[#538D4E] hover:bg-[#467a42] active:scale-95 text-white font-extrabold text-sm uppercase tracking-wider rounded-lg shadow-md transition flex items-center justify-center gap-2">
             <span>CONDIVIDI</span>
           </button>
         </div>
@@ -367,893 +449,8 @@
     </div>
   </div>
 
-  <!-- ==================== LOGICA E VOCABOLARIO ITALIANO ==================== -->
-  <script>
-    /**
-     * 1. VOCABOLARIO ACCADEMICO E CURATO DELLA LINGUA ITALIANA
-     */
-    const CATEGORIES_DATA = {
-      yellow: [
-        { category: "FORMATI DI PASTA CORTA", words: ["PENNE", "FUSILLI", "RIGATONI", "FARFALLE"] },
-        { category: "AGRUMI", words: ["ARANCIA", "LIMONE", "MANDARINO", "CEDRO"] },
-        { category: "AMBIENTI DELLA CASA", words: ["CUCINA", "SALOTTO", "BAGNO", "STUDIO"] },
-        { category: "CALZATURE", words: ["MOCASSINO", "SANDALO", "STIVALE", "SCARPONE"] },
-        { category: "ANIMALI DELLA FATTORIA", words: ["MUCCA", "PECORA", "MAIALE", "GALLINA"] },
-        { category: "ORTAGGI A FOGLIA", words: ["SPINACIO", "LATTUGA", "BIETOLA", "CICORIA"] },
-        { category: "METALLI E LEGHE", words: ["ORO", "ARGENTO", "RAME", "BRONZO"] },
-        { category: "BEVANDE DELLA COLAZIONE", words: ["LATTE", "CAFFÈ", "SPREMUTA", "CAPPUCCINO"] },
-        { category: "MEZZI DI TRASPORTO URBANO", words: ["AUTOBUS", "METRO", "TRAM", "FILOBUS"] },
-        { category: "FRUTTI CON IL NOCCIOLO", words: ["PESCA", "ALBICOCCA", "CILIEGIA", "SUSINA"] },
-        { category: "STRUMENTI AD ARCO", words: ["VIOLINO", "VIOLA", "CELLO", "CONTRABBASSO"] },
-        { category: "RAZZE CANINE", words: ["ALANO", "BARBONE", "BASSOTTO", "LEVRIERO"] },
-        { category: "PIANETI DEL SISTEMA SOLARE", words: ["MARTE", "VENERE", "GIOVE", "SATURNO"] },
-        { category: "ERBE AROMATICHE", words: ["BASILICO", "ROSMARINO", "SALVIA", "ORIGANO"] },
-        { category: "PIATTI TRADIZIONALI ITALIANI", words: ["PIZZA", "RISOTTO", "POLENTA", "LASAGNA"] },
-        { category: "ABBIGLIAMENTO INVERNALE", words: ["CAPPOTTO", "SCIARPA", "GUANTO", "COLBACCO"] },
-        { category: "ARTICOLI DI CANCELLERIA", words: ["GOMMA", "RIGHELLO", "TEMPERINO", "MATITA"] },
-        { category: "ALBERI DA FRUTTO", words: ["MELO", "PERO", "CILIEGIO", "MANDORLO"] },
-        { category: "DOLCI ITALIANI", words: ["TIRAMISÙ", "CANNOLO", "CASSATA", "BABÀ"] },
-        { category: "SPORT CON LA PALLA", words: ["CALCIO", "BASKET", "VOLLEY", "RUGBY"] },
-        { category: "PRECIPITAZIONI METEO", words: ["PIOGGIA", "NEVE", "GRANDINE", "BRINA"] },
-        { category: "ORGANI DEL CORPO UMANO", words: ["CUORE", "POLMONE", "FEGATO", "MILZA"] },
-        { category: "POSATE DA TAVOLA", words: ["FORCHETTA", "COLTELLO", "CUCCHIAIO", "MESTOLO"] },
-        { category: "INSETTI ALATI", words: ["FARFALLA", "APE", "LIBELLULA", "MOSCA"] },
-        { category: "GENERI DELLA NARRATIVA", words: ["ROMANZO", "NOVELLA", "RACCONTO", "FAVOLA"] },
-        { category: "ARREDI DELLA CAMERA", words: ["ARMADIO", "COMODINO", "COMO", "LETTO"] },
-        { category: "LEGNI PREGIATI", words: ["QUERCIA", "ROVERE", "NOCE", "MOGANO"] },
-        { category: "PIETRE PREZIOSE", words: ["DIAMANTE", "RUBINO", "SMERALDO", "ZAFFIRO"] },
-        { category: "FORMAGGI FRESCHI", words: ["MOZZARELLA", "RICOTTA", "STRACCHINO", "BURRATA"] },
-        { category: "FUNGHI COMMESTIBILI", words: ["PORCINO", "OVOLO", "CHIODINO", "FINFERLO"] },
-        { category: "PESCI DI MARE", words: ["ORATA", "SPIGOLA", "SOGLIOLA", "TRIGLIA"] },
-        { category: "UCCELLI RAPACI", words: ["AQUILA", "FALCO", "GUFO", "POIANA"] },
-        { category: "FIORI DA GIARDINO", words: ["ROSA", "TULIPANO", "GIGLIO", "GAROFANO"] },
-        { category: "SPEZIE IN CUCINA", words: ["ZAFFERANO", "CANNELLA", "CURCUMA", "PEPE"] },
-        { category: "LEGUMI", words: ["CECE", "LENTICCHIA", "FAGIOLO", "FAVA"] },
-        { category: "CEREALI", words: ["FRUMENTO", "ORZO", "AVENA", "SEGALE"] },
-        { category: "FRUTTA A GUSCIO", words: ["MANDORLA", "NOCCIOLA", "PISTACCHIO", "PINOLO"] },
-        { category: "SALUMI ITALIANI", words: ["PROSCIUTTO", "SALAME", "BRESAOLA", "COPPA"] },
-        { category: "FORMAGGI STAGIONATI", words: ["PARMIGIANO", "PECORINO", "FONTINA", "PROVOLONE"] },
-        { category: "TAGLI DI CARNE BOVINA", words: ["FILETTO", "COSTATA", "GIRELLO", "SCAMONE"] },
-        { category: "CONDIMENTI E SALSE", words: ["MAIONESE", "SENAPE", "PESTO", "SALSA"] },
-        { category: "BIANCHERIA DI CASA", words: ["LENZUOLO", "FEDERA", "TOVAGLIA", "SALVIETTA"] },
-        { category: "STRUMENTI A PERCUSSIONE", words: ["TAMBURO", "TIMPANO", "XILOFONO", "PIATTI"] },
-        { category: "DANZE E BALLI", words: ["VALZER", "TANGO", "MAZURCA", "SAMBA"] },
-        { category: "SPORT INVERNALI", words: ["SLITTINO", "SCI", "BIATHLON", "BOB"] },
-        { category: "DISCIPLINE DI ATLETICA", words: ["MARATONA", "DISCO", "OSTACOLI", "STAFFETTA"] },
-        { category: "MOMENTI DEL GIORNO", words: ["ALBA", "MATTINO", "MERIGGIO", "TRAMONTO"] },
-        { category: "CONTENITORI PER VINO", words: ["BOTTIGLIA", "CARAFFA", "FIASCO", "BOTTE"] },
-        { category: "UTENSILI DA CUCINA", words: ["SETACCIO", "GRATTUGIA", "MATTARELLO", "COLINO"] },
-        { category: "RECIPIENTI DI COTTURA", words: ["PENTOLA", "PADELLA", "TEGAME", "PENTOLINO"] },
-        { category: "ATTREZZI DA GIARDINO", words: ["RASTRELLO", "VANGA", "CESOIA", "PALA"] },
-        { category: "ARNESI DEL FALEGNAME", words: ["PIALLA", "SCALPELLO", "SEGA", "MORSA"] },
-        { category: "CAPOLUOGHI DI REGIONE", words: ["FIRENZE", "BOLOGNA", "TORINO", "PALERMO"] },
-        { category: "ISOLE ITALIANE", words: ["ELBA", "ISCHIA", "CAPRI", "LIPARI"] },
-        { category: "FIUMI D'ITALIA", words: ["TEVERE", "ARNO", "ADIGE", "PIAVE"] },
-        { category: "LAGHI ITALIANI", words: ["GARDA", "ISEO", "TRASIMENO", "BOLSENA"] },
-        { category: "VULCANI ITALIANI", words: ["VESUVIO", "ETNA", "STROMBOLI", "VULCANO"] },
-        { category: "MARI ITALIANI", words: ["TIRRENO", "ADRIATICO", "IONIO", "LIGURE"] },
-        { category: "STILI DEL NUOTO", words: ["DELFINO", "DORSO", "RANA", "STILE"] },
-        { category: "CAFFÈ AL BAR", words: ["ESPRESSO", "MACCHIATO", "RISTRETTO", "LUNGO"] }
-      ],
-
-      green: [
-        { category: "OGGETTI DOTATI DI TASTI", words: ["PIANOFORTE", "CITOFONO", "TASTIERA", "FISARMONICA"] },
-        { category: "ENTITÀ DOTATE DI ALI", words: ["AEROPLANO", "ANGELO", "MULINO", "UCCELLO"] },
-        { category: "ALIMENTI CHE SI SGUSCIANO", words: ["UOVO", "ARACHIDE", "GAMBERO", "CASTAGNA"] },
-        { category: "HANNO UNA CORONA", words: ["SOVRANO", "OROLOGIO", "DENTE", "ROSARIO"] },
-        { category: "STRUMENTI A FIATO", words: ["FLAUTO", "TROMBA", "CLARINETTO", "OBOE"] },
-        { category: "HANNO LE LANCETTE", words: ["CRONOMETRO", "BUSSOLA", "TACHIMETRO", "SVEGLIA"] },
-        { category: "OGGETTI CHE SI GONFIANO", words: ["PALLONCINO", "SALVAGENTE", "GOMMONE", "RUOTA"] },
-        { category: "FONTI DI LUCE", words: ["LAMPADINA", "CANDELA", "LANTERNA", "TORCIA"] },
-        { category: "OGGETTI CON IL MANICO", words: ["VALIGIA", "SCOPA", "OMBRELLO", "SECCHIO"] },
-        { category: "FANNO TIC-TAC", words: ["PENDOLO", "METRONOMO", "FRECCIA", "TIMER"] },
-        { category: "SUPERFICI CHE RIFLETTONO", words: ["SPECCHIO", "VETRINA", "STAGNO", "CRISTALLO"] },
-        { category: "COSE CHE SI STAPPANO", words: ["SPUMANTE", "LAVANDINO", "PROSECCO", "SCARICO"] },
-        { category: "DOTATI DI TASCHE", words: ["PANTALONE", "GREMBIULE", "ZAINO", "BILIARDO"] },
-        { category: "DOTATI DI CODA", words: ["COMETA", "VOLPE", "CORTEO", "ABITO"] },
-        { category: "OGGETTI CHE SI ARROTOLANO", words: ["TAPPETO", "PERGAMENA", "TUBO", "SERRANDA"] },
-        { category: "EMETTONO FUMO", words: ["CAMINO", "VULCANO", "INCENSO", "COMIGNOLO"] },
-        { category: "COSE CHE SI ALLACCIANO", words: ["SCARPA", "CINTURA", "CRAVATTA", "CASCO"] },
-        { category: "OGGETTI CON LA CERNIERA", words: ["BORSA", "ASTUCCIO", "TENDA", "GIACCA"] },
-        { category: "COSE CHE SI CARICANO", words: ["CELLULARE", "BATTERIA", "BALESTRA", "MOLLA"] },
-        { category: "SI SCIOLGONO AL CALDO", words: ["GHIACCIO", "CERA", "CIOCCOLATO", "BURRO"] },
-        { category: "DOTATI DI LAMA", words: ["RASOIO", "SPADA", "PATTINO", "TAGLIERINO"] },
-        { category: "ANIMALI CON GUSCIO O CONCHIGLIA", words: ["TARTARUGA", "CHIOCCIOLA", "PAGURO", "COZZA"] },
-        { category: "MATERIALI TRASPARENTI", words: ["VETRO", "QUARZO", "PLEXIGLAS", "CELLOFAN"] },
-        { category: "DOCUMENTI CHE SI TIMBRANO", words: ["BIGLIETTO", "PASSAPORTO", "CARTOLINA", "TESSERA"] },
-        { category: "SEDUTE CON I BRACCIOLI", words: ["POLTRONA", "DIVANO", "TRONO", "SDRAIO"] },
-        { category: "USANO UNA CORDICELLA", words: ["AQUILONE", "CAMPANELLO", "TAPPARELLA", "BURATTINO"] },
-        { category: "OGGETTI CON I DENTI", words: ["PETTINE", "INGRANAGGIO", "RASTRELLO", "ZIP"] },
-        { category: "HANNO UN COLLO", words: ["CAMICIA", "CHITARRA", "FIASCO", "GIRAFFA"] },
-        { category: "HANNO LE GAMBE", words: ["TAVOLO", "COMPASSO", "CAVALLETTO", "SEDIA"] },
-        { category: "HANNO UN DORSO", words: ["LIBRO", "MANO", "COLTELLO", "MONTE"] },
-        { category: "COSE CHE SI PIEGANO", words: ["FAZZOLETTO", "ORIGAMI", "VENTAGLIO", "MAPPA"] },
-        { category: "GIRANO SU SE STESSI", words: ["TROTTOLA", "GIOSTRA", "ELICA", "GIRANDOLA"] },
-        { category: "LASCIANO UNA TRACCIA", words: ["GESSO", "PENNARELLO", "LUMACA", "PNEUMATICO"] },
-        { category: "COSE CHE RIMBALZANO", words: ["PALLA", "SASSO", "CANGURO", "GOMMA"] },
-        { category: "OGGETTI CON I BUCHI", words: ["COLINO", "DOCCIA", "SPUGNA", "GRUVIERA"] },
-        { category: "SI APPENDONO AL MURO", words: ["QUADRO", "CALENDARIO", "TARGA", "POSTER"] },
-        { category: "CONTENGONO INCHIOSTRO", words: ["PENNA", "TIMBRO", "STILOGRAFICA", "CARTUCCIA"] },
-        { category: "USATI SEMPRE IN COPPIA", words: ["GUANTI", "CALZINI", "ORECCHINI", "BASTONCINI"] },
-        { category: "COSE CHE GALLEGGIANO", words: ["SUGHERO", "BOA", "ZATTERA", "ICEBERG"] },
-        { category: "STRUMENTI CON LE LENTI", words: ["OCCHIALI", "BINOCOLO", "TELESCOPIO", "MICROSCOPIO"] },
-        { category: "SI APRONO CON LA CHIAVE", words: ["LUCCHETTO", "CASSAFORTE", "DIARIO", "PORTONE"] },
-        { category: "DOTATI DI CORDE", words: ["ARPA", "RACCHETTA", "RING", "VELIERO"] },
-        { category: "HANNO UN COPERCHIO", words: ["SCATOLA", "BAULE", "BARATTOLO", "URNA"] },
-        { category: "FATTI DI CARTA", words: ["GIORNALE", "BANCONOTA", "BUSTA", "TOVAGLIOLO"] },
-        { category: "DOTATI DI PEDALI", words: ["BICICLETTA", "AUTOMOBILE", "PEDALÒ", "ORGANO"] },
-        { category: "COSE CHE SI SPREMONO", words: ["AGRUMI", "TUBETTO", "OLIVA", "UVA"] },
-        { category: "FRUTTI CHE SI SBUCCIANO", words: ["BANANA", "PATATA", "MELA", "PERA"] },
-        { category: "SI GRATTUGIANO IN CUCINA", words: ["GRANA", "PANE", "SCORZA", "CAROTA"] },
-        { category: "SI MONTANO IN PASTICCERIA", words: ["PANNA", "ALBUME", "CREMA", "TUORLO"] },
-        { category: "ELEMENTI CHE SI IMPASTANO", words: ["FARINA", "ARGILLA", "CEMENTO", "CRETA"] },
-        { category: "DOTATI DI ANTENNA", words: ["RADIO", "TELEVISORE", "MODEM", "RADAR"] },
-        { category: "DOTATI DI MOLLA", words: ["MATERASSO", "TRAMPOLINO", "MOLLETTA", "DIVANO"] },
-        { category: "HANNO I GRADINI", words: ["SCALA", "PODIO", "TRIBUNA", "ALTARE"] },
-        { category: "HANNO LE SBARRE", words: ["PRIGIONE", "CANCELLO", "CULLA", "GABBIA"] },
-        { category: "DOTATI DI AGO", words: ["SIRINGA", "GIRADISCHI", "BILANCIA", "CUCITRICE"] },
-        { category: "DOTATI DI FILTRO", words: ["MOKA", "TEIERA", "CAPPA", "ACQUARIO"] },
-        { category: "COSE CHE SI SFOGLIANO", words: ["RIVISTA", "MARGHERITA", "CARCIOFO", "CIPOLLA"] },
-        { category: "STRUMENTI DA ACCORDARE", words: ["UKULELE", "MANDOLINO", "LIUTO", "BANJO"] },
-        { category: "USANO UNA RETE", words: ["PORTA", "TENNIS", "PESCA", "AMACA"] },
-        { category: "FANNO SCHIUMA", words: ["SAPONE", "SHAMPOO", "BIRRA", "DETERSIVO"] }
-      ],
-
-      blue: [
-        { category: "SINONIMI DI DENARO", words: ["GRANO", "QUATTRINI", "SPICCIOLI", "FONDI"] },
-        { category: "LESSICO DEL CINEMA", words: ["REGIA", "MONTAGGIO", "COPIONE", "RIPRESA"] },
-        { category: "TONALITÀ DI ROSSO", words: ["CARMINIO", "SCARLATTO", "VERMIGLIO", "AMARANTO"] },
-        { category: "STRUMENTI METEOROLOGICI", words: ["BAROMETRO", "TERMOMETRO", "ANEMOMETRO", "IGROMETRO"] },
-        { category: "PARTI DELLA NAVE", words: ["PRUA", "POPPA", "CHIGLIA", "TIMONE"] },
-        { category: "PARTI DI UN LIBRO", words: ["INDICE", "PREFAZIONE", "COPERTINA", "PROLOGO"] },
-        { category: "SINONIMI COLTI DI CASA", words: ["DIMORA", "MAGIONE", "RESIDENZA", "TETTO"] },
-        { category: "POLIGONI GEOMETRICI", words: ["ROMBO", "TRAPEZIO", "ESAGONO", "QUADRATO"] },
-        { category: "ANDAMENTI MUSICALI", words: ["ADAGIO", "ANDANTE", "ALLEGRO", "VIVACE"] },
-        { category: "VENTI DEL MEDITERRANEO", words: ["SCIROCCO", "MAESTRALE", "LIBECCIO", "BORA"] },
-        { category: "RUOLI DEL CALCIO", words: ["PORTIERE", "TERZINO", "MEDIANO", "PUNTA"] },
-        { category: "LESSICO DEI TRIBUNALI", words: ["VERDETTO", "SENTENZA", "APPELLO", "UDIENZA"] },
-        { category: "VULCANOLOGIA", words: ["CALDERA", "MAGMA", "LAPILLO", "CRATERE"] },
-        { category: "FIGURE RETORICHE", words: ["METAFORA", "OSSIMORO", "ANAFORA", "IPERBOLE"] },
-        { category: "VALUTE MONDIALI", words: ["DOLLARO", "STERLINA", "FRANCO", "YEN"] },
-        { category: "TECNICA FOTOGRAFICA", words: ["DIAFRAMMA", "OBIETTIVO", "ISO", "FUOCO"] },
-        { category: "ELEMENTI GASSOSI", words: ["ELIO", "AZOTO", "OSSIGENO", "NEON"] },
-        { category: "ASTRONOMIA", words: ["NEBULOSA", "ASTEROIDE", "ECLISSI", "GALASSIA"] },
-        { category: "PEZZI DEGLI SCACCHI", words: ["TORRE", "ALFIERE", "CAVALLO", "PEDONE"] },
-        { category: "ARCHITETTURA CLASSICA", words: ["COLONNA", "FRONTONE", "CAPITELLO", "ARCO"] },
-        { category: "SEGNI DELLO ZODIACO", words: ["ARIETE", "GEMELLI", "SCORPIONE", "LEONE"] },
-        { category: "GRAMMATICA ITALIANA", words: ["VERBO", "PRONOME", "AGGETTIVO", "AVVERBIO"] },
-        { category: "METODI DI COTTURA", words: ["FORNO", "VAPORE", "FRITTURA", "GRIGLIA"] },
-        { category: "PUNTEGGI DEL POKER", words: ["COLORE", "COPPIA", "TRIS", "FULL"] },
-        { category: "UNITÀ DI MISURA FISICHE", words: ["WATT", "VOLT", "AMPERE", "JOULE"] },
-        { category: "TESSUTI PREGIATI", words: ["SETA", "LINO", "VELLUTO", "RASO"] },
-        { category: "BOTANICA DEL FIORE", words: ["PISTILLO", "STAME", "PETALO", "CALICE"] },
-        { category: "ANATOMIA DELL'OCCHIO", words: ["IRIDE", "RETINA", "PUPILLA", "CORNEA"] },
-        { category: "STRUMENTI CHIRURGICI", words: ["STETOSCOPIO", "BISTURI", "PINZA", "TAMPONE"] },
-        { category: "STRUMENTI DEL PITTORE", words: ["TELA", "SPATOLA", "PENNELLO", "TAVOLOZZA"] },
-        { category: "VOCI DELLA LIRICA", words: ["SOPRANO", "CONTRALTO", "TENORE", "BARITONO"] },
-        { category: "STILI DI STORIA DELL'ARTE", words: ["ROMANICO", "GOTICO", "CLASSICO", "BAROCCO"] },
-        { category: "ANATOMIA DELL'ORECCHIO", words: ["COCLEA", "STAFFA", "INCUDINE", "MARTELLO"] },
-        { category: "PUNTEGGIATURA", words: ["VIRGOLA", "PUNTO", "PARENTESI", "TRATTINO"] },
-        { category: "METRICA POETICA", words: ["SONETTO", "STROFA", "ODE", "RIMA"] },
-        { category: "TIPI DI NUVOLE", words: ["CIRRO", "CUMULO", "STRATO", "NEMBO"] },
-        { category: "TIPI DI ROCCE", words: ["GRANITO", "BASALTO", "ARDESIA", "TUFO"] },
-        { category: "OSSA DELLO SCHELETRO", words: ["FEMORE", "OMERO", "COSTOLA", "TIBIA"] },
-        { category: "MUSCOLI DEL CORPO", words: ["BICIPITE", "DELTOIDE", "PETTORALE", "DORSALE"] },
-        { category: "AMBIENTI DEL TEATRO", words: ["PLATEA", "PALCO", "SIPARIO", "GALLERIA"] },
-        { category: "GERGO GIORNALISTICO", words: ["OCCHIELLO", "SOMMARIO", "ARTICOLO", "CORSIVO"] },
-        { category: "MATEMATICA", words: ["SOMMA", "RESTO", "PRODOTTO", "POTENZA"] },
-        { category: "ANGOLI GEOMETRICI", words: ["ACUTO", "OTTUSO", "RETTO", "PIATTO"] },
-        { category: "ARCANI DEI TAROCCHI", words: ["MATTO", "MAGO", "EREMITA", "MONDO"] },
-        { category: "SEMI DELLE CARTE ITALIANE", words: ["DENARI", "COPPE", "SPADE", "BASTONI"] },
-        { category: "MASCHERE TRADIZIONALI", words: ["ARLECCHINO", "PULCINELLA", "BRIGHELLA", "COLOMBINA"] },
-        { category: "DEI DELL'OLIMPO", words: ["APOLLO", "MINERVA", "NETTUNO", "PLUTONE"] },
-        { category: "MUSE GRECHE", words: ["CLIO", "ERATO", "TALIA", "URANIA"] },
-        { category: "SETTE RE DI ROMA", words: ["ROMOLO", "NUMA", "TULLO", "ANCO"] },
-        { category: "CORRENTI FILOSOFICHE", words: ["STOICISMO", "CINISMO", "IDEALISMO", "EMPIRISMO"] },
-        { category: "TONALITÀ DI BLU", words: ["COBALTO", "INDACO", "TURCHESE", "CELESTE"] },
-        { category: "TONALITÀ DI GIALLO", words: ["OCRA", "AMBRA", "CREMA", "PAGLIERINO"] },
-        { category: "TONALITÀ DI VERDE", words: ["SMERALDO", "ACQUAMARINA", "OLIVA", "MENTA"] },
-        { category: "VINI E VITIGNI ITALIANI", words: ["BARBERA", "NEBBIOLO", "CHIANTI", "BAROLO"] },
-        { category: "PASTA ALL'UOVO", words: ["TAGLIATELLA", "FETTUCCINA", "PAPPARDELLA", "TAGLIOLINO"] },
-        { category: "GRADI MILITARI", words: ["CAPORALE", "SERGENTE", "TENENTE", "COLONNELLO"] },
-        { category: "LESSICO DEL TENNIS", words: ["ACE", "VOLÉE", "BREAK", "SERVIZIO"] },
-        { category: "LESSICO DELLA SCHERMA", words: ["FIORETTO", "SCIABOLA", "STOCCATA", "AFFONDO"] },
-        { category: "LESSICO DELLA VELA", words: ["BOLINA", "ORZA", "POPPA", "VIRATA"] },
-        { category: "LESSICO DELL'ALPINISMO", words: ["CORDATA", "PARETE", "PICCOZZA", "RAMPONE"] }
-      ],
-
-      purple: [
-        { category: "INIZIANO CON UNA NOTA MUSICALE", words: ["DOMINO", "RETE", "MIRAGGIO", "FALCO"] },
-        { category: "PARTI DEL CORPO IN GEOGRAFIA", words: ["BOCCA", "BRACCIO", "LINGUA", "GOLA"] },
-        { category: "PAROLE PALINDROME", words: ["RADAR", "ANNA", "OTTO", "INGEGNI"] },
-        { category: "COMPLETANO «COLPO DI ...»", words: ["FULMINE", "SCENA", "GRAZIA", "STATO"] },
-        { category: "SI COMBINANO CON «LUNA»", words: ["MEZZA", "PIENA", "MIELE", "STORTA"] },
-        { category: "INIZIANO CON UN NUMERO", words: ["TRENO", "QUATTRO", "SEI", "OTTOBRE"] },
-        { category: "SEGUONO LA PAROLA «CARTA»", words: ["BIANCA", "BOLLATA", "REGALO", "VETRATA"] },
-        { category: "ANAGRAMMI DI «ROMA»", words: ["AMOR", "RAMO", "MORA", "ORMA"] },
-        { category: "METAFORE MARINE", words: ["ONDATA", "MAREA", "CORRENTE", "SCOGLIO"] },
-        { category: "COMPLETANO «PUNTO DI ...»", words: ["VISTA", "ROTTURA", "FUSIONE", "INCONTRO"] },
-        { category: "LETTERE DELL'ALFABETO SCRITTE", words: ["ACCA", "ZETA", "EFFE", "ESSE"] },
-        { category: "COMPLETANO «TESTA DI ...»", words: ["PONTE", "SERIE", "CUOIO", "LEGNO"] },
-        { category: "NOMI USATI AL PLURALE", words: ["NOZZE", "FORBICI", "FERIE", "SPESE"] },
-        { category: "COMPLETANO «GIOCO DI ...»", words: ["MANO", "SQUADRA", "PAROLE", "RUOLO"] },
-        { category: "TERMINI POLISEMICI DI FINANZA", words: ["TITOLO", "AZIONE", "BORSA", "QUOTA"] },
-        { category: "CAMBIANO SENSO CON L'ACCENTO", words: ["ANCORA", "PRINCIPI", "SUBITO", "AMBITO"] },
-        { category: "COMPLETANO «SALTO NEL ...»", words: ["BUIO", "VUOTO", "TEMPO", "PASSATO"] },
-        { category: "COSE DEFINITE «FREDDE»", words: ["GUERRA", "TAVOLA", "CRONACA", "ARMA"] },
-        { category: "TERMINI MUSICALI CON DOPPIO SENSO", words: ["ACCORDO", "NOTA", "PAUSA", "TONO"] },
-        { category: "HANNO UN «CUORE» FIGURATO", words: ["CARCIOFO", "PROBLEMA", "NOTTE", "CITTÀ"] },
-        { category: "CONTENGONO TUTTE LE 5 VOCALI", words: ["AIUOLE", "SEQUOIA", "LIBRERIA", "AUTONOMIE"] },
-        { category: "COMPLETANO «FILO DI ...»", words: ["SPERANZA", "LANA", "FERRO", "VOCE"] },
-        { category: "COSE CHE SI «PERDONO» IN MODO DI DIRE", words: ["TEMPO", "BUSSOLA", "STAFFETTA", "PAZIENZA"] },
-        { category: "COSE DEFINITE «CIECHE»", words: ["FIDUCIA", "FORTUNA", "RABBIA", "STRADA"] },
-        { category: "COMPLETANO «FERRO DA ...»", words: ["STIRO", "CAVALLO", "CALZA", "CANTIERE"] },
-        { category: "COMPLETANO «ACQUA ...»", words: ["CHETA", "DOLCE", "VITA", "SANTA"] },
-        { category: "COMPLETANO «FUOCO DI ...»", words: ["PAGLIA", "FILA", "CAMPO", "ARTIFICIO"] },
-        { category: "COMPLETANO «ARIA DI ...»", words: ["FESTA", "CASA", "MARE", "CRISI"] },
-        { category: "COMPLETANO «TERRA DI ...»", words: ["NESSUNO", "MEZZO", "CONFINE", "SIENA"] },
-        { category: "FORMANO COMPOSTI CON «PORTA-»", words: ["MONETE", "FOGLIO", "CENERE", "CHIAVI"] },
-        { category: "FORMANO COMPOSTI CON «CAPO-»", words: ["STAZIONE", "UFFICIO", "LAVORO", "GRUPPO"] },
-        { category: "COMPLETANO «CAVALLO DI ...»", words: ["TROIA", "BATTAGLIA", "CORSA", "RAZZA"] },
-        { category: "COMPLETANO «PIETRA DI ...»", words: ["PARAGONE", "LUNA", "SCANDALO", "ANGOLO"] },
-        { category: "COMPLETANO «CANE DA ...»", words: ["GUARDIA", "CACCIA", "PASTORE", "TARTUFO"] },
-        { category: "ASSOCIATI AL «GATTO»", words: ["NERO", "STIVALI", "NEVI", "FUSA"] },
-        { category: "ANIMALI CAMBIANDO L'INIZIALE", words: ["TANE", "MATTO", "TOPO", "BALLO"] },
-        { category: "COMPLETANO «LINEA DI ...»", words: ["CONFINE", "TIRO", "PARTENZA", "FEBBRE"] },
-        { category: "COMPLETANO «CAMPO DI ...»", words: ["GRANO", "CALCIO", "GIOCO", "MARTE"] },
-        { category: "COMPLETANO «ONDA DI ...»", words: ["CALORE", "URTO", "PIENA", "RADIO"] },
-        { category: "COMPLETANO «TAGLIO DI ...»", words: ["CAPELLI", "LUCE", "LEGNA", "PREZZO"] },
-        { category: "COMPLETANO «BAGNO DI ...»", words: ["FOLLA", "SOLE", "UMILTÀ", "SANGUE"] },
-        { category: "COMPLETANO «GIRO DI ...»", words: ["VITE", "BOA", "PISTA", "ONORE"] },
-        { category: "COMPLETANO «MANO DI ...»", words: ["VERNICE", "POKER", "AIUTO", "BIANCO"] },
-        { category: "COMPLETANO «OCCHIO DI ...»", words: ["FALCO", "BUE", "TIGRE", "RIGUARDO"] },
-        { category: "COMPLETANO «DENTE DI ...»", words: ["LEONE", "LATTE", "GIUDIZIO", "SEGA"] },
-        { category: "COMPLETANO «VOCE DEL ...»", words: ["POPOLO", "VERBO", "CORO", "PADRONE"] },
-        { category: "COMPLETANO «OMBRA DI ...»", words: ["DUBBIO", "SOSPETTO", "VINO", "BANCO"] },
-        { category: "COMPLETANO «NOTTE DEI ...»", words: ["TEMPI", "CRISTALLI", "DESIDERI", "MIRACOLI"] },
-        { category: "COMPLETANO «ALBERO ...»", words: ["MAESTRO", "MOTORE", "NATALE", "GENEALOGICO"] },
-        { category: "COMPLETANO «STELLA ...»", words: ["POLARE", "ALPINA", "COMETA", "MARINA"] },
-        { category: "LOCUZIONI CON «CROCE»", words: ["DELIZIA", "TESTA", "ROSSA", "SUD"] },
-        { category: "COMPLETANO «ANIMA ...»", words: ["GEMELLA", "VIVA", "PIA", "BUONA"] },
-        { category: "METAFORE BOTANICHE", words: ["RADICE", "RAMO", "FRUTTO", "SEME"] },
-        { category: "VERBI USATI COME SOSTANTIVI", words: ["PIACERE", "DOVERE", "POTERE", "SAPERE"] },
-        { category: "COMPLETANO «LETTO DI ...»", words: ["FIUME", "ROSE", "PIUME", "CHIODI"] },
-        { category: "COMPLETANO «NODO ALLA ...»", words: ["GOLA", "CRAVATTA", "CORDA", "FAZZOLETTO"] },
-        { category: "TRENI ALTA VELOCITÀ «FRECCIA-»", words: ["ROSSA", "ARGENTO", "BIANCA", "ORO"] },
-        { category: "COMPLETANO «SPECCHIO ...»", words: ["ACQUA", "RETROVISORE", "USTORIO", "MAGICO"] },
-        { category: "COMPLETANO «PONTE ...»", words: ["AEREO", "SOSPESO", "RADIO", "LEVATOIO"] },
-        { category: "COMPLETANO «SCATOLA ...»", words: ["NERA", "CHIUSA", "CRANICA", "CINESI"] }
-      ]
-    };
-
-    // Normalizzazione preventiva del database
-    Object.keys(CATEGORIES_DATA).forEach(tier => {
-      CATEGORIES_DATA[tier].forEach(group => {
-        group.category = group.category.trim().toUpperCase();
-        group.words = group.words.map(w => w.trim().toUpperCase());
-      });
-    });
-
-    /**
-     * 2. GENERATORE PER I 365 GIORNI CON CONTROLLO DI UNICITÀ DELLE PAROLE
-     */
-    function getPuzzleForDay(dayNumber) {
-      const yPool = CATEGORIES_DATA.yellow;
-      const gPool = CATEGORIES_DATA.green;
-      const bPool = CATEGORIES_DATA.blue;
-      const pPool = CATEGORIES_DATA.purple;
-
-      const yIdx = ((dayNumber - 1) * 7) % yPool.length;
-      let gIdx = ((dayNumber - 1) * 11 + Math.floor((dayNumber - 1) / yPool.length)) % gPool.length;
-      let bIdx = ((dayNumber - 1) * 13 + Math.floor((dayNumber - 1) / 15)) % bPool.length;
-      let pIdx = ((dayNumber - 1) * 17 + Math.floor((dayNumber - 1) / 10)) % pPool.length;
-
-      const selectedYellow = yPool[yIdx];
-      const usedWords = new Set(selectedYellow.words);
-
-      function pickNonConflicting(pool, startIndex) {
-        for (let offset = 0; offset < pool.length; offset++) {
-          const candidate = pool[(startIndex + offset) % pool.length];
-          const hasOverlap = candidate.words.some(w => usedWords.has(w));
-          if (!hasOverlap) {
-            candidate.words.forEach(w => usedWords.add(w));
-            return candidate;
-          }
-        }
-        return pool[startIndex % pool.length];
-      }
-
-      const selectedGreen = pickNonConflicting(gPool, gIdx);
-      const selectedBlue = pickNonConflicting(bPool, bIdx);
-      const selectedPurple = pickNonConflicting(pPool, pIdx);
-
-      return {
-        id: dayNumber,
-        title: `Enigma #${dayNumber}`,
-        groups: [
-          { level: 1, color: "yellow", category: selectedYellow.category, words: [...selectedYellow.words] },
-          { level: 2, color: "green", category: selectedGreen.category, words: [...selectedGreen.words] },
-          { level: 3, color: "blue", category: selectedBlue.category, words: [...selectedBlue.words] },
-          { level: 4, color: "purple", category: selectedPurple.category, words: [...selectedPurple.words] }
-        ]
-      };
-    }
-
-    /* 3. CALCOLO DEL GIORNO CORRENTE E STATO DEL GIOCO */
-    const START_DATE = new Date("2026-01-01T00:00:00").getTime();
-    
-    function getCurrentDayIndex() {
-      const now = new Date();
-      const todayMidnight = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
-      const diffDays = Math.floor((todayMidnight - START_DATE) / (1000 * 60 * 60 * 24));
-      return Math.max(1, (diffDays % 365) + 1);
-    }
-
-    let todayDayIndex = getCurrentDayIndex();
-    let currentPuzzleIndex = todayDayIndex;
-    let puzzle = null;
-
-    let activeWords = [];
-    let selectedWords = [];
-    let solvedGroups = [];
-    let mistakesRemaining = 4;
-    let guessHistory = [];
-    let previousGuesses = new Set();
-    let isGameOver = false;
-    let isAnimating = false;
-
-    const LEVEL_STYLES = {
-      yellow: { bg: "bg-nyt-yellow dark:bg-nyt-yellowDark", text: "text-gray-900", emoji: "🟨" },
-      green: { bg: "bg-nyt-green dark:bg-nyt-greenDark", text: "text-gray-900 dark:text-white", emoji: "🟩" },
-      blue: { bg: "bg-nyt-blue dark:bg-nyt-blueDark", text: "text-gray-900 dark:text-white", emoji: "🟦" },
-      purple: { bg: "bg-nyt-purple dark:bg-nyt-purpleDark", text: "text-gray-900 dark:text-white", emoji: "🟪" }
-    };
-
-    /* 4. INIZIALIZZAZIONE PARTITA */
-    function initGame(dayNumber) {
-      currentPuzzleIndex = dayNumber;
-      puzzle = getPuzzleForDay(dayNumber);
-
-      const savedKey = `connessioni_v3_day_${dayNumber}`;
-      const saved = localStorage.getItem(savedKey);
-
-      if (saved) {
-        try {
-          const state = JSON.parse(saved);
-          activeWords = state.activeWords;
-          selectedWords = [];
-          solvedGroups = state.solvedGroups;
-          mistakesRemaining = state.mistakesRemaining;
-          guessHistory = state.guessHistory || [];
-          previousGuesses = new Set(state.previousGuesses || []);
-          isGameOver = state.isGameOver;
-
-          document.getElementById('solved-categories').innerHTML = '';
-          solvedGroups.forEach(g => addSolvedCategoryCard(g));
-          renderGrid(false);
-          updateMistakesDisplay();
-          updateButtons();
-
-          if (isGameOver) {
-            setTimeout(() => {
-              if (solvedGroups.length === 4) handleVictory(false);
-              else handleDefeat();
-            }, 350);
-          }
-          return;
-        } catch(e) {
-          console.error("Ripristino stato non riuscito:", e);
-        }
-      }
-
-      activeWords = [];
-      puzzle.groups.forEach(group => {
-        group.words.forEach(w => {
-          activeWords.push({
-            word: w,
-            level: group.level,
-            color: group.color,
-            category: group.category
-          });
-        });
-      });
-
-      selectedWords = [];
-      solvedGroups = [];
-      mistakesRemaining = 4;
-      guessHistory = [];
-      previousGuesses.clear();
-      isGameOver = false;
-      isAnimating = false;
-
-      document.getElementById('solved-categories').innerHTML = '';
-      shuffleWords();
-      renderGrid(true);
-      updateMistakesDisplay();
-      updateButtons();
-      saveGameState();
-    }
-
-    function saveGameState() {
-      const state = {
-        activeWords,
-        solvedGroups,
-        mistakesRemaining,
-        guessHistory,
-        previousGuesses: Array.from(previousGuesses),
-        isGameOver
-      };
-      localStorage.setItem(`connessioni_v3_day_${currentPuzzleIndex}`, JSON.stringify(state));
-    }
-
-    function shuffleWords() {
-      for (let i = activeWords.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [activeWords[i], activeWords[j]] = [activeWords[j], activeWords[i]];
-      }
-    }
-
-    /* 5. RENDERING GRIGLIA CON SCALA AUTOMATICA ANTI-SPEZZAMENTO */
-    function renderGrid(withFade = false) {
-      const container = document.getElementById('grid-words');
-      container.innerHTML = '';
-
-      activeWords.forEach(item => {
-        const isSelected = selectedWords.includes(item.word);
-        const card = document.createElement('button');
-        card.type = 'button';
-        card.dataset.word = item.word;
-
-        const len = item.word.length;
-        let customInlineStyle = '';
-
-        if (len >= 12) {
-          customInlineStyle = 'font-size: clamp(7.5px, 2.0vw, 11px); letter-spacing: -0.04em;';
-        } else if (len >= 10) {
-          customInlineStyle = 'font-size: clamp(8.5px, 2.25vw, 12px); letter-spacing: -0.03em;';
-        } else if (len >= 8) {
-          customInlineStyle = 'font-size: clamp(9.5px, 2.55vw, 13px); letter-spacing: -0.01em;';
-        } else {
-          customInlineStyle = 'font-size: clamp(11px, 3.1vw, 14.5px);';
-        }
-
-        card.className = `flex items-center justify-center text-center px-1 py-1.5 rounded-xl font-black uppercase border transition-all duration-150 h-full overflow-hidden ${
-          withFade ? 'card-fade' : ''
-        } ${
-          isSelected
-            ? 'bg-nyt-cardActive text-white border-nyt-cardActive dark:bg-gray-200 dark:text-black dark:border-gray-200 scale-[0.97] shadow-md'
-            : 'bg-nyt-card dark:bg-nyt-cardDark text-gray-900 dark:text-gray-100 border-nyt-border dark:border-nyt-borderDark hover:bg-gray-200 dark:hover:bg-gray-700'
-        }`;
-
-        card.innerHTML = `<span class="word-fit" style="${customInlineStyle}">${item.word}</span>`;
-        card.addEventListener('click', () => handleWordToggle(item.word));
-        container.appendChild(card);
-      });
-    }
-
-    function handleWordToggle(word) {
-      if (isGameOver || isAnimating) return;
-      const idx = selectedWords.indexOf(word);
-      if (idx > -1) {
-        selectedWords.splice(idx, 1);
-      } else {
-        if (selectedWords.length < 4) {
-          selectedWords.push(word);
-        } else {
-          showToast("Puoi selezionare al massimo 4 parole!");
-          return;
-        }
-      }
-      renderGrid(false);
-      updateButtons();
-    }
-
-    function updateButtons() {
-      document.getElementById('btn-deselect').disabled = selectedWords.length === 0 || isGameOver || isAnimating;
-      document.getElementById('btn-submit').disabled = selectedWords.length !== 4 || isGameOver || isAnimating;
-      document.getElementById('btn-shuffle').disabled = isGameOver || isAnimating;
-    }
-
-    function updateMistakesDisplay() {
-      const container = document.getElementById('mistakes-dots');
-      container.innerHTML = '';
-      for (let i = 0; i < 4; i++) {
-        const dot = document.createElement('div');
-        dot.className = `w-2.5 h-2.5 rounded-full transition-all duration-300 ${
-          i < mistakesRemaining ? 'bg-gray-700 dark:bg-gray-300 scale-100' : 'bg-transparent border border-gray-400 dark:border-gray-600 scale-75'
-        }`;
-        container.appendChild(dot);
-      }
-    }
-
-    /* 6. CONTROLLO RISPOSTA CON ANIMAZIONE SEQUENZIALE SULLE TESSERE GIUSTE */
-    function checkSubmission() {
-      if (selectedWords.length !== 4 || isGameOver || isAnimating) return;
-
-      const guessKey = [...selectedWords].sort().join(',');
-      if (previousGuesses.has(guessKey)) {
-        showToast("Hai già provato questa combinazione!");
-        return;
-      }
-      previousGuesses.add(guessKey);
-
-      const attemptEmojiRow = selectedWords.map(w => {
-        const item = activeWords.find(a => a.word === w);
-        return LEVEL_STYLES[item.color].emoji;
-      });
-      guessHistory.push(attemptEmojiRow);
-
-      let matchedGroup = null;
-      for (const group of puzzle.groups) {
-        const matches = selectedWords.filter(w => group.words.includes(w));
-        if (matches.length === 4) {
-          matchedGroup = group;
-          break;
-        }
-      }
-
-      if (matchedGroup) {
-        animateAndSolveGroup(matchedGroup);
-      } else {
-        let isOneAway = false;
-        for (const group of puzzle.groups) {
-          const matchCount = selectedWords.filter(w => group.words.includes(w)).length;
-          if (matchCount === 3) {
-            isOneAway = true;
-            break;
-          }
-        }
-        handleWrongGroup(isOneAway);
-        saveGameState();
-      }
-    }
-
-    function animateAndSolveGroup(group) {
-      isAnimating = true;
-      updateButtons();
-
-      const allButtons = Array.from(document.querySelectorAll('#grid-words button'));
-      const selectedButtons = allButtons.filter(btn => group.words.includes(btn.dataset.word));
-
-      selectedButtons.forEach((btn, idx) => {
-        setTimeout(() => {
-          btn.classList.add('tile-hop');
-        }, idx * 95);
-      });
-
-      setTimeout(() => {
-        if (typeof confetti === 'function') {
-          confetti({
-            particleCount: 30,
-            spread: 60,
-            origin: { y: 0.55 },
-            disableForReducedMotion: true
-          });
-        }
-      }, 320);
-
-      setTimeout(() => {
-        activeWords = activeWords.filter(item => !group.words.includes(item.word));
-        solvedGroups.push(group);
-        selectedWords = [];
-
-        addSolvedCategoryCard(group);
-        renderGrid(true);
-        isAnimating = false;
-        updateButtons();
-        saveGameState();
-
-        if (solvedGroups.length === 4) {
-          isGameOver = true;
-          saveGameState();
-          recordGameStats(true);
-          setTimeout(() => handleVictory(true), 650);
-        }
-      }, 680);
-    }
-
-    function addSolvedCategoryCard(group) {
-      const solvedContainer = document.getElementById('solved-categories');
-      const style = LEVEL_STYLES[group.color];
-
-      const card = document.createElement('div');
-      card.className = `w-full p-2.5 sm:p-4 rounded-xl text-center category-reveal shadow-sm ${style.bg} ${style.text}`;
-      card.innerHTML = `
-        <div class="text-xs sm:text-sm font-black tracking-wider uppercase mb-0.5">${group.category}</div>
-        <div class="text-[11px] sm:text-xs font-semibold tracking-wide opacity-95">${group.words.join(', ')}</div>
-      `;
-      solvedContainer.appendChild(card);
-    }
-
-    function handleWrongGroup(isOneAway) {
-      const allButtons = Array.from(document.querySelectorAll('#grid-words button'));
-      const selectedButtons = allButtons.filter(btn => selectedWords.includes(btn.dataset.word));
-
-      selectedButtons.forEach(btn => {
-        btn.classList.add('shake-anim');
-        setTimeout(() => btn.classList.remove('shake-anim'), 450);
-      });
-
-      if (isOneAway) {
-        showToast("Ci sei quasi! Un solo errore (3 su 4)");
-      } else {
-        showToast("Combinazione non corretta");
-      }
-
-      mistakesRemaining--;
-      updateMistakesDisplay();
-
-      if (mistakesRemaining <= 0) {
-        isGameOver = true;
-        isAnimating = true;
-        updateButtons();
-        saveGameState();
-        recordGameStats(false);
-        setTimeout(() => showToast("Tentativi esauriti! Ecco la soluzione:"), 600);
-        setTimeout(revealRemainingGroups, 1200);
-      }
-    }
-
-    function revealRemainingGroups() {
-      const remainingGroups = puzzle.groups.filter(g => !solvedGroups.some(sg => sg.category === g.category));
-
-      remainingGroups.forEach((group, idx) => {
-        setTimeout(() => {
-          activeWords = activeWords.filter(item => !group.words.includes(item.word));
-          addSolvedCategoryCard(group);
-          renderGrid(true);
-
-          if (idx === remainingGroups.length - 1) {
-            isAnimating = false;
-            setTimeout(() => handleDefeat(), 850);
-          }
-        }, idx * 650);
-      });
-    }
-
-    /* 7. STATISTICHE, VITTORIA E CONDIVISIONE NATIVA CON SCHEDA CONTATTI (WEB SHARE API) */
-    function recordGameStats(won) {
-      if (currentPuzzleIndex !== todayDayIndex) return;
-
-      const statKey = "connessioni_player_stats_v3";
-      let stats = JSON.parse(localStorage.getItem(statKey)) || {
-        played: 0,
-        wins: 0,
-        currentStreak: 0,
-        maxStreak: 0,
-        lastPlayedDay: null
-      };
-
-      if (stats.lastPlayedDay === todayDayIndex) return;
-
-      stats.played++;
-      stats.lastPlayedDay = todayDayIndex;
-
-      if (won) {
-        stats.wins++;
-        stats.currentStreak++;
-        if (stats.currentStreak > stats.maxStreak) {
-          stats.maxStreak = stats.currentStreak;
-        }
-      } else {
-        stats.currentStreak = 0;
-      }
-
-      localStorage.setItem(statKey, JSON.stringify(stats));
-      updateStatsDisplay();
-    }
-
-    function updateStatsDisplay() {
-      const stats = JSON.parse(localStorage.getItem("connessioni_player_stats_v3")) || {
-        played: 0,
-        wins: 0,
-        currentStreak: 0,
-        maxStreak: 0
-      };
-
-      const winPct = stats.played > 0 ? Math.round((stats.wins / stats.played) * 100) : 0;
-
-      // Statistiche nella modale principale
-      document.getElementById('stat-played').textContent = stats.played;
-      document.getElementById('stat-win-rate').textContent = winPct;
-      document.getElementById('stat-streak').textContent = stats.currentStreak;
-      document.getElementById('stat-max-streak').textContent = stats.maxStreak;
-
-      // Statistiche nella modale di fine gioco (stile Parle)
-      const resPlayed = document.getElementById('res-stat-played');
-      if (resPlayed) {
-        resPlayed.textContent = stats.played;
-        document.getElementById('res-stat-win-rate').textContent = winPct;
-        document.getElementById('res-stat-streak').textContent = stats.currentStreak;
-        document.getElementById('res-stat-max-streak').textContent = stats.maxStreak;
-      }
-    }
-
-    function handleVictory(triggerConfetti) {
-      if (triggerConfetti && typeof confetti === 'function') {
-        confetti({ particleCount: 110, spread: 80, origin: { y: 0.6 } });
-      }
-
-      updateStatsDisplay();
-
-      const iconBox = document.getElementById('result-icon-container');
-      iconBox.className = "w-12 h-12 rounded-full bg-green-100 dark:bg-green-900/40 text-nyt-greenDark flex items-center justify-center mx-auto mb-2 text-xl font-bold";
-      iconBox.innerHTML = '<i class="fa-solid fa-trophy"></i>';
-
-      const errorsMade = 4 - mistakesRemaining;
-      const praise = errorsMade === 0 ? "Impeccabile!" : errorsMade === 1 ? "Eccellente!" : "Ben fatto!";
-      document.getElementById('result-title').textContent = praise;
-      document.getElementById('result-subtitle').textContent = errorsMade === 0 
-        ? "Risolto al primo colpo senza errori." 
-        : `Completato con ${errorsMade} ${errorsMade === 1 ? 'errore' : 'errori'}.`;
-
-      renderEmojiSummary();
-      document.getElementById('modal-result').classList.remove('hidden');
-    }
-
-    function handleDefeat() {
-      updateStatsDisplay();
-
-      const iconBox = document.getElementById('result-icon-container');
-      iconBox.className = "w-12 h-12 rounded-full bg-red-100 dark:bg-red-900/40 text-red-600 flex items-center justify-center mx-auto mb-2 text-xl font-bold";
-      iconBox.innerHTML = '<i class="fa-solid fa-book-open"></i>';
-
-      document.getElementById('result-title').textContent = "Peccato!";
-      document.getElementById('result-subtitle').textContent = "Domani a mezzanotte ti aspetta un nuovo schema.";
-
-      renderEmojiSummary();
-      document.getElementById('modal-result').classList.remove('hidden');
-    }
-
-    function renderEmojiSummary() {
-      const container = document.getElementById('result-emoji-grid');
-      container.innerHTML = '';
-      guessHistory.forEach(row => {
-        const rowDiv = document.createElement('div');
-        rowDiv.textContent = row.join('');
-        container.appendChild(rowDiv);
-      });
-    }
-
-    /**
-     * CONDIVISIONE NATIVA COME PARLE (Apre la scheda contatti iOS / Android con WhatsApp, AirDrop, Messaggi)
-     */
-    async function shareGameResult() {
-      const emojiText = guessHistory.map(row => row.join('')).join('\n');
-      const shareUrl = "bit.ly/4eo0Keo";
-      const shareString = `Connessioni n°${puzzle.id}\n\n${emojiText}\n\n${shareUrl}`;
-
-      // 1. Se siamo su smartphone/browser con supporto Web Share API (iOS Safari, Chrome Android, ecc.), apre il menu contatti nativo
-      if (navigator.share) {
-        try {
-          await navigator.share({
-            text: shareString
-          });
-          return;
-        } catch (err) {
-          // Se l'utente chiude volontariamente la scheda di condivisione, non mostrare errori
-          if (err.name === 'AbortError') return;
-        }
-      }
-
-      // 2. Fallback automatico negli appunti (se aperto da un PC fisso che non ha il menu contatti)
-      if (navigator.clipboard && navigator.clipboard.writeText) {
-        try {
-          await navigator.clipboard.writeText(shareString);
-          showToast("Risultato copiato negli appunti!");
-          return;
-        } catch (e) {}
-      }
-
-      const dummy = document.createElement('textarea');
-      dummy.value = shareString;
-      dummy.style.position = 'fixed';
-      dummy.style.opacity = '0';
-      document.body.appendChild(dummy);
-      dummy.select();
-      try {
-        document.execCommand('copy');
-        showToast("Risultato copiato negli appunti!");
-      } catch (err) {
-        showToast("Impossibile condividere il risultato.");
-      }
-      document.body.removeChild(dummy);
-    }
-
-    function startMidnightCountdown() {
-      function updateTimer() {
-        const now = new Date();
-        const midnight = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1, 0, 0, 0);
-        const diff = midnight - now;
-
-        const h = String(Math.floor((diff / (1000 * 60 * 60)) % 24)).padStart(2, '0');
-        const m = String(Math.floor((diff / (1000 * 60)) % 60)).padStart(2, '0');
-        const s = String(Math.floor((diff / 1000) % 60)).padStart(2, '0');
-
-        const timeString = `${h}:${m}:${s}`;
-
-        const elTop = document.getElementById('countdown-timer');
-        if (elTop) elTop.textContent = `Prossimo schema tra: ${timeString}`;
-
-        const elModal = document.getElementById('modal-countdown-timer');
-        if (elModal) elModal.textContent = timeString;
-      }
-      updateTimer();
-      setInterval(updateTimer, 1000);
-    }
-
-    /* 8. NOTIFICHE TOAST */
-    let toastTimeout = null;
-    function showToast(message) {
-      const toast = document.getElementById('toast');
-      toast.textContent = message;
-      toast.classList.remove('opacity-0', '-translate-y-3');
-      toast.classList.add('opacity-100', 'translate-y-0');
-
-      if (toastTimeout) clearTimeout(toastTimeout);
-      toastTimeout = setTimeout(() => {
-        toast.classList.remove('opacity-100', 'translate-y-0');
-        toast.classList.add('opacity-0', '-translate-y-3');
-      }, 1900);
-    }
-
-    /* 9. COLLEGAMENTO PULSANTI */
-    const bindClick = (id, handler) => {
-      const el = document.getElementById(id);
-      if (el) el.addEventListener('click', handler);
-    };
-
-    bindClick('btn-shuffle', () => {
-      if (isGameOver || isAnimating) return;
-      shuffleWords();
-      renderGrid(true);
-    });
-
-    bindClick('btn-deselect', () => {
-      if (isGameOver || isAnimating) return;
-      selectedWords = [];
-      renderGrid(false);
-      updateButtons();
-    });
-
-    bindClick('btn-submit', checkSubmission);
-    bindClick('btn-share', shareGameResult);
-
-    const modalStats = document.getElementById('modal-stats');
-    bindClick('btn-stats', () => {
-      updateStatsDisplay();
-      if (modalStats) modalStats.classList.remove('hidden');
-    });
-    bindClick('btn-close-stats', () => modalStats && modalStats.classList.add('hidden'));
-    bindClick('btn-confirm-stats', () => modalStats && modalStats.classList.add('hidden'));
-
-    const modalHelp = document.getElementById('modal-help');
-    bindClick('btn-how-to', () => modalHelp && modalHelp.classList.remove('hidden'));
-    bindClick('btn-close-help', () => modalHelp && modalHelp.classList.add('hidden'));
-    bindClick('btn-confirm-help', () => modalHelp && modalHelp.classList.add('hidden'));
-
-    const modalResult = document.getElementById('modal-result');
-    bindClick('btn-close-result', () => modalResult && modalResult.classList.add('hidden'));
-
-    const themeBtn = document.getElementById('btn-theme');
-    if (themeBtn) {
-      themeBtn.addEventListener('click', () => {
-        document.documentElement.classList.toggle('dark');
-        localStorage.setItem('theme', document.documentElement.classList.contains('dark') ? 'dark' : 'light');
-      });
-    }
-
-    if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-      document.documentElement.classList.add('dark');
-    } else {
-      document.documentElement.classList.remove('dark');
-    }
-
-    window.onload = function() {
-      updateStatsDisplay();
-      initGame(todayDayIndex);
-      startMidnightCountdown();
-    };
-  </script>
+  <!-- Script Separati -->
+  <script src="data.js"></script>
+  <script src="game.js"></script>
 </body>
 </html>
