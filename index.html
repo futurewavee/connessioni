@@ -4,12 +4,12 @@
   <meta name="google-site-verification" content="nnVpZ-3Glk5MIbZTFp4noq_TLB2tKDnz3k5VRo8uiVg" />
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Connessioni - Giochi di Parole</title>
+  <title>Connessioni — Giochi di Parole</title>
 
   <!-- Open Graph / Meta Tag con URL Assoluto -->
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://futurewavee.github.io/connessioni/">
-  <meta property="og:title" content="Connessioni - Legami & Intruso">
+  <meta property="og:title" content="Connessioni — Legami & Intruso">
   <meta property="og:description" content="Sfida la tua mente tra Legami e Intruso: associazioni logiche quotidiane e sfide blitz in italiano.">
   <meta property="og:image" content="https://futurewavee.github.io/connessioni/social-preview.png">
   <meta property="og:image:secure_url" content="https://futurewavee.github.io/connessioni/social-preview.png">
@@ -19,9 +19,14 @@
 
   <!-- Twitter Card Meta Tags -->
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="Connessioni - Legami & Intruso">
+  <meta name="twitter:title" content="Connessioni — Legami & Intruso">
   <meta name="twitter:description" content="Trova i gruppi nascosti in Legami o scova l'intruso in 60 secondi!">
   <meta name="twitter:image" content="https://futurewavee.github.io/connessioni/social-preview.png">
+
+  <!-- Google Fonts: Fraunces (Editoriale), Space Grotesk (Geometrico), JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,700;9..144,900&family=JetBrains+Mono:wght@600;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
 
   <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -31,27 +36,34 @@
       theme: {
         extend: {
           colors: {
+            paper: {
+              bg: '#F6F1E7',
+              surface: '#FFFDF9',
+              ink: '#161412',
+              muted: '#6E675F',
+              darkBg: '#141311',
+              darkSurface: '#1F1D1A',
+              darkInk: '#F4EFE6',
+              darkMuted: '#9E968B'
+            },
             nyt: {
-              bg: '#FFFFFF',
-              darkBg: '#121213',
-              card: '#EFEFE6',
-              cardDark: '#2A2A2C',
-              cardActive: '#5A594E',
-              border: '#D3D6DA',
-              borderDark: '#3A3A3C',
-              yellow: '#F9DF6D',
-              yellowDark: '#D4B938',
-              green: '#A0C35A',
-              greenDark: '#538D4E',
-              blue: '#B0C4DE',
-              blueDark: '#6F8AA6',
-              purple: '#BA81C5',
-              purpleDark: '#8F539B'
+              card: '#FFFDF9',
+              cardDark: '#23201C',
+              cardActive: '#161412',
+              yellow: '#F6C945',
+              yellowDark: '#D9A726',
+              green: '#70B77E',
+              greenDark: '#3E8E52',
+              blue: '#6BA4D9',
+              blueDark: '#477BA8',
+              purple: '#B97AD6',
+              purpleDark: '#8B4FA8'
             }
           },
           fontFamily: {
-            sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
-            serif: ['Georgia', 'Cambria', 'serif']
+            sans: ['"Space Grotesk"', 'system-ui', 'sans-serif'],
+            serif: ['"Fraunces"', 'Georgia', 'serif'],
+            mono: ['"JetBrains Mono"', 'monospace']
           }
         }
       }
@@ -69,72 +81,152 @@
       box-sizing: border-box;
       -webkit-tap-highlight-color: transparent;
     }
+
     body {
       touch-action: manipulation;
       user-select: none;
       -webkit-user-select: none;
+      background-color: #F6F1E7;
+      background-image: radial-gradient(rgba(22, 20, 18, 0.11) 1px, transparent 1px);
+      background-size: 18px 18px;
     }
 
+    html.dark body {
+      background-color: #141311;
+      background-image: radial-gradient(rgba(244, 239, 230, 0.08) 1px, transparent 1px);
+      background-size: 18px 18px;
+    }
+
+    /* Ombre Neo-Brutaliste / Editoriali Tattili */
+    .tactile-box {
+      border: 2px solid #161412;
+      box-shadow: 4px 4px 0px #161412;
+      transition: transform 0.18s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.18s cubic-bezier(0.22, 1, 0.36, 1), background-color 0.15s ease;
+    }
+    html.dark .tactile-box {
+      border-color: #464038;
+      box-shadow: 4px 4px 0px #090807;
+    }
+
+    .tactile-btn {
+      border: 2px solid #161412;
+      box-shadow: 3px 3px 0px #161412;
+      transition: transform 0.14s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.14s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    html.dark .tactile-btn {
+      border-color: #524B42;
+      box-shadow: 3px 3px 0px #090807;
+    }
+    .tactile-btn:hover:not(:disabled) {
+      transform: translate(-1px, -1px);
+      box-shadow: 4px 4px 0px #161412;
+    }
+    html.dark .tactile-btn:hover:not(:disabled) {
+      box-shadow: 4px 4px 0px #090807;
+    }
+    .tactile-btn:active:not(:disabled) {
+      transform: translate(2px, 2px);
+      box-shadow: 1px 1px 0px #161412;
+    }
+
+    /* Tessera Griglia Legami */
+    .word-tile {
+      border: 2px solid #161412;
+      box-shadow: 3px 3px 0px #161412;
+      transition: transform 0.16s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.16s ease, background-color 0.15s ease, color 0.15s ease;
+    }
+    html.dark .word-tile {
+      border-color: #4A443B;
+      box-shadow: 3px 3px 0px #080706;
+    }
+    .word-tile:hover {
+      transform: translateY(-2px);
+      box-shadow: 4px 5px 0px #161412;
+    }
+    html.dark .word-tile:hover {
+      box-shadow: 4px 5px 0px #080706;
+    }
+    .word-tile.is-selected {
+      transform: translate(2px, 2px) rotate(-0.8deg);
+      box-shadow: 1px 1px 0px #161412;
+    }
+    html.dark .word-tile.is-selected {
+      box-shadow: 1px 1px 0px #080706;
+    }
+
+    /* Animazioni Ricche */
     @keyframes shake {
-      0%, 100% { transform: translateX(0); }
-      20%, 60% { transform: translateX(-7px); }
-      40%, 80% { transform: translateX(7px); }
+      0%, 100% { transform: translateX(0) rotate(0); }
+      20% { transform: translateX(-8px) rotate(-2deg); }
+      40% { transform: translateX(8px) rotate(2deg); }
+      60% { transform: translateX(-5px) rotate(-1deg); }
+      80% { transform: translateX(5px) rotate(1deg); }
     }
     .shake-anim {
-      animation: shake 0.42s ease-in-out;
+      animation: shake 0.44s cubic-bezier(0.36, 0.07, 0.19, 0.97);
     }
 
     @keyframes tileHop {
       0% { transform: translateY(0) scale(1); }
-      40% { transform: translateY(-15px) scale(1.08); box-shadow: 0 14px 26px -5px rgba(0, 0, 0, 0.3); }
-      75% { transform: translateY(2px) scale(0.97); }
+      38% { transform: translateY(-18px) scale(1.08) rotate(2deg); box-shadow: 6px 14px 0px rgba(22, 20, 18, 0.25); }
+      72% { transform: translateY(3px) scale(0.96); }
       100% { transform: translateY(0) scale(1); }
     }
     .tile-hop {
-      animation: tileHop 0.46s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+      animation: tileHop 0.48s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
       z-index: 20;
     }
 
-    @keyframes tilePop {
-      0% { transform: scale(0.85); opacity: 0; }
-      70% { transform: scale(1.03); opacity: 1; }
-      100% { transform: scale(1); opacity: 1; }
+    @keyframes tileDeal {
+      0% { opacity: 0; transform: translateY(18px) scale(0.84) rotate(2deg); }
+      70% { opacity: 1; transform: translateY(-3px) scale(1.02) rotate(-0.5deg); }
+      100% { opacity: 1; transform: translateY(0) scale(1) rotate(0); }
     }
     .tile-pop {
-      animation: tilePop 0.32s cubic-bezier(0.22, 1, 0.36, 1) backwards;
+      animation: tileDeal 0.38s cubic-bezier(0.22, 1, 0.36, 1) backwards;
     }
 
-    @keyframes categoryReveal {
-      0% { transform: scale(0.84) translateY(12px); opacity: 0; }
-      60% { transform: scale(1.03) translateY(-2px); opacity: 1; }
-      100% { transform: scale(1) translateY(0); opacity: 1; }
+    @keyframes stampSlam {
+      0% { opacity: 0; transform: scale(1.16) rotate(-1.5deg); }
+      65% { opacity: 1; transform: scale(0.98) rotate(0.4deg); }
+      100% { opacity: 1; transform: scale(1) rotate(0deg); }
     }
     .category-reveal {
-      animation: categoryReveal 0.46s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+      animation: stampSlam 0.42s cubic-bezier(0.22, 1, 0.36, 1) forwards;
     }
 
-    @keyframes viewEnter {
-      0% { opacity: 0; transform: translateY(10px) scale(0.985); }
-      100% { opacity: 1; transform: translateY(0) scale(1); }
+    @keyframes pageTurn {
+      0% { opacity: 0; transform: translateY(14px); }
+      100% { opacity: 1; transform: translateY(0); }
     }
     .view-enter {
-      animation: viewEnter 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+      animation: pageTurn 0.38s cubic-bezier(0.16, 1, 0.3, 1) forwards;
     }
 
-    @keyframes floatSlow {
-      0%, 100% { transform: translateY(0px); }
-      50% { transform: translateY(-4px); }
+    @keyframes wobbleSlow {
+      0%, 100% { transform: rotate(-2deg) translateY(0px); }
+      50% { transform: rotate(2deg) translateY(-3px); }
     }
     .float-slow {
-      animation: floatSlow 3.4s ease-in-out infinite;
+      animation: wobbleSlow 3.8s ease-in-out infinite;
+    }
+
+    @keyframes marqueeScroll {
+      0% { transform: translateX(0%); }
+      100% { transform: translateX(-50%); }
+    }
+    .marquee-track {
+      display: flex;
+      width: max-content;
+      animation: marqueeScroll 22s linear infinite;
     }
 
     @keyframes scoreFloat {
-      0% { opacity: 1; transform: translateY(0) scale(0.9); }
-      100% { opacity: 0; transform: translateY(-28px) scale(1.15); }
+      0% { opacity: 1; transform: translateY(0) scale(0.85) rotate(-4deg); }
+      100% { opacity: 0; transform: translateY(-32px) scale(1.25) rotate(4deg); }
     }
     .score-float {
-      animation: scoreFloat 0.65s ease-out forwards;
+      animation: scoreFloat 0.65s cubic-bezier(0.22, 1, 0.36, 1) forwards;
     }
 
     .word-fit {
@@ -150,173 +242,185 @@
   </style>
 </head>
 
-<body class="h-full bg-white dark:bg-nyt-darkBg text-gray-900 dark:text-gray-100 font-sans flex flex-col justify-between transition-colors duration-300 overflow-x-hidden">
+<body class="h-full text-paper-ink dark:text-paper-darkInk font-sans flex flex-col justify-between transition-colors duration-300 overflow-x-hidden">
 
-  <!-- Toast Notifiche Fluttuante -->
-  <div id="toast" role="status" aria-live="polite" aria-atomic="true" class="fixed top-14 left-1/2 -translate-x-1/2 z-50 pointer-events-none transition-all duration-300 opacity-0 -translate-y-3 bg-black/95 dark:bg-white/95 text-white dark:text-black text-xs sm:text-sm font-bold px-4 py-2.5 rounded-xl shadow-xl text-center max-w-[85%]">
+  <!-- Toast Notifiche Fluttuante Stile Timbro -->
+  <div id="toast" role="status" aria-live="polite" aria-atomic="true" class="fixed top-14 left-1/2 -translate-x-1/2 z-50 pointer-events-none transition-all duration-300 opacity-0 -translate-y-3 bg-paper-ink dark:bg-paper-surface text-paper-surface dark:text-paper-ink border-2 border-paper-ink dark:border-paper-darkMuted text-xs sm:text-sm font-bold px-4 py-2 rounded-xl shadow-[4px_4px_0px_rgba(0,0,0,0.3)] text-center max-w-[88%]">
     Notifica
   </div>
 
   <!-- ===================================================================== -->
-  <!-- 1. SCHERMATA INIZIALE MINIMALE (SENZA BARRA SUPERIORE)                 -->
+  <!-- 1. SCHERMATA INIZIALE MINIMALE EDITORIALE (SENZA BARRA SUPERIORE)      -->
   <!-- ===================================================================== -->
   <section id="home-screen" class="flex-1 max-w-md w-full mx-auto px-5 py-6 flex flex-col justify-between view-enter">
-    <!-- Controlli discreti in alto a destra (Audio + Tema) -->
+    <!-- Top-bar discreta: Etichetta stampa + Controlli Audio/Tema -->
     <div class="flex items-center justify-between">
-      <span class="text-[11px] font-bold uppercase tracking-[0.2em] text-gray-400 dark:text-gray-500">
-        Edizione Quotidiana
-      </span>
-      <div class="flex items-center gap-1.5">
-        <button id="home-btn-sound" type="button" aria-label="Attiva o disattiva effetti sonori" title="Suoni" class="w-9 h-9 rounded-full border border-nyt-border dark:border-nyt-borderDark flex items-center justify-center text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-nyt-cardDark transition active:scale-90">
+      <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-paper-ink/25 dark:border-paper-darkInk/20 bg-paper-surface/80 dark:bg-paper-darkSurface/80 text-[11px] font-bold tracking-wider uppercase">
+        <span class="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span>
+        <span>Edizione #2026</span>
+      </div>
+
+      <div class="flex items-center gap-2">
+        <button id="home-btn-sound" type="button" aria-label="Attiva o disattiva effetti sonori" title="Suoni" class="tactile-btn w-10 h-10 rounded-xl bg-paper-surface dark:bg-paper-darkSurface flex items-center justify-center text-paper-ink dark:text-paper-darkInk">
           <i class="fa-solid fa-volume-high text-sm" data-sound-icon></i>
         </button>
-        <button id="home-btn-theme" type="button" aria-label="Cambia tema chiaro o scuro" title="Tema" class="w-9 h-9 rounded-full border border-nyt-border dark:border-nyt-borderDark flex items-center justify-center text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-nyt-cardDark transition active:scale-90">
+        <button id="home-btn-theme" type="button" aria-label="Cambia tema chiaro o scuro" title="Tema" class="tactile-btn w-10 h-10 rounded-xl bg-paper-surface dark:bg-paper-darkSurface flex items-center justify-center text-paper-ink dark:text-paper-darkInk">
           <i class="fa-solid fa-moon dark:hidden text-sm"></i>
-          <i class="fa-solid fa-sun hidden dark:inline text-sm text-yellow-400"></i>
+          <i class="fa-solid fa-sun hidden dark:inline text-sm text-amber-400"></i>
         </button>
       </div>
     </div>
 
-    <!-- Titolo Principale & Sottotitolo -->
-    <div class="my-auto py-4 space-y-7">
-      <div class="text-center space-y-2">
-        <div class="inline-flex items-center gap-1.5 mb-1 float-slow">
-          <span class="w-2.5 h-2.5 rounded-full bg-nyt-yellow"></span>
-          <span class="w-2.5 h-2.5 rounded-full bg-nyt-green"></span>
-          <span class="w-2.5 h-2.5 rounded-full bg-nyt-blue"></span>
-          <span class="w-2.5 h-2.5 rounded-full bg-nyt-purple"></span>
-          <span class="w-2.5 h-2.5 rounded-full bg-orange-500"></span>
+    <!-- Testata Tipografica + Scelta Giochi -->
+    <div class="my-auto py-4 space-y-6">
+      <div class="text-center space-y-2.5">
+        <!-- Timbro decorativo rotante -->
+        <div class="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-[#F6C945] text-[#161412] border-2 border-[#161412] text-[11px] font-bold uppercase tracking-widest shadow-[2px_2px_0px_#161412] float-slow">
+          <i class="fa-solid fa-feather-pointed text-[10px]"></i>
+          <span>Enigmistica Italiana</span>
         </div>
-        <h1 class="text-3xl sm:text-4xl font-black tracking-[0.18em] uppercase text-gray-900 dark:text-white">
-          CONNESSIONI
+
+        <h1 class="font-serif font-black text-4xl sm:text-5xl tracking-tight text-paper-ink dark:text-paper-darkInk leading-none">
+          Connessioni
         </h1>
-        <p class="text-xs sm:text-sm text-gray-500 dark:text-gray-400 font-medium">
-          Scegli la tua sfida linguistica di oggi
+
+        <p class="text-xs sm:text-sm text-paper-muted dark:text-paper-darkMuted max-w-[280px] mx-auto leading-relaxed">
+          Allena l'intuito tra associazioni nascoste e sfide contro il tempo.
         </p>
       </div>
 
       <!-- Cards Scelta Modalità -->
-      <div class="space-y-3.5">
+      <div class="space-y-4">
         <!-- MODALITÀ 1: LEGAMI -->
-        <button id="btn-select-legami" type="button" class="group w-full text-left p-4 sm:p-5 rounded-2xl border-2 border-nyt-border dark:border-nyt-borderDark bg-white dark:bg-nyt-cardDark/70 hover:border-emerald-500 dark:hover:border-emerald-400 shadow-sm hover:shadow-lg transition-all duration-200 active:scale-[0.98] relative overflow-hidden">
+        <button id="btn-select-legami" type="button" class="tactile-box group w-full text-left p-4 sm:p-5 rounded-2xl bg-paper-surface dark:bg-paper-darkSurface hover:-translate-y-0.5 active:translate-x-[2px] active:translate-y-[2px] relative overflow-hidden">
           <div class="flex items-center justify-between gap-3">
             <div class="flex items-center gap-3.5">
-              <!-- Icona Logo Minimal Legami -->
-              <div class="w-12 h-12 rounded-xl bg-emerald-500/10 dark:bg-emerald-500/20 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
-                <svg viewBox="0 0 40 40" class="w-7 h-7" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <rect x="5" y="5" width="12" height="12" rx="3.5" fill="#F9DF6D"/>
-                  <rect x="23" y="5" width="12" height="12" rx="3.5" fill="#A0C35A"/>
-                  <rect x="5" y="23" width="12" height="12" rx="3.5" fill="#6F8AA6"/>
-                  <rect x="23" y="23" width="12" height="12" rx="3.5" fill="#BA81C5"/>
-                  <path d="M17 11H23M11 17V23M29 17V23M17 29H23" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" class="text-gray-700 dark:text-gray-200"/>
+              <!-- Emblema Minimal Legami -->
+              <div class="w-13 h-13 w-12 h-12 rounded-xl border-2 border-[#161412] dark:border-[#524B42] bg-[#F6C945] flex items-center justify-center shrink-0 group-hover:-rotate-3 transition-transform">
+                <svg viewBox="0 0 36 36" class="w-7 h-7" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <rect x="4" y="4" width="11" height="11" rx="2.5" fill="#161412"/>
+                  <rect x="21" y="4" width="11" height="11" rx="2.5" fill="#FFFDF9" stroke="#161412" stroke-width="2"/>
+                  <rect x="4" y="21" width="11" height="11" rx="2.5" fill="#FFFDF9" stroke="#161412" stroke-width="2"/>
+                  <rect x="21" y="21" width="11" height="11" rx="2.5" fill="#161412"/>
+                  <path d="M15 9.5H21M9.5 15V21M26.5 15V21M15 26.5H21" stroke="#161412" stroke-width="2.2"/>
                 </svg>
               </div>
               <div>
                 <div class="flex items-center gap-2">
-                  <span class="text-lg font-black tracking-wider uppercase text-gray-900 dark:text-white">LEGAMI</span>
-                  <span id="home-legami-streak" class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-orange-100 dark:bg-orange-950/60 text-orange-600 dark:text-orange-400">
-                    <i class="fa-solid fa-fire text-[9px]"></i> <span id="home-streak-val">0</span>
+                  <span class="font-serif font-black text-xl tracking-tight text-paper-ink dark:text-paper-darkInk">Legami</span>
+                  <span id="home-legami-streak" class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md border border-[#161412] dark:border-orange-500/50 bg-[#FFE8D6] dark:bg-orange-950/60 text-[#9C3D0C] dark:text-orange-300 text-[10px] font-bold">
+                    <i class="fa-solid fa-fire text-[9px] text-orange-600"></i> <span id="home-streak-val">0</span> gg
                   </span>
                 </div>
-                <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5 leading-snug">
-                  Trova i 4 gruppi di 4 parole nascoste • Sfida quotidiana
+                <p class="text-xs text-paper-muted dark:text-paper-darkMuted mt-0.5 leading-snug">
+                  Quattro quartetti di parole da raggruppare • Schema del giorno
                 </p>
               </div>
             </div>
-            <i class="fa-solid fa-arrow-right text-gray-400 group-hover:text-emerald-500 group-hover:translate-x-1 transition-all"></i>
+            <div class="w-8 h-8 rounded-full border-2 border-[#161412] dark:border-[#524B42] flex items-center justify-center group-hover:bg-[#161412] group-hover:text-white dark:group-hover:bg-white dark:group-hover:text-black transition-colors shrink-0">
+              <i class="fa-solid fa-arrow-right text-xs"></i>
+            </div>
           </div>
         </button>
 
-        <!-- MODALITÀ 2: INTRUSO (IN ARANCIONE) -->
-        <button id="btn-select-intruso" type="button" class="group w-full text-left p-4 sm:p-5 rounded-2xl border-2 border-orange-300/80 dark:border-orange-700/60 bg-gradient-to-br from-orange-50/90 to-amber-50/60 dark:from-orange-950/30 dark:to-nyt-cardDark/80 hover:border-orange-500 dark:hover:border-orange-400 shadow-sm hover:shadow-lg transition-all duration-200 active:scale-[0.98] relative overflow-hidden">
+        <!-- MODALITÀ 2: INTRUSO (TEMA ARANCIONE VIVACE) -->
+        <button id="btn-select-intruso" type="button" class="tactile-box group w-full text-left p-4 sm:p-5 rounded-2xl bg-[#FF6B2C] text-white hover:-translate-y-0.5 active:translate-x-[2px] active:translate-y-[2px] relative overflow-hidden">
           <div class="flex items-center justify-between gap-3">
             <div class="flex items-center gap-3.5">
-              <!-- Icona Logo Minimal Intruso (Arancione) -->
-              <div class="w-12 h-12 rounded-xl bg-orange-500 text-white flex items-center justify-center shrink-0 shadow-sm group-hover:scale-105 group-hover:rotate-3 transition-transform">
-                <svg viewBox="0 0 40 40" class="w-7 h-7" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <circle cx="13" cy="13" r="4" fill="white" fill-opacity="0.45"/>
-                  <circle cx="27" cy="13" r="4" fill="white" fill-opacity="0.45"/>
-                  <circle cx="13" cy="27" r="4" fill="white" fill-opacity="0.45"/>
-                  <circle cx="27" cy="27" r="5.5" fill="white"/>
-                  <path d="M27 24.5V27.2M27 29.5H27.01" stroke="#F97316" stroke-width="2.2" stroke-linecap="round"/>
+              <!-- Emblema Minimal Intruso -->
+              <div class="w-12 h-12 rounded-xl border-2 border-[#161412] bg-[#161412] text-[#FF6B2C] flex items-center justify-center shrink-0 group-hover:rotate-6 transition-transform">
+                <svg viewBox="0 0 36 36" class="w-7 h-7" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <circle cx="11.5" cy="11.5" r="3.5" fill="#F6F1E7" fill-opacity="0.45"/>
+                  <circle cx="24.5" cy="11.5" r="3.5" fill="#F6F1E7" fill-opacity="0.45"/>
+                  <circle cx="11.5" cy="24.5" r="3.5" fill="#F6F1E7" fill-opacity="0.45"/>
+                  <circle cx="24.5" cy="24.5" r="5.2" fill="#FF6B2C"/>
+                  <path d="M24.5 22V24.8M24.5 27H24.51" stroke="#161412" stroke-width="2.2" stroke-linecap="round"/>
                 </svg>
               </div>
               <div>
                 <div class="flex items-center gap-2">
-                  <span class="text-lg font-black tracking-wider uppercase text-orange-600 dark:text-orange-400">INTRUSO</span>
-                  <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-orange-500 text-white">
+                  <span class="font-serif font-black text-xl tracking-tight text-white">Intruso</span>
+                  <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md border border-[#161412] bg-[#161412] text-[#F6C945] text-[10px] font-mono font-bold">
                     <i class="fa-solid fa-bolt text-[9px]"></i> 60s
                   </span>
                 </div>
-                <p class="text-xs text-gray-600 dark:text-gray-300 mt-0.5 leading-snug">
-                  4 parole unite + 1 estranea: scova più intrusi di fila!
+                <p class="text-xs text-white/90 mt-0.5 leading-snug">
+                  Cinque parole sul tavolo, una non c'entra: scovala al volo!
                 </p>
               </div>
             </div>
-            <i class="fa-solid fa-arrow-right text-orange-400 group-hover:text-orange-600 group-hover:translate-x-1 transition-all"></i>
+            <div class="w-8 h-8 rounded-full border-2 border-[#161412] bg-white text-[#161412] flex items-center justify-center group-hover:scale-110 transition-transform shrink-0">
+              <i class="fa-solid fa-play text-xs ml-0.5"></i>
+            </div>
           </div>
         </button>
       </div>
     </div>
 
-    <!-- Footer Minimale Home -->
-    <div class="text-center text-[11px] text-gray-400 dark:text-gray-500 flex items-center justify-center gap-2">
-      <span>Record Intruso: <strong id="home-intruso-best" class="text-orange-500">0</strong></span>
-      <span>•</span>
-      <span>Stagione dal 19/11/2026</span>
+    <!-- Nastro Scorrevole Editoriale in Basso -->
+    <div class="space-y-2.5">
+      <div class="overflow-hidden py-1.5 border-y border-paper-ink/20 dark:border-paper-darkInk/15 text-[11px] font-mono uppercase tracking-wider text-paper-muted dark:text-paper-darkMuted">
+        <div class="marquee-track gap-6">
+          <span>★ 335 CATEGORIE ITALIANE</span>
+          <span>•</span>
+          <span>RECORD INTRUSO: <strong id="home-intruso-best" class="text-orange-600 dark:text-orange-400">0</strong></span>
+          <span>•</span>
+          <span>NUOVO SCHEMA OGNI MEZZANOTTE</span>
+          <span>•</span>
+          <span>★ 335 CATEGORIE ITALIANE</span>
+          <span>•</span>
+          <span>RECORD INTRUSO: <strong class="text-orange-600 dark:text-orange-400" data-sync-intruso-best>0</strong></span>
+          <span>•</span>
+          <span>NUOVO SCHEMA OGNI MEZZANOTTE</span>
+        </div>
+      </div>
     </div>
   </section>
 
   <!-- ===================================================================== -->
   <!-- 2. HEADER DI GIOCO (VISIBILE SOLO DENTRO LEGAMI O INTRUSO)             -->
   <!-- ===================================================================== -->
-  <header id="game-header" class="hidden border-b border-nyt-border dark:border-nyt-borderDark px-2 sm:px-4 py-2 max-w-xl w-full mx-auto flex items-center justify-between gap-1">
+  <header id="game-header" class="hidden border-b-2 border-[#161412] dark:border-[#3A352F] bg-paper-surface/90 dark:bg-paper-darkSurface/90 backdrop-blur-md px-2.5 sm:px-4 py-2 max-w-xl w-full mx-auto flex items-center justify-between gap-1">
     <!-- Pulsanti Sinistra -->
-    <div class="flex items-center gap-0.5 sm:gap-1">
-      <button id="btn-back-home" type="button" aria-label="Torna alla schermata iniziale" title="Menu Giochi" class="p-2 text-gray-600 dark:text-gray-300 hover:text-black dark:hover:text-white transition active:scale-90">
-        <i class="fa-solid fa-house text-base" aria-hidden="true"></i>
+    <div class="flex items-center gap-1">
+      <button id="btn-back-home" type="button" aria-label="Torna alla schermata iniziale" title="Menu Giochi" class="w-9 h-9 rounded-lg border border-paper-ink/20 dark:border-paper-darkInk/20 flex items-center justify-center text-paper-ink dark:text-paper-darkInk hover:bg-black/5 dark:hover:bg-white/10 transition active:scale-90">
+        <i class="fa-solid fa-house text-sm" aria-hidden="true"></i>
       </button>
-      <button id="btn-how-to" type="button" aria-label="Regole del gioco" class="p-2 text-gray-600 dark:text-gray-300 hover:text-black dark:hover:text-white transition" title="Come giocare">
-        <i class="fa-regular fa-circle-question text-lg" aria-hidden="true"></i>
+      <button id="btn-how-to" type="button" aria-label="Regole del gioco" title="Come giocare" class="w-9 h-9 rounded-lg border border-paper-ink/20 dark:border-paper-darkInk/20 flex items-center justify-center text-paper-ink dark:text-paper-darkInk hover:bg-black/5 dark:hover:bg-white/10 transition active:scale-90">
+        <i class="fa-regular fa-circle-question text-base" aria-hidden="true"></i>
       </button>
-      <button id="btn-archive" type="button" aria-label="Calendario mensile e archivio" class="p-2 text-gray-600 dark:text-gray-300 hover:text-black dark:hover:text-white transition" title="Calendario Giornate">
-        <i class="fa-regular fa-calendar-days text-lg" aria-hidden="true"></i>
+      <button id="btn-archive" type="button" aria-label="Calendario mensile" title="Calendario Giornate" class="w-9 h-9 rounded-lg border border-paper-ink/20 dark:border-paper-darkInk/20 flex items-center justify-center text-paper-ink dark:text-paper-darkInk hover:bg-black/5 dark:hover:bg-white/10 transition active:scale-90">
+        <i class="fa-regular fa-calendar-days text-base" aria-hidden="true"></i>
       </button>
-      <button id="btn-stats" type="button" aria-label="Statistiche e confronto community" class="p-2 text-gray-600 dark:text-gray-300 hover:text-black dark:hover:text-white transition" title="Statistiche e Community">
-        <i class="fa-solid fa-chart-simple text-lg" aria-hidden="true"></i>
+      <button id="btn-stats" type="button" aria-label="Le tue statistiche" title="Statistiche" class="w-9 h-9 rounded-lg border border-paper-ink/20 dark:border-paper-darkInk/20 flex items-center justify-center text-paper-ink dark:text-paper-darkInk hover:bg-black/5 dark:hover:bg-white/10 transition active:scale-90">
+        <i class="fa-solid fa-chart-simple text-base" aria-hidden="true"></i>
       </button>
     </div>
 
     <!-- Logo Minimal Dinamico (LEGAMI oppure INTRUSO) -->
-    <div class="flex-1 flex items-center justify-center max-w-[175px] sm:max-w-[225px]">
+    <div class="flex-1 flex items-center justify-center">
       <!-- LOGO MINIMAL: LEGAMI -->
       <div id="logo-legami" class="flex items-center justify-center gap-2 select-none">
-        <svg viewBox="0 0 36 36" class="w-6 h-6 sm:w-7 sm:h-7 shrink-0" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <rect x="3" y="3" width="12" height="12" rx="3.5" fill="#F9DF6D"/>
-          <rect x="21" y="3" width="12" height="12" rx="3.5" fill="#A0C35A"/>
-          <rect x="3" y="21" width="12" height="12" rx="3.5" fill="#6F8AA6"/>
-          <rect x="21" y="21" width="12" height="12" rx="3.5" fill="#BA81C5"/>
-          <line x1="15" y1="9" x2="21" y2="9" stroke="#888" stroke-width="2" stroke-linecap="round"/>
-          <line x1="9" y1="15" x2="9" y2="21" stroke="#888" stroke-width="2" stroke-linecap="round"/>
-          <line x1="27" y1="15" x2="27" y2="21" stroke="#888" stroke-width="2" stroke-linecap="round"/>
-          <line x1="15" y1="27" x2="21" y2="27" stroke="#888" stroke-width="2" stroke-linecap="round"/>
-        </svg>
-        <span class="font-sans font-black tracking-[0.2em] text-lg sm:text-xl text-gray-900 dark:text-white">
-          LEGAMI
+        <div class="w-7 h-7 rounded-lg border-2 border-[#161412] bg-[#F6C945] flex items-center justify-center shadow-[2px_2px_0px_#161412]">
+          <svg viewBox="0 0 24 24" class="w-4 h-4" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect x="3" y="3" width="7" height="7" rx="1.5" fill="#161412"/>
+            <rect x="14" y="3" width="7" height="7" rx="1.5" stroke="#161412" stroke-width="2"/>
+            <rect x="3" y="14" width="7" height="7" rx="1.5" stroke="#161412" stroke-width="2"/>
+            <rect x="14" y="14" width="7" height="7" rx="1.5" fill="#161412"/>
+          </svg>
+        </div>
+        <span class="font-serif font-black text-xl sm:text-2xl tracking-tight text-paper-ink dark:text-paper-darkInk">
+          Legami
         </span>
       </div>
 
       <!-- LOGO MINIMAL: INTRUSO (ARANCIONE) -->
       <div id="logo-intruso" class="hidden flex items-center justify-center gap-2 select-none">
-        <svg viewBox="0 0 36 36" class="w-6 h-6 sm:w-7 sm:h-7 shrink-0" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <rect x="2" y="2" width="32" height="32" rx="9" fill="#F97316"/>
-          <circle cx="12" cy="12" r="3.2" fill="white" fill-opacity="0.45"/>
-          <circle cx="24" cy="12" r="3.2" fill="white" fill-opacity="0.45"/>
-          <circle cx="12" cy="24" r="3.2" fill="white" fill-opacity="0.45"/>
-          <circle cx="24" cy="24" r="4.6" fill="white"/>
-        </svg>
-        <span class="font-sans font-black tracking-[0.2em] text-lg sm:text-xl text-orange-600 dark:text-orange-400">
-          INTRUSO
+        <div class="w-7 h-7 rounded-lg border-2 border-[#161412] bg-[#FF6B2C] flex items-center justify-center shadow-[2px_2px_0px_#161412]">
+          <i class="fa-solid fa-bolt text-xs text-white"></i>
+        </div>
+        <span class="font-serif font-black text-xl sm:text-2xl tracking-tight text-[#FF6B2C]">
+          Intruso
         </span>
       </div>
     </div>
@@ -324,26 +428,26 @@
     <!-- Pulsanti Destra -->
     <div class="flex items-center gap-1">
       <!-- Streak Badge (visibile in Legami) -->
-      <button id="header-streak-badge" type="button" aria-label="Serie di vittorie consecutive" title="Serie giornaliera (Streak)" class="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-extrabold border border-gray-300 dark:border-gray-700 bg-gray-100 dark:bg-nyt-cardDark text-gray-500 dark:text-gray-400 transition">
+      <button id="header-streak-badge" type="button" aria-label="Serie di vittorie consecutive" title="Serie giornaliera (Streak)" class="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-mono font-bold border-2 border-[#161412] dark:border-[#524B42] bg-paper-bg dark:bg-nyt-cardDark text-paper-muted transition">
         <i id="header-streak-flame" class="fa-solid fa-fire text-gray-400" aria-hidden="true"></i>
         <span id="header-streak-count">0</span>
       </button>
 
       <!-- Record Badge (visibile in Intruso) -->
-      <div id="header-intruso-badge" class="hidden inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-extrabold border border-orange-300 dark:border-orange-700 bg-orange-50 dark:bg-orange-950/50 text-orange-600 dark:text-orange-400" title="Miglior punteggio Intruso">
+      <div id="header-intruso-badge" class="hidden inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-mono font-bold border-2 border-[#161412] bg-[#FF6B2C] text-white" title="Miglior punteggio Intruso">
         <i class="fa-solid fa-trophy text-[10px]" aria-hidden="true"></i>
         <span id="header-intruso-best">0</span>
       </div>
 
-      <!-- Tasto Mute / Unmute Effetti Sonori -->
-      <button id="btn-sound" type="button" aria-label="Attiva o disattiva audio" class="p-2 text-gray-600 dark:text-gray-300 hover:text-black dark:hover:text-white transition" title="Effetti sonori">
-        <i class="fa-solid fa-volume-high text-base" data-sound-icon aria-hidden="true"></i>
+      <!-- Tasto Mute / Unmute -->
+      <button id="btn-sound" type="button" aria-label="Attiva o disattiva audio" title="Effetti sonori" class="w-9 h-9 rounded-lg border border-paper-ink/20 dark:border-paper-darkInk/20 flex items-center justify-center text-paper-ink dark:text-paper-darkInk hover:bg-black/5 dark:hover:bg-white/10 transition active:scale-90">
+        <i class="fa-solid fa-volume-high text-sm" data-sound-icon aria-hidden="true"></i>
       </button>
 
       <!-- Tasto Tema -->
-      <button id="btn-theme" type="button" aria-label="Cambia tema chiaro o scuro" class="p-2 text-gray-600 dark:text-gray-300 hover:text-black dark:hover:text-white transition" title="Tema chiaro/scuro">
-        <i class="fa-solid fa-moon dark:hidden text-base" aria-hidden="true"></i>
-        <i class="fa-solid fa-sun hidden dark:inline text-base text-yellow-400" aria-hidden="true"></i>
+      <button id="btn-theme" type="button" aria-label="Cambia tema chiaro o scuro" title="Tema chiaro/scuro" class="w-9 h-9 rounded-lg border border-paper-ink/20 dark:border-paper-darkInk/20 flex items-center justify-center text-paper-ink dark:text-paper-darkInk hover:bg-black/5 dark:hover:bg-white/10 transition active:scale-90">
+        <i class="fa-solid fa-moon dark:hidden text-sm" aria-hidden="true"></i>
+        <i class="fa-solid fa-sun hidden dark:inline text-sm text-amber-400" aria-hidden="true"></i>
       </button>
     </div>
   </header>
@@ -351,21 +455,21 @@
   <!-- ===================================================================== -->
   <!-- 3. VIEW MODALITÀ LEGAMI                                               -->
   <!-- ===================================================================== -->
-  <main id="view-legami" class="hidden flex-1 max-w-xl w-full mx-auto px-2 sm:px-4 py-2 sm:py-3 flex flex-col justify-between overflow-y-auto view-enter">
+  <main id="view-legami" class="hidden flex-1 max-w-xl w-full mx-auto px-3 sm:px-4 py-2.5 sm:py-3 flex flex-col justify-between overflow-y-auto view-enter">
     <!-- Barra Info Partita: Data / Enigma, Ritorno ad Oggi e Timer -->
     <div class="text-center space-y-1 mb-2">
       <div class="flex items-center justify-center gap-2 flex-wrap">
-        <span id="puzzle-badge" class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-emerald-100 text-emerald-800 dark:bg-emerald-900/40 dark:text-emerald-300">
-          <i class="fa-solid fa-calendar-check text-[10px]" aria-hidden="true"></i>
+        <span id="puzzle-badge" class="inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full border border-[#161412] dark:border-[#524B42] text-[11px] font-bold bg-[#E3F5E6] text-[#163A1E] dark:bg-emerald-950/70 dark:text-emerald-300">
+          <i class="fa-solid fa-calendar-day text-[10px]" aria-hidden="true"></i>
           <span id="puzzle-number-label">19/11/2026 • Enigma #1</span>
         </span>
-        <button id="btn-back-today" type="button" class="hidden inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-black text-white dark:bg-white dark:text-black hover:opacity-85 transition">
+        <button id="btn-back-today" type="button" class="hidden inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full border border-[#161412] text-[11px] font-bold bg-[#161412] text-white dark:bg-white dark:text-black hover:opacity-85 transition">
           <i class="fa-solid fa-rotate-left text-[9px]" aria-hidden="true"></i> Torna a oggi
         </button>
       </div>
 
-      <div class="text-[11px] font-semibold text-gray-500 tracking-wide flex items-center justify-center gap-2">
-        <span id="game-stopwatch" class="font-mono"><i class="fa-regular fa-clock mr-1" aria-hidden="true"></i>00:00</span>
+      <div class="text-[11px] font-mono font-semibold text-paper-muted dark:text-paper-darkMuted tracking-wide flex items-center justify-center gap-2.5">
+        <span id="game-stopwatch"><i class="fa-regular fa-clock mr-1" aria-hidden="true"></i>00:00</span>
         <span>•</span>
         <span id="countdown-timer">Prossimo tra: --:--:--</span>
       </div>
@@ -373,26 +477,26 @@
 
     <!-- Contenitore Griglia e Categorie Risolte -->
     <div class="my-auto w-full">
-      <div id="solved-categories" class="space-y-2 mb-2 w-full" aria-label="Categorie risolte"></div>
-      <div id="grid-words" role="group" aria-label="Griglia delle parole da abbinare" class="grid grid-cols-4 gap-1.5 sm:gap-2.5 w-full aspect-square max-h-[370px] sm:max-h-[430px]"></div>
+      <div id="solved-categories" class="space-y-2 mb-2.5 w-full" aria-label="Categorie risolte"></div>
+      <div id="grid-words" role="group" aria-label="Griglia delle parole da abbinare" class="grid grid-cols-4 gap-2 sm:gap-2.5 w-full aspect-square max-h-[370px] sm:max-h-[430px]"></div>
     </div>
 
     <!-- Controlli e Indicatore Errori -->
-    <div class="w-full mt-2.5 sm:mt-3 space-y-2.5">
-      <div class="flex items-center justify-center gap-2 text-xs sm:text-sm font-semibold text-gray-600 dark:text-gray-300 select-none">
-        <span id="mistakes-label">Errori disponibili:</span>
+    <div class="w-full mt-3 space-y-2.5">
+      <div class="flex items-center justify-center gap-2.5 text-xs sm:text-sm font-bold text-paper-ink dark:text-paper-darkInk select-none">
+        <span id="mistakes-label">Tentativi rimasti:</span>
         <div id="mistakes-dots" role="status" aria-labelledby="mistakes-label" class="flex gap-1.5 items-center"></div>
       </div>
 
-      <div class="flex items-center justify-center gap-2 sm:gap-3 pb-1">
-        <button id="btn-shuffle" type="button" aria-label="Mescola le parole nella griglia" class="flex-1 max-w-[115px] py-2.5 px-2 rounded-full border border-gray-400 dark:border-nyt-borderDark hover:bg-gray-100 dark:hover:bg-nyt-cardDark text-xs sm:text-sm font-semibold transition active:scale-95">
-          Mescola
+      <div class="flex items-center justify-center gap-2.5 sm:gap-3 pb-1">
+        <button id="btn-shuffle" type="button" aria-label="Mescola le parole nella griglia" class="tactile-btn flex-1 max-w-[118px] py-2.5 px-2 rounded-xl bg-paper-surface dark:bg-paper-darkSurface text-xs sm:text-sm font-bold">
+          <i class="fa-solid fa-shuffle mr-1 text-xs"></i> Mescola
         </button>
-        <button id="btn-deselect" type="button" aria-label="Deseleziona tutte le parole" class="flex-1 max-w-[130px] py-2.5 px-2 rounded-full border border-gray-400 dark:border-nyt-borderDark hover:bg-gray-100 dark:hover:bg-nyt-cardDark text-xs sm:text-sm font-semibold transition active:scale-95 disabled:opacity-40 disabled:pointer-events-none" disabled>
+        <button id="btn-deselect" type="button" aria-label="Deseleziona tutte le parole" class="tactile-btn flex-1 max-w-[132px] py-2.5 px-2 rounded-xl bg-paper-surface dark:bg-paper-darkSurface text-xs sm:text-sm font-bold disabled:opacity-35 disabled:pointer-events-none" disabled>
           Deseleziona
         </button>
-        <button id="btn-submit" type="button" aria-label="Invia la combinazione selezionata" class="flex-1 max-w-[115px] py-2.5 px-2 rounded-full bg-black text-white dark:bg-white dark:text-black hover:opacity-90 text-xs sm:text-sm font-bold transition active:scale-95 disabled:opacity-40 disabled:pointer-events-none" disabled>
-          Invia
+        <button id="btn-submit" type="button" aria-label="Invia la combinazione selezionata" class="tactile-btn flex-1 max-w-[118px] py-2.5 px-2 rounded-xl bg-[#70B77E] text-[#161412] text-xs sm:text-sm font-extrabold uppercase tracking-wider disabled:opacity-35 disabled:pointer-events-none" disabled>
+          Verifica
         </button>
       </div>
     </div>
@@ -402,51 +506,51 @@
   <!-- 4. VIEW MODALITÀ INTRUSO (BLITZ 60 SECONDI IN ARANCIONE)               -->
   <!-- ===================================================================== -->
   <main id="view-intruso" class="hidden flex-1 max-w-md w-full mx-auto px-4 py-3 flex flex-col justify-between overflow-y-auto view-enter">
-    <!-- Barra Superiore Blitz: Tempo + Punteggio + Serie -->
+    <!-- Cruscotto Blitz: Tempo + Serie + Record -->
     <div class="space-y-2">
-      <div class="flex items-center justify-between bg-orange-50 dark:bg-orange-950/30 border border-orange-200 dark:border-orange-800/60 rounded-2xl px-4 py-2.5">
-        <div class="flex items-center gap-2">
-          <div class="w-8 h-8 rounded-full bg-orange-500 text-white flex items-center justify-center font-black text-xs shadow-xs">
+      <div class="tactile-box flex items-center justify-between bg-paper-surface dark:bg-paper-darkSurface rounded-2xl px-4 py-2.5">
+        <div class="flex items-center gap-2.5">
+          <div class="w-9 h-9 rounded-xl border-2 border-[#161412] bg-[#FF6B2C] text-white flex items-center justify-center font-black text-xs">
             <i class="fa-solid fa-stopwatch"></i>
           </div>
           <div>
-            <div class="text-[10px] font-bold uppercase tracking-wider text-orange-700/80 dark:text-orange-300/80">Tempo</div>
-            <div id="intruso-timer-text" class="text-lg font-black font-mono text-orange-600 dark:text-orange-400 leading-none">60s</div>
+            <div class="text-[10px] font-bold uppercase tracking-wider text-paper-muted dark:text-paper-darkMuted">Tempo</div>
+            <div id="intruso-timer-text" class="text-lg font-black font-mono text-[#FF6B2C] leading-none">60s</div>
           </div>
         </div>
 
         <div class="text-center relative">
-          <div class="text-[10px] font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400">Serie</div>
-          <div id="intruso-streak-text" class="text-lg font-black text-gray-900 dark:text-white leading-none">0</div>
+          <div class="text-[10px] font-bold uppercase tracking-wider text-paper-muted dark:text-paper-darkMuted">Serie</div>
+          <div id="intruso-streak-text" class="text-xl font-black font-mono text-paper-ink dark:text-paper-darkInk leading-none">0</div>
           <div id="intruso-float-anchor" class="absolute inset-0 pointer-events-none flex justify-center"></div>
         </div>
 
         <div class="text-right">
-          <div class="text-[10px] font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400">Record</div>
-          <div id="intruso-best-text" class="text-lg font-black text-orange-500 leading-none">0</div>
+          <div class="text-[10px] font-bold uppercase tracking-wider text-paper-muted dark:text-paper-darkMuted">Record</div>
+          <div id="intruso-best-text" class="text-lg font-black font-mono text-[#F6C945] drop-shadow-[0_1px_0_#161412] leading-none">0</div>
         </div>
       </div>
 
       <!-- Barra Progresso 60s -->
-      <div class="w-full h-2 bg-orange-100 dark:bg-gray-800 rounded-full overflow-hidden">
-        <div id="intruso-timer-bar" class="h-full bg-gradient-to-r from-orange-500 to-amber-500 transition-all duration-300 ease-linear" style="width: 100%"></div>
+      <div class="w-full h-3 bg-paper-surface dark:bg-paper-darkSurface border-2 border-[#161412] dark:border-[#524B42] rounded-full overflow-hidden">
+        <div id="intruso-timer-bar" class="h-full bg-[#FF6B2C] transition-all duration-300 ease-linear" style="width: 100%"></div>
       </div>
     </div>
 
     <!-- Area Centrale: Schermata Pronti / Round Attivo / Fine Tempo -->
     <div id="intruso-stage" class="my-auto py-3">
       <!-- Stato 1: Schermata Avvio Rapido -->
-      <div id="intruso-start-card" class="text-center space-y-5 p-6 rounded-3xl border-2 border-orange-200 dark:border-orange-800/60 bg-orange-50/50 dark:bg-nyt-cardDark/60">
-        <div class="w-16 h-16 rounded-2xl bg-orange-500 text-white flex items-center justify-center mx-auto text-3xl shadow-lg float-slow">
+      <div id="intruso-start-card" class="tactile-box text-center space-y-5 p-6 rounded-3xl bg-paper-surface dark:bg-paper-darkSurface">
+        <div class="w-16 h-16 rounded-2xl border-2 border-[#161412] bg-[#FF6B2C] text-white flex items-center justify-center mx-auto text-3xl shadow-[4px_4px_0px_#161412] float-slow">
           <i class="fa-solid fa-user-secret"></i>
         </div>
         <div class="space-y-1.5">
-          <h2 class="text-2xl font-black uppercase tracking-wider text-orange-600 dark:text-orange-400">Scova l'Intruso</h2>
-          <p class="text-xs sm:text-sm text-gray-600 dark:text-gray-300 leading-relaxed">
-            Ti mostreremo <strong>5 parole</strong>: 4 appartengono alla stessa famiglia, <strong>1 è un intruso</strong>. Hai <strong>60 secondi</strong> per trovarne il più possibile di fila!
+          <h2 class="font-serif text-2xl sm:text-3xl font-black text-paper-ink dark:text-paper-darkInk">Scova l'Intruso</h2>
+          <p class="text-xs sm:text-sm text-paper-muted dark:text-paper-darkMuted leading-relaxed">
+            Cinque parole sullo schermo: <strong>quattro</strong> condividono un legame, <strong>una</strong> è fuori posto. Hai <strong>60 secondi</strong> per trovarne il più possibile!
           </p>
         </div>
-        <button id="btn-start-intruso" type="button" class="w-full py-3.5 px-6 rounded-2xl bg-orange-500 hover:bg-orange-600 active:scale-95 text-white font-black uppercase tracking-wider text-sm shadow-lg shadow-orange-500/25 transition">
+        <button id="btn-start-intruso" type="button" class="tactile-btn w-full py-3.5 px-6 rounded-2xl bg-[#FF6B2C] text-white font-extrabold uppercase tracking-wider text-sm">
           Inizia Sfida Blitz
         </button>
       </div>
@@ -454,64 +558,64 @@
       <!-- Stato 2: Round di Gioco (5 Parole) -->
       <div id="intruso-play-card" class="hidden space-y-3">
         <div class="text-center">
-          <span id="intruso-hint-pill" class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-bold bg-orange-100 dark:bg-orange-950/60 text-orange-700 dark:text-orange-300">
-            <i class="fa-solid fa-magnifying-glass text-[10px]"></i>
-            <span>Tocca la parola che non c'entra</span>
+          <span id="intruso-hint-pill" class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full border border-[#161412] dark:border-[#524B42] text-[11px] font-bold bg-[#FFE8D6] dark:bg-orange-950/60 text-[#9C3D0C] dark:text-orange-300">
+            <i class="fa-solid fa-crosshairs text-[10px]"></i>
+            <span>Tocca la parola estranea</span>
           </span>
         </div>
 
         <div id="intruso-words-list" class="space-y-2.5"></div>
 
-        <div id="intruso-feedback-banner" class="min-h-[38px] flex items-center justify-center text-center text-xs font-bold text-gray-500 dark:text-gray-400 px-2">
-          4 parole condividono un legame nascosto
+        <div id="intruso-feedback-banner" class="min-h-[38px] flex items-center justify-center text-center text-xs font-bold text-paper-muted dark:text-paper-darkMuted px-2">
+          4 parole appartengono alla stessa famiglia
         </div>
       </div>
 
       <!-- Stato 3: Riepilogo Fine Partita 60s -->
-      <div id="intruso-gameover-card" class="hidden text-center space-y-4 p-6 rounded-3xl border-2 border-orange-300 dark:border-orange-700 bg-white dark:bg-nyt-cardDark shadow-xl category-reveal">
-        <div class="w-14 h-14 rounded-full bg-orange-100 dark:bg-orange-900/40 text-orange-600 dark:text-orange-400 flex items-center justify-center mx-auto text-2xl">
+      <div id="intruso-gameover-card" class="hidden tactile-box text-center space-y-4 p-6 rounded-3xl bg-paper-surface dark:bg-paper-darkSurface category-reveal">
+        <div class="w-14 h-14 rounded-2xl border-2 border-[#161412] bg-[#F6C945] text-[#161412] flex items-center justify-center mx-auto text-2xl shadow-[3px_3px_0px_#161412]">
           <i class="fa-solid fa-bolt"></i>
         </div>
         <div>
-          <h3 class="text-xl font-black uppercase tracking-wider text-gray-900 dark:text-white">Tempo Scaduto!</h3>
-          <p id="intruso-final-subtitle" class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">Ottimi riflessi linguistici!</p>
+          <h3 class="font-serif text-2xl font-black text-paper-ink dark:text-paper-darkInk">Tempo Scaduto!</h3>
+          <p id="intruso-final-subtitle" class="text-xs text-paper-muted dark:text-paper-darkMuted mt-0.5">Ottimi riflessi linguistici!</p>
         </div>
 
-        <div class="grid grid-cols-2 gap-3 py-2">
-          <div class="p-3 rounded-2xl bg-orange-50 dark:bg-nyt-darkBg border border-orange-200 dark:border-orange-800/50">
-            <div id="intruso-final-score" class="text-3xl font-black text-orange-600 dark:text-orange-400">0</div>
-            <div class="text-[11px] font-bold uppercase text-gray-500 mt-0.5">Intrusi scovati</div>
+        <div class="grid grid-cols-2 gap-3 py-1">
+          <div class="p-3 rounded-2xl border-2 border-[#161412] dark:border-[#524B42] bg-[#FFE8D6] dark:bg-orange-950/40">
+            <div id="intruso-final-score" class="text-3xl font-black font-mono text-[#FF6B2C]">0</div>
+            <div class="text-[11px] font-bold uppercase text-paper-ink/70 dark:text-paper-darkInk/70 mt-0.5">Intrusi scovati</div>
           </div>
-          <div class="p-3 rounded-2xl bg-gray-50 dark:bg-nyt-darkBg border border-nyt-border dark:border-nyt-borderDark">
-            <div id="intruso-final-best" class="text-3xl font-black text-gray-900 dark:text-white">0</div>
-            <div class="text-[11px] font-bold uppercase text-gray-500 mt-0.5">Record personale</div>
+          <div class="p-3 rounded-2xl border-2 border-[#161412] dark:border-[#524B42] bg-paper-bg dark:bg-paper-darkBg">
+            <div id="intruso-final-best" class="text-3xl font-black font-mono text-paper-ink dark:text-paper-darkInk">0</div>
+            <div class="text-[11px] font-bold uppercase text-paper-muted dark:text-paper-darkMuted mt-0.5">Record personale</div>
           </div>
         </div>
 
         <div class="flex gap-2.5 pt-1">
-          <button id="btn-share-intruso" type="button" class="flex-1 py-3 px-3 rounded-xl border border-orange-400 text-orange-600 dark:text-orange-400 hover:bg-orange-50 dark:hover:bg-orange-950/40 font-extrabold text-xs uppercase tracking-wider transition active:scale-95">
+          <button id="btn-share-intruso" type="button" class="tactile-btn flex-1 py-3 px-3 rounded-xl bg-paper-bg dark:bg-paper-darkBg text-paper-ink dark:text-paper-darkInk font-extrabold text-xs uppercase tracking-wider">
             Condividi
           </button>
-          <button id="btn-restart-intruso" type="button" class="flex-1 py-3 px-3 rounded-xl bg-orange-500 hover:bg-orange-600 text-white font-extrabold text-xs uppercase tracking-wider shadow transition active:scale-95">
+          <button id="btn-restart-intruso" type="button" class="tactile-btn flex-1 py-3 px-3 rounded-xl bg-[#FF6B2C] text-white font-extrabold text-xs uppercase tracking-wider">
             Rigioca
           </button>
         </div>
       </div>
     </div>
 
-    <!-- Suggerimento Rapido in Basso -->
-    <div class="text-center text-[11px] text-gray-400 dark:text-gray-500 pb-1">
-      <span class="text-emerald-600 dark:text-emerald-400 font-bold">+1</span> per ogni intruso trovato • <span class="text-rose-500 font-bold">-3s</span> in caso di errore
+    <!-- Legenda Punteggio Blitz -->
+    <div class="text-center text-[11px] font-mono text-paper-muted dark:text-paper-darkMuted pb-1">
+      <span class="text-emerald-700 dark:text-emerald-400 font-bold">+1 pt</span> intruso trovato • <span class="text-rose-600 dark:text-rose-400 font-bold">-3s</span> errore
     </div>
   </main>
 
   <!-- Footer Minimale di Gioco (nascosto nella Home) -->
-  <footer id="game-footer" class="hidden py-2 border-t border-nyt-border dark:border-nyt-borderDark text-center text-xs text-gray-500 flex items-center justify-center gap-3">
-    <button id="btn-footer-switch" type="button" class="font-semibold text-gray-700 dark:text-gray-300 hover:underline">
+  <footer id="game-footer" class="hidden py-2 border-t-2 border-[#161412] dark:border-[#3A352F] bg-paper-surface/80 dark:bg-paper-darkSurface/80 text-center text-xs text-paper-muted dark:text-paper-darkMuted flex items-center justify-center gap-3">
+    <button id="btn-footer-switch" type="button" class="font-bold text-paper-ink dark:text-paper-darkInk hover:underline">
       ← Cambia modalità
     </button>
     <span id="footer-sep">•</span>
-    <button id="btn-footer-archive" type="button" class="font-semibold text-gray-700 dark:text-gray-300 hover:underline">
+    <button id="btn-footer-archive" type="button" class="font-bold text-paper-ink dark:text-paper-darkInk hover:underline">
       Calendario mensile →
     </button>
   </footer>
@@ -519,34 +623,34 @@
   <!-- ==================== MODALI ==================== -->
 
   <!-- Modale Calendario Reale Mese per Mese (dal 19/11/2026) -->
-  <div id="modal-archive" role="dialog" aria-modal="true" aria-labelledby="modal-archive-title" class="fixed inset-0 bg-black/60 backdrop-blur-sm hidden flex items-center justify-center p-4 z-50">
-    <div class="bg-white dark:bg-nyt-cardDark border border-nyt-border dark:border-nyt-borderDark rounded-2xl p-5 max-w-md w-full shadow-2xl category-reveal flex flex-col max-h-[90vh]">
+  <div id="modal-archive" role="dialog" aria-modal="true" aria-labelledby="modal-archive-title" class="fixed inset-0 bg-black/60 backdrop-blur-xs hidden flex items-center justify-center p-4 z-50">
+    <div class="tactile-box bg-paper-surface dark:bg-paper-darkSurface rounded-2xl p-5 max-w-md w-full category-reveal flex flex-col max-h-[90vh]">
       <div class="flex justify-between items-start mb-3">
         <div>
           <div class="flex items-center gap-2 flex-wrap">
-            <h3 id="modal-archive-title" class="text-lg font-extrabold uppercase tracking-wider">Calendario Legami</h3>
-            <span class="px-2.5 py-0.5 rounded-full text-[11px] font-extrabold bg-orange-100 text-orange-800 dark:bg-orange-900/40 dark:text-orange-300 inline-flex items-center gap-1">
-              <i class="fa-solid fa-fire text-orange-500" aria-hidden="true"></i>
+            <h3 id="modal-archive-title" class="font-serif text-xl font-black">Calendario Legami</h3>
+            <span class="px-2.5 py-0.5 rounded-md border border-[#161412] text-[11px] font-mono font-bold bg-[#FFE8D6] text-[#9C3D0C] dark:bg-orange-950/60 dark:text-orange-300 inline-flex items-center gap-1">
+              <i class="fa-solid fa-fire text-orange-600" aria-hidden="true"></i>
               <span>Streak: <span id="archive-streak-val">0 gg</span></span>
             </span>
           </div>
-          <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">Naviga mese per mese dal 19/11/2026 e mantieni accesa la tua serie</p>
+          <p class="text-xs text-paper-muted dark:text-paper-darkMuted mt-0.5">Naviga mese per mese dal 19/11/2026 e mantieni accesa la serie</p>
         </div>
-        <button id="btn-close-archive" type="button" aria-label="Chiudi calendario" class="p-1.5 text-gray-500 hover:text-gray-900 dark:hover:text-white">
-          <i class="fa-solid fa-xmark text-lg" aria-hidden="true"></i>
+        <button id="btn-close-archive" type="button" aria-label="Chiudi calendario" class="w-8 h-8 rounded-lg border border-paper-ink/20 dark:border-paper-darkInk/20 flex items-center justify-center text-paper-muted hover:text-paper-ink dark:hover:text-white">
+          <i class="fa-solid fa-xmark text-base" aria-hidden="true"></i>
         </button>
       </div>
 
-      <button id="btn-random-puzzle" type="button" class="w-full py-2.5 px-4 mb-3 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-bold text-xs sm:text-sm shadow flex items-center justify-center gap-2 transition active:scale-98">
+      <button id="btn-random-puzzle" type="button" class="tactile-btn w-full py-2.5 px-4 mb-3 rounded-xl bg-[#F6C945] text-[#161412] font-extrabold text-xs sm:text-sm flex items-center justify-center gap-2">
         <i class="fa-solid fa-shuffle" aria-hidden="true"></i>
         <span>Gioca un Enigma Casuale</span>
       </button>
 
       <div id="archive-grid" class="flex flex-col gap-2.5 overflow-y-auto pr-0.5 py-1 flex-1"></div>
 
-      <div class="mt-3 pt-2.5 border-t border-nyt-border dark:border-nyt-borderDark grid grid-cols-2 sm:flex sm:items-center sm:justify-between text-[11px] text-gray-500 dark:text-gray-400 gap-1.5">
+      <div class="mt-3 pt-2.5 border-t border-paper-ink/15 dark:border-paper-darkInk/15 grid grid-cols-2 sm:flex sm:items-center sm:justify-between text-[11px] text-paper-muted dark:text-paper-darkMuted gap-1.5">
         <span class="flex items-center gap-1"><i class="fa-solid fa-fire text-orange-500" aria-hidden="true"></i> In streak</span>
-        <span class="flex items-center gap-1"><i class="fa-solid fa-circle-check text-emerald-500" aria-hidden="true"></i> Completato</span>
+        <span class="flex items-center gap-1"><i class="fa-solid fa-circle-check text-emerald-600" aria-hidden="true"></i> Completato</span>
         <span class="flex items-center gap-1"><i class="fa-solid fa-circle-xmark text-rose-500" aria-hidden="true"></i> Non risolto</span>
         <span class="flex items-center gap-1"><i class="fa-solid fa-clock text-amber-500" aria-hidden="true"></i> In corso</span>
         <span class="flex items-center gap-1"><i class="fa-regular fa-circle text-gray-400" aria-hidden="true"></i> Da fare</span>
@@ -554,93 +658,93 @@
     </div>
   </div>
 
-  <!-- Modale Statistiche & Confronto Community -->
-  <div id="modal-stats" role="dialog" aria-modal="true" aria-labelledby="modal-stats-title" class="fixed inset-0 bg-black/60 backdrop-blur-sm hidden flex items-center justify-center p-4 z-50">
-    <div class="bg-white dark:bg-nyt-cardDark border border-nyt-border dark:border-nyt-borderDark rounded-2xl p-6 max-w-sm w-full shadow-2xl category-reveal text-center max-h-[90vh] overflow-y-auto">
+  <!-- Modale Le Tue Statistiche (Solo Dati Reali) -->
+  <div id="modal-stats" role="dialog" aria-modal="true" aria-labelledby="modal-stats-title" class="fixed inset-0 bg-black/60 backdrop-blur-xs hidden flex items-center justify-center p-4 z-50">
+    <div class="tactile-box bg-paper-surface dark:bg-paper-darkSurface rounded-2xl p-6 max-w-sm w-full category-reveal text-center max-h-[90vh] overflow-y-auto">
       <div class="flex justify-between items-center mb-3">
-        <h3 id="modal-stats-title" class="text-lg font-bold tracking-wider uppercase mx-auto">Le Tue Statistiche</h3>
-        <button id="btn-close-stats" type="button" aria-label="Chiudi statistiche" class="p-1 text-gray-500 hover:text-gray-900 dark:hover:text-white">
-          <i class="fa-solid fa-xmark text-lg" aria-hidden="true"></i>
+        <h3 id="modal-stats-title" class="font-serif text-xl font-black mx-auto">Le Tue Statistiche</h3>
+        <button id="btn-close-stats" type="button" aria-label="Chiudi statistiche" class="w-8 h-8 rounded-lg border border-paper-ink/20 dark:border-paper-darkInk/20 flex items-center justify-center text-paper-muted hover:text-paper-ink dark:hover:text-white">
+          <i class="fa-solid fa-xmark text-base" aria-hidden="true"></i>
         </button>
       </div>
 
-      <div id="stats-streak-banner" class="mb-3 p-3 rounded-xl border border-orange-200 dark:border-orange-800/60 bg-orange-50/70 dark:bg-orange-950/30 flex items-center justify-between text-left">
+      <div id="stats-streak-banner" class="mb-3 p-3 rounded-xl border-2 border-[#161412] dark:border-[#524B42] bg-[#FFE8D6] dark:bg-orange-950/35 flex items-center justify-between text-left">
         <div class="flex items-center gap-2.5">
-          <div class="w-9 h-9 rounded-full bg-orange-500/15 text-orange-500 flex items-center justify-center text-lg shrink-0">
+          <div class="w-9 h-9 rounded-xl border border-[#161412] bg-[#FF6B2C] text-white flex items-center justify-center text-base shrink-0">
             <i class="fa-solid fa-fire" aria-hidden="true"></i>
           </div>
           <div>
-            <div class="text-xs font-extrabold uppercase tracking-wide">Serie Giornaliera</div>
-            <div id="stats-streak-sub" class="text-[11px] text-gray-500 dark:text-gray-400">Gioca ogni giorno per far crescere la fiamma</div>
+            <div class="text-xs font-extrabold uppercase tracking-wide text-[#161412] dark:text-orange-200">Serie Giornaliera</div>
+            <div id="stats-streak-sub" class="text-[11px] text-[#5C3A24] dark:text-orange-300/80">Gioca ogni giorno per far crescere la fiamma</div>
           </div>
         </div>
         <div class="text-right pl-2 shrink-0">
-          <div id="stats-streak-big" class="text-xl font-black text-orange-500">0 gg</div>
+          <div id="stats-streak-big" class="text-xl font-black font-mono text-[#FF6B2C]">0 gg</div>
         </div>
       </div>
       
       <div class="grid grid-cols-4 gap-2 my-3">
-        <div class="p-1.5">
-          <div id="stat-played" class="text-2xl sm:text-3xl font-bold">0</div>
-          <div class="text-[11px] text-gray-500 dark:text-gray-400 mt-1">Partite</div>
+        <div class="p-2 rounded-xl border border-paper-ink/15 dark:border-paper-darkInk/15 bg-paper-bg dark:bg-paper-darkBg">
+          <div id="stat-played" class="text-2xl font-black font-mono">0</div>
+          <div class="text-[10px] font-bold uppercase text-paper-muted dark:text-paper-darkMuted mt-1">Partite</div>
         </div>
-        <div class="p-1.5">
-          <div id="stat-win-rate" class="text-2xl sm:text-3xl font-bold">0%</div>
-          <div class="text-[11px] text-gray-500 dark:text-gray-400 mt-1">% Vittorie</div>
+        <div class="p-2 rounded-xl border border-paper-ink/15 dark:border-paper-darkInk/15 bg-paper-bg dark:bg-paper-darkBg">
+          <div id="stat-win-rate" class="text-2xl font-black font-mono">0%</div>
+          <div class="text-[10px] font-bold uppercase text-paper-muted dark:text-paper-darkMuted mt-1">Vittorie</div>
         </div>
-        <div class="p-1.5">
-          <div id="stat-streak" class="text-2xl sm:text-3xl font-bold">0</div>
-          <div class="text-[11px] text-gray-500 dark:text-gray-400 mt-1">Streak</div>
+        <div class="p-2 rounded-xl border border-paper-ink/15 dark:border-paper-darkInk/15 bg-paper-bg dark:bg-paper-darkBg">
+          <div id="stat-streak" class="text-2xl font-black font-mono">0</div>
+          <div class="text-[10px] font-bold uppercase text-paper-muted dark:text-paper-darkMuted mt-1">Streak</div>
         </div>
-        <div class="p-1.5">
-          <div id="stat-max-streak" class="text-2xl sm:text-3xl font-bold">0</div>
-          <div class="text-[11px] text-gray-500 dark:text-gray-400 mt-1 leading-tight">Record streak</div>
+        <div class="p-2 rounded-xl border border-paper-ink/15 dark:border-paper-darkInk/15 bg-paper-bg dark:bg-paper-darkBg">
+          <div id="stat-max-streak" class="text-2xl font-black font-mono">0</div>
+          <div class="text-[10px] font-bold uppercase text-paper-muted dark:text-paper-darkMuted mt-1 leading-tight">Record</div>
         </div>
       </div>
 
-      <div class="mt-4 pt-3 border-t border-nyt-border dark:border-nyt-borderDark text-left">
-        <h4 class="text-xs font-extrabold uppercase tracking-wider text-gray-700 dark:text-gray-200 mb-2">
+      <div class="mt-4 pt-3 border-t border-paper-ink/15 dark:border-paper-darkInk/15 text-left">
+        <h4 class="text-xs font-extrabold uppercase tracking-wider text-paper-ink dark:text-paper-darkInk mb-2">
           <i class="fa-solid fa-chart-bar mr-1 text-emerald-600" aria-hidden="true"></i>
           Distribuzione tuoi tentativi
         </h4>
         <div id="stats-personal-bars" class="space-y-1.5 text-xs"></div>
       </div>
 
-      <button id="btn-confirm-stats" type="button" class="mt-5 w-full py-2.5 bg-black text-white dark:bg-white dark:text-black font-bold rounded-xl text-sm">Chiudi</button>
+      <button id="btn-confirm-stats" type="button" class="tactile-btn mt-5 w-full py-2.5 bg-[#161412] text-white dark:bg-paper-darkInk dark:text-paper-darkBg font-extrabold rounded-xl text-sm">Chiudi</button>
     </div>
   </div>
 
   <!-- Modale Come Giocare (Adattiva per Legami e Intruso) -->
-  <div id="modal-help" role="dialog" aria-modal="true" aria-labelledby="modal-help-title" class="fixed inset-0 bg-black/60 backdrop-blur-sm hidden flex items-center justify-center p-4 z-50">
-    <div class="bg-white dark:bg-nyt-cardDark border border-nyt-border dark:border-nyt-borderDark rounded-2xl p-6 max-w-sm w-full shadow-2xl category-reveal">
+  <div id="modal-help" role="dialog" aria-modal="true" aria-labelledby="modal-help-title" class="fixed inset-0 bg-black/60 backdrop-blur-xs hidden flex items-center justify-center p-4 z-50">
+    <div class="tactile-box bg-paper-surface dark:bg-paper-darkSurface rounded-2xl p-6 max-w-sm w-full category-reveal">
       <div class="flex justify-between items-center mb-4">
-        <h3 id="modal-help-title" class="text-xl font-bold font-serif">Regole del Gioco</h3>
-        <button id="btn-close-help" type="button" aria-label="Chiudi regole" class="p-1 text-gray-500 hover:text-gray-900 dark:hover:text-white">
-          <i class="fa-solid fa-xmark text-lg" aria-hidden="true"></i>
+        <h3 id="modal-help-title" class="font-serif text-xl font-black">Regole del Gioco</h3>
+        <button id="btn-close-help" type="button" aria-label="Chiudi regole" class="w-8 h-8 rounded-lg border border-paper-ink/20 dark:border-paper-darkInk/20 flex items-center justify-center text-paper-muted hover:text-paper-ink dark:hover:text-white">
+          <i class="fa-solid fa-xmark text-base" aria-hidden="true"></i>
         </button>
       </div>
 
       <!-- Regole LEGAMI -->
-      <div id="help-content-legami" class="text-xs sm:text-sm text-gray-600 dark:text-gray-300 space-y-2.5">
-        <p>Individua <strong>4 gruppi di 4 parole</strong> accomunate da una relazione linguistica, semantica o idiomatica.</p>
+      <div id="help-content-legami" class="text-xs sm:text-sm text-paper-muted dark:text-paper-darkMuted space-y-2.5">
+        <p class="text-paper-ink dark:text-paper-darkInk">Individua <strong>4 gruppi di 4 parole</strong> accomunate da una relazione linguistica, semantica o idiomatica.</p>
         <ul class="list-disc pl-5 space-y-1.5">
-          <li>Seleziona 4 vocaboli e premi <strong>Invia</strong> (o <kbd class="px-1.5 py-0.5 text-[10px] bg-gray-100 dark:bg-gray-800 rounded border">Invio</kbd> da tastiera).</li>
+          <li>Seleziona 4 vocaboli e premi <strong>Verifica</strong> (o <kbd class="px-1.5 py-0.5 text-[10px] bg-paper-bg dark:bg-paper-darkBg rounded border border-paper-ink/30">Invio</kbd> da tastiera).</li>
           <li>Completa l'enigma quotidiano per far salire la tua <strong>streak</strong> (<i class="fa-solid fa-fire text-orange-500"></i>) e accendere il calendario mensile.</li>
         </ul>
-        <div class="pt-2 border-t border-nyt-border dark:border-nyt-borderDark">
-          <span class="font-bold block mb-1.5 text-xs text-gray-700 dark:text-gray-200">Grado di complessità dei gruppi:</span>
+        <div class="pt-2 border-t border-paper-ink/15 dark:border-paper-darkInk/15">
+          <span class="font-bold block mb-1.5 text-xs text-paper-ink dark:text-paper-darkInk">Livelli di difficoltà dei gruppi:</span>
           <div class="grid grid-cols-2 gap-1.5 text-[11px] font-bold">
-            <span class="p-1.5 rounded bg-nyt-yellow text-gray-900 text-center">Giallo: Immediato</span>
-            <span class="p-1.5 rounded bg-nyt-green text-gray-900 text-center">Verde: Associativo</span>
-            <span class="p-1.5 rounded bg-nyt-blue text-gray-900 text-center">Blu: Lessicale / Colto</span>
-            <span class="p-1.5 rounded bg-nyt-purple text-gray-900 text-center">Viola: Enigmistico</span>
+            <span class="p-1.5 rounded-lg border border-[#161412] bg-nyt-yellow text-[#161412] text-center">Giallo: Immediato</span>
+            <span class="p-1.5 rounded-lg border border-[#161412] bg-nyt-green text-[#161412] text-center">Verde: Associativo</span>
+            <span class="p-1.5 rounded-lg border border-[#161412] bg-nyt-blue text-[#161412] text-center">Blu: Lessicale / Colto</span>
+            <span class="p-1.5 rounded-lg border border-[#161412] bg-nyt-purple text-[#161412] text-center">Viola: Enigmistico</span>
           </div>
         </div>
       </div>
 
       <!-- Regole INTRUSO -->
-      <div id="help-content-intruso" class="hidden text-xs sm:text-sm text-gray-600 dark:text-gray-300 space-y-2.5">
-        <p>Una sfida <strong>Blitz da 60 secondi</strong> ad alta velocità!</p>
+      <div id="help-content-intruso" class="hidden text-xs sm:text-sm text-paper-muted dark:text-paper-darkMuted space-y-2.5">
+        <p class="text-paper-ink dark:text-paper-darkInk">Una sfida <strong>Blitz da 60 secondi</strong> ad alta velocità!</p>
         <ul class="list-disc pl-5 space-y-1.5">
           <li>Ogni round mostra <strong>5 parole</strong>: 4 appartengono alla stessa categoria e <strong>1 è un intruso</strong>.</li>
           <li>Tocca l'intruso per guadagnare <strong>+1 punto</strong> e passare subito al round successivo.</li>
@@ -648,52 +752,55 @@
         </ul>
       </div>
 
-      <button id="btn-confirm-help" type="button" class="mt-5 w-full py-2.5 bg-black text-white dark:bg-white dark:text-black font-bold rounded-xl text-sm">Ho capito</button>
+      <button id="btn-confirm-help" type="button" class="tactile-btn mt-5 w-full py-2.5 bg-[#161412] text-white dark:bg-paper-darkInk dark:text-paper-darkBg font-extrabold rounded-xl text-sm">Inizia a giocare</button>
     </div>
   </div>
 
   <!-- Modale Risultato Finale Legami -->
-  <div id="modal-result" role="dialog" aria-modal="true" aria-labelledby="result-title" class="fixed inset-0 bg-black/70 backdrop-blur-sm hidden flex items-center justify-center p-4 z-50">
-    <div class="bg-white dark:bg-[#1A1A1B] border border-nyt-border dark:border-nyt-borderDark rounded-2xl p-5 sm:p-6 max-w-sm w-full shadow-2xl category-reveal text-center relative max-h-[92vh] overflow-y-auto">
+  <div id="modal-result" role="dialog" aria-modal="true" aria-labelledby="result-title" class="fixed inset-0 bg-black/70 backdrop-blur-xs hidden flex items-center justify-center p-4 z-50">
+    <div class="tactile-box bg-paper-surface dark:bg-paper-darkSurface rounded-2xl p-5 sm:p-6 max-w-sm w-full category-reveal text-center relative max-h-[92vh] overflow-y-auto">
       
-      <button id="btn-close-result" type="button" aria-label="Chiudi riepilogo e leggi le curiosità" class="absolute top-3.5 right-3.5 p-1.5 text-gray-400 hover:text-gray-800 dark:hover:text-white transition">
-        <i class="fa-solid fa-xmark text-xl" aria-hidden="true"></i>
+      <button id="btn-close-result" type="button" aria-label="Chiudi riepilogo e leggi le curiosità" class="absolute top-3.5 right-3.5 w-8 h-8 rounded-lg border border-paper-ink/20 dark:border-paper-darkInk/20 flex items-center justify-center text-paper-muted hover:text-paper-ink dark:hover:text-white transition">
+        <i class="fa-solid fa-xmark text-base" aria-hidden="true"></i>
       </button>
 
-      <div id="result-icon-container" class="w-11 h-11 rounded-full flex items-center justify-center mx-auto mb-1.5 text-xl font-bold"></div>
-      <h3 id="result-title" class="text-xl font-extrabold uppercase tracking-wider mb-0.5"></h3>
-      <p id="result-subtitle" class="text-xs text-gray-500 dark:text-gray-400 mb-2"></p>
+      <div id="result-icon-container" class="w-12 h-12 rounded-2xl border-2 border-[#161412] flex items-center justify-center mx-auto mb-2 text-xl font-bold shadow-[3px_3px_0px_#161412]"></div>
+      <h3 id="result-title" class="font-serif text-2xl font-black mb-0.5"></h3>
+      <p id="result-subtitle" class="text-xs font-mono text-paper-muted dark:text-paper-darkMuted mb-2.5"></p>
 
-      <div id="result-streak-pill" class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-orange-100 dark:bg-orange-900/40 text-orange-700 dark:text-orange-300 text-xs font-extrabold mb-2 mr-1">
-        <i class="fa-solid fa-fire" aria-hidden="true"></i>
-        <span>Streak: <strong id="result-streak-value">0 gg</strong></span>
+      <div class="flex items-center justify-center gap-1.5 flex-wrap mb-3">
+        <div id="result-streak-pill" class="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg border border-[#161412] bg-[#FFE8D6] dark:bg-orange-950/60 text-[#9C3D0C] dark:text-orange-300 text-xs font-extrabold">
+          <i class="fa-solid fa-fire text-orange-600" aria-hidden="true"></i>
+          <span>Streak: <strong id="result-streak-value">0 gg</strong></span>
+        </div>
+
+        <div id="result-dynamic-comment" class="inline-block px-3 py-1 rounded-lg border border-[#161412] bg-[#F6C945] text-[#161412] text-xs font-extrabold"></div>
       </div>
 
-      <div id="result-dynamic-comment" class="inline-block px-3 py-1 rounded-full bg-amber-100/80 dark:bg-amber-900/30 text-amber-900 dark:text-amber-200 text-xs font-bold mb-3"></div>
-
-      <div id="result-emoji-grid" class="font-mono text-base sm:text-lg tracking-widest leading-snug py-2 bg-gray-50 dark:bg-nyt-darkBg rounded-xl border border-nyt-border dark:border-nyt-borderDark mb-3 inline-block px-5"></div>
+      <div id="result-emoji-grid" class="font-mono text-base sm:text-lg tracking-widest leading-snug py-2.5 bg-paper-bg dark:bg-paper-darkBg rounded-xl border-2 border-[#161412] dark:border-[#524B42] mb-3 inline-block px-6"></div>
 
       <div class="mb-3">
-        <button id="btn-play-next-archive" type="button" class="w-full py-2 px-3 rounded-xl border border-gray-300 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-800 text-xs font-bold transition flex items-center justify-center gap-1.5">
+        <button id="btn-play-next-archive" type="button" class="tactile-btn w-full py-2.5 px-3 rounded-xl bg-paper-bg dark:bg-paper-darkBg text-xs font-extrabold transition flex items-center justify-center gap-1.5">
           <i class="fa-regular fa-calendar-days" aria-hidden="true"></i>
           <span>Apri Calendario Mensile (dal 19/11/2026)</span>
         </button>
       </div>
 
-      <div class="flex items-center justify-between pt-3 border-t border-nyt-border dark:border-nyt-borderDark">
+      <div class="flex items-center justify-between pt-3 border-t-2 border-paper-ink/15 dark:border-paper-darkInk/15">
         <div class="flex-1 pr-3 text-center">
-          <div class="text-[10px] font-extrabold uppercase tracking-wider text-gray-600 dark:text-gray-300 mb-0.5">
+          <div class="text-[10px] font-extrabold uppercase tracking-wider text-paper-muted dark:text-paper-darkMuted mb-0.5">
             Prossimo Schema
           </div>
-          <div id="modal-countdown-timer" class="text-xl sm:text-2xl font-bold font-mono tracking-tight">
+          <div id="modal-countdown-timer" class="text-xl sm:text-2xl font-black font-mono tracking-tight">
             00:00:00
           </div>
         </div>
 
-        <div class="w-px h-12 bg-gray-300 dark:bg-gray-600"></div>
+        <div class="w-0.5 h-12 bg-paper-ink/20 dark:bg-paper-darkInk/20"></div>
 
         <div class="flex-1 pl-3 flex justify-center">
-          <button id="btn-share" type="button" aria-label="Condividi il risultato della partita" class="w-full py-3 px-4 bg-[#538D4E] hover:bg-[#467a42] active:scale-95 text-white font-extrabold text-sm uppercase tracking-wider rounded-lg shadow-md transition flex items-center justify-center gap-2">
+          <button id="btn-share" type="button" aria-label="Condividi il risultato della partita" class="tactile-btn w-full py-3 px-4 bg-[#70B77E] text-[#161412] font-extrabold text-sm uppercase tracking-wider rounded-xl flex items-center justify-center gap-2">
+            <i class="fa-solid fa-share-nodes"></i>
             <span>CONDIVIDI</span>
           </button>
         </div>

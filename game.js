@@ -278,7 +278,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const homeStreak = document.getElementById('home-streak-val');
     const homeBest = document.getElementById('home-intruso-best');
     if (homeStreak) homeStreak.textContent = stats.currentStreak;
-    if (homeBest) homeBest.textContent = intrusoBest;
+    if (homeBest) homeBest.textContent = intrusoBest; document.querySelectorAll('[data-sync-intruso-best]').forEach(el => el.textContent = intrusoBest);
   }
 
   // ==================== UTILITÀ DATE ====================
@@ -613,7 +613,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const group = currentPuzzle.groups[tier];
       const style = TIER_STYLES[tier];
       const div = document.createElement('div');
-      div.className = `${style.bg} ${style.text} rounded-xl p-3 sm:p-3.5 text-center shadow-sm category-reveal`;
+      div.className = `${style.bg} ${style.text} border-2 border-[#161412] shadow-[3px_3px_0px_#161412] rounded-xl p-3 sm:p-3.5 text-center category-reveal`;
 
       let noteHtml = '';
       if (group.note && gameStatus !== 'in_progress') {
@@ -651,10 +651,10 @@ document.addEventListener('DOMContentLoaded', () => {
       btn.setAttribute('aria-pressed', isSelected ? 'true' : 'false');
 
       const baseClasses =
-        'rounded-xl font-extrabold uppercase flex items-center justify-center p-1.5 sm:p-2 transition-all duration-150 select-none cursor-pointer shadow-xs border active:scale-95';
+        'word-tile rounded-xl font-extrabold uppercase flex items-center justify-center p-1.5 sm:p-2 select-none cursor-pointer';
       const stateClasses = isSelected
-        ? 'bg-nyt-cardActive text-white border-nyt-cardActive scale-[0.96] shadow-inner'
-        : 'bg-nyt-card dark:bg-nyt-cardDark text-gray-900 dark:text-gray-100 border-transparent hover:brightness-95 dark:hover:brightness-110';
+        ? 'is-selected bg-[#161412] text-[#F6C945] dark:bg-[#F6C945] dark:text-[#161412]'
+        : 'bg-nyt-card dark:bg-nyt-cardDark text-paper-ink dark:text-paper-darkInk';
       const animClass = withStagger ? 'tile-pop' : '';
 
       btn.className = `${baseClasses} ${stateClasses} ${animClass}`;
@@ -689,8 +689,8 @@ document.addEventListener('DOMContentLoaded', () => {
       const dot = document.createElement('span');
       const active = i < mistakesLeft;
       dot.className = active
-        ? 'w-3 h-3 rounded-full bg-gray-800 dark:bg-gray-200 transition-all duration-300 scale-100'
-        : 'w-3 h-3 rounded-full bg-gray-300 dark:bg-gray-700 transition-all duration-300 scale-75 opacity-40';
+        ? 'w-3.5 h-3.5 rounded-sm border border-[#161412] bg-[#FF6B2C] transition-all duration-300 scale-100 rotate-3'
+        : 'w-3.5 h-3.5 rounded-sm border border-paper-ink/25 bg-transparent transition-all duration-300 scale-75 opacity-35';
       dotsContainer.appendChild(dot);
     }
   }
@@ -1015,7 +1015,7 @@ document.addEventListener('DOMContentLoaded', () => {
       btn.type = 'button';
       btn.dataset.word = item.word;
       btn.className =
-        'w-full py-3.5 px-4 rounded-2xl border-2 border-nyt-border dark:border-nyt-borderDark bg-white dark:bg-nyt-cardDark hover:border-orange-400 dark:hover:border-orange-500 font-extrabold uppercase tracking-wider text-sm sm:text-base text-gray-900 dark:text-white shadow-xs transition-all duration-150 active:scale-[0.98] tile-pop flex items-center justify-between';
+        'tactile-btn w-full py-3.5 px-4 rounded-2xl bg-paper-surface dark:bg-paper-darkSurface font-extrabold uppercase tracking-wider text-sm sm:text-base text-paper-ink dark:text-paper-darkInk tile-pop flex items-center justify-between';
       btn.style.animationDelay = `${idx * 35}ms`;
 
       btn.innerHTML = `
@@ -1059,7 +1059,7 @@ document.addEventListener('DOMContentLoaded', () => {
       spawnFloatingScore('+1', 'text-emerald-500');
 
       btnEl.className =
-        'w-full py-3.5 px-4 rounded-2xl border-2 border-emerald-500 bg-emerald-500 text-white font-extrabold uppercase tracking-wider text-sm sm:text-base shadow-md tile-hop flex items-center justify-between';
+        'tactile-btn w-full py-3.5 px-4 rounded-2xl bg-[#70B77E] text-[#161412] font-extrabold uppercase tracking-wider text-sm sm:text-base tile-hop flex items-center justify-between';
       btnEl.innerHTML = `
         <span class="w-5"><i class="fa-solid fa-check"></i></span>
         <span>${item.word}</span>
@@ -1079,12 +1079,12 @@ document.addEventListener('DOMContentLoaded', () => {
       spawnFloatingScore(`-${INTRUSO_PENALTY}s`, 'text-rose-500');
 
       btnEl.className =
-        'w-full py-3.5 px-4 rounded-2xl border-2 border-rose-500 bg-rose-500/15 text-rose-700 dark:text-rose-300 font-extrabold uppercase tracking-wider text-sm sm:text-base shake-anim flex items-center justify-between';
+        'tactile-btn w-full py-3.5 px-4 rounded-2xl bg-rose-500 text-white font-extrabold uppercase tracking-wider text-sm sm:text-base shake-anim flex items-center justify-between';
 
       const realBtn = allBtns.find((b) => b.dataset.word === intrusoCurrentRound.intruderWord);
       if (realBtn) {
         realBtn.className =
-          'w-full py-3.5 px-4 rounded-2xl border-2 border-orange-500 bg-orange-500 text-white font-extrabold uppercase tracking-wider text-sm sm:text-base flex items-center justify-between';
+          'tactile-btn w-full py-3.5 px-4 rounded-2xl bg-[#FF6B2C] text-white font-extrabold uppercase tracking-wider text-sm sm:text-base flex items-center justify-between';
       }
 
       feedback.innerHTML = `<span class="text-rose-600 dark:text-rose-400">L'intruso era <strong>${intrusoCurrentRound.intruderWord}</strong> (${intrusoCurrentRound.mainCategory})</span>`;
