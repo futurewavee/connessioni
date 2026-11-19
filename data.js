@@ -1,7 +1,8 @@
 /**
  * VOCABOLARIO ACCADEMICO E CURATO DELLA LINGUA ITALIANA
- * Ogni gruppo può includere un campo opzionale `note` con una curiosità
- * linguistica, etimologica o culturale che viene rivelata a fine partita.
+ * Ampio database strutturato in 4 livelli di difficoltà (yellow, green, blue, purple)
+ * ottimizzato sia per la modalità quotidiana LEGAMI sia per i round blitz di INTRUSO.
+ * Ogni gruppo può includere un campo opzionale `note` con una curiosità linguistica.
  */
 const CATEGORIES_DATA = {
   yellow: [
@@ -30,7 +31,7 @@ const CATEGORIES_DATA = {
     { category: "POSATE DA TAVOLA", words: ["FORCHETTA", "COLTELLO", "CUCCHIAIO", "MESTOLO"] },
     { category: "INSETTI ALATI", words: ["FARFALLA", "APE", "LIBELLULA", "MOSCA"] },
     { category: "GENERI DELLA NARRATIVA", words: ["ROMANZO", "NOVELLA", "RACCONTO", "FAVOLA"] },
-    { category: "ARREDI DELLA CAMERA", words: ["ARMADIO", "COMODINO", "COMO", "LETTO"] },
+    { category: "ARREDI DELLA CAMERA", words: ["ARMADIO", "COMODINO", "COMÒ", "LETTO"] },
     { category: "LEGNI PREGIATI", words: ["QUERCIA", "ROVERE", "NOCE", "MOGANO"] },
     { category: "PIETRE PREZIOSE", words: ["DIAMANTE", "RUBINO", "SMERALDO", "ZAFFIRO"] },
     { category: "FORMAGGI FRESCHI", words: ["MOZZARELLA", "RICOTTA", "STRACCHINO", "BURRATA"] },
@@ -64,7 +65,37 @@ const CATEGORIES_DATA = {
     { category: "VULCANI ITALIANI", words: ["VESUVIO", "ETNA", "STROMBOLI", "VULCANO"] },
     { category: "MARI ITALIANI", words: ["TIRRENO", "ADRIATICO", "IONIO", "LIGURE"] },
     { category: "STILI DEL NUOTO", words: ["DELFINO", "DORSO", "RANA", "STILE"] },
-    { category: "CAFFÈ AL BAR", words: ["ESPRESSO", "MACCHIATO", "RISTRETTO", "LUNGO"] }
+    { category: "CAFFÈ AL BAR", words: ["ESPRESSO", "MACCHIATO", "RISTRETTO", "LUNGO"] },
+    { category: "FRUTTI DI BOSCO", words: ["LAMPONE", "MIRTILLO", "MORA", "RIBES"] },
+    { category: "CROSTACEI E MOLLUSCHI", words: ["ARAGOSTA", "CALAMARO", "POLPO", "VONGOLA"] },
+    { category: "MESTIERI ARTIGIANI", words: ["FABBRO", "SARTO", "CALZOLAIO", "CERAMISTA"] },
+    { category: "PROFESSIONI SANITARIE", words: ["MEDICO", "INFERMIERE", "DENTISTA", "OCULISTA"] },
+    { category: "MEZZI NAVALI", words: ["TRAGHETTO", "VELIERO", "PESCHERECCIO", "PANFILO"] },
+    { category: "AEROMOBILI", words: ["ELICOTTERO", "ALIANTI", "DIRIGIBILE", "BIPLANO"] },
+    { category: "STAGIONI DELL'ANNO", words: ["PRIMAVERA", "ESTATE", "AUTUNNO", "INVERNO"] },
+    { category: "PUNTI CARDINALI", words: ["NORD", "SUD", "EST", "OVEST"] },
+    { category: "DITA DELLA MANO", words: ["POLLICE", "INDICE", "MEDIO", "ANULARE"] },
+    { category: "PASTI DELLA GIORNATA", words: ["COLAZIONE", "PRANZO", "MERENDA", "CENA"] },
+    { category: "TIPI DI PANE", words: ["CIABATTA", "ROSETTA", "BAGUETTE", "FOCACCIA"] },
+    { category: "FORMATI DI PASTA LUNGA", words: ["SPAGHETTI", "LINGUINE", "BUCATINI", "VERMICELLI"] },
+    { category: "FRUTTI TROPICALI", words: ["ANANAS", "MANGO", "PAPAIA", "COCCO"] },
+    { category: "ORTAGGI A RADICE O TUBERO", words: ["CAROTA", "RAPA", "RAVANELLO", "PATATA"] },
+    { category: "ANIMALI DELLA SAVANA", words: ["LEONE", "ZEBRA", "GIRAFFA", "ELEFANTE"] },
+    { category: "ANIMALI POLARI", words: ["PINGUINO", "TRICHECO", "FOCA", "RENNA"] },
+    { category: "RETTILI", words: ["COCCODRILLO", "IGUANA", "VIPERA", "CAMALEONTE"] },
+    { category: "ANFIBI", words: ["RANA", "ROSPO", "SALAMANDRA", "TRITONE"] },
+    { category: "ALBERI SEMPREVERDI", words: ["PINO", "ABETE", "CIPRESSO", "LARICE"] },
+    { category: "PIANTE GRASSE", words: ["CACTUS", "ALOE", "AGAVE", "FICO D'INDIA"] },
+    { category: "STRUMENTI A TASTIERA", words: ["PIANOFORTE", "ORGANO", "CEMBALO", "SINTETIZZATORE"] },
+    { category: "SPORT DI RACCHETTA", words: ["TENNIS", "PADEL", "SQUASH", "BADMINTON"] },
+    { category: "SPORT DA COMBATTIMENTO", words: ["PUGILATO", "JUDO", "KARATE", "LOTTA"] },
+    { category: "GIOCHI DA TAVOLO CLASSICI", words: ["SCACCHI", "DAMA", "MONOPOLI", "TOMBOLA"] },
+    { category: "CAPI D'ABBIGLIAMENTO ESTIVI", words: ["COSTUME", "CANOTTA", "BERMUDA", "PAREO"] },
+    { category: "COPRICAPI", words: ["BERRETTO", "CILINDRO", "BASCO", "SOMBRERO"] },
+    { category: "ACCESSORI DI MODA", words: ["CINTURA", "FOULARD", "SPILLA", "GEMELLI"] },
+    { category: "COLORI PRIMARI E SECONDARI", words: ["ROSSO", "GIALLO", "BLU", "VERDE"] },
+    { category: "STANZE DELLA SCUOLA", words: ["AULA", "PALESTRA", "MENSOLA", "SEGRETERIA"] },
+    { category: "MATERIE SCOLASTICHE", words: ["STORIA", "GEOGRAFIA", "SCIENZE", "ITALIANO"] }
   ],
 
   green: [
@@ -135,7 +166,27 @@ const CATEGORIES_DATA = {
     { category: "COSE CHE SI SFOGLIANO", words: ["RIVISTA", "MARGHERITA", "CARCIOFO", "CIPOLLA"] },
     { category: "STRUMENTI DA ACCORDARE", words: ["UKULELE", "MANDOLINO", "LIUTO", "BANJO"] },
     { category: "USANO UNA RETE", words: ["PORTA", "TENNIS", "PESCA", "AMACA"] },
-    { category: "FANNO SCHIUMA", words: ["SAPONE", "SHAMPOO", "BIRRA", "DETERSIVO"] }
+    { category: "FANNO SCHIUMA", words: ["SAPONE", "SHAMPOO", "BIRRA", "DETERSIVO"] },
+    { category: "HANNO UNA PUNTA", words: ["MATITA", "FRECCIA", "SPADA", "STIVALE"] },
+    { category: "OGGETTI CON IL TAPPO", words: ["PENNARELLO", "BOTTIGLIA", "LAVANDINO", "TANICA"] },
+    { category: "EMETTONO UN SUONO D'ALLARME", words: ["SIRENA", "SVEGLIA", "FISCHIETTO", "CLACSON"] },
+    { category: "SI USANO PER MISURARE", words: ["BILANCIA", "METRO", "TERMOMETRO", "CRONOMETRO"] },
+    { category: "COSE CHE SI INTRECCIANO", words: ["CAPELLI", "VIMINI", "CORDA", "FILI"] },
+    { category: "HANNO UNA CORNICE", words: ["QUADRO", "SPECCHIO", "FINESTRA", "FOTOGRAFIA"] },
+    { category: "COSE CHE SI INCOLLANO", words: ["FRANCOBOLLO", "FIGURINA", "ETICHETTA", "CEROTTO"] },
+    { category: "OGGETTI DOTATI DI ROTELLE", words: ["VALIGIA", "SEDIA", "PATTINI", "CARRELLO"] },
+    { category: "SI ACCENDONO CON UNA SCINTILLA", words: ["ACCENDINO", "FORNELLO", "CAMINO", "CANDELA"] },
+    { category: "HANNO UN FONDALE", words: ["MARE", "TEATRO", "PISCINA", "ACQUARIO"] },
+    { category: "COSE CHE SI AFFILANO", words: ["COLTELLO", "MATITA", "ASCIA", "LAMA"] },
+    { category: "HANNO UNA VISIERA", words: ["CASCO", "BERRETTO", "ELMO", "PARASOLE"] },
+    { category: "COSE CHE SI SPRUZZANO", words: ["PROFUMO", "DEODORANTE", "VERNICE", "ACQUA"] },
+    { category: "OGGETTI CON IL QUADRANTI O DISPLAY", words: ["OROLOGIO", "CALCOLATRICE", "BILANCIA", "TERMOMETRO"] },
+    { category: "HANNO UNA FODERA", words: ["CUSCINO", "GIACCA", "DIVANO", "MATERASSO"] },
+    { category: "COSE CHE SI STENDONO", words: ["BUCATO", "PASTA", "CREMA", "TOVAGLIA"] },
+    { category: "OGGETTI CHE SI AVVITANO", words: ["BULLONE", "LAMPADINA", "TAPPO", "VITE"] },
+    { category: "HANNO UNA CINTURA", words: ["PANTALONE", "ACCAPPATOIO", "AUTOMOBILE", "JUDOKA"] },
+    { category: "COSE CHE SI BRUCIANO PER PROFUMO", words: ["INCENSO", "CANDELA", "LEGNO", "RESINA"] },
+    { category: "OGGETTI CON UN'IMPUGNATURA", words: ["RACCHETTA", "MARTELLO", "OMBRELLO", "SPADA"] }
   ],
 
   blue: [
@@ -214,7 +265,32 @@ const CATEGORIES_DATA = {
     { category: "LESSICO DEL TENNIS", words: ["ACE", "VOLÉE", "BREAK", "SERVIZIO"] },
     { category: "LESSICO DELLA SCHERMA", words: ["FIORETTO", "SCIABOLA", "STOCCATA", "AFFONDO"] },
     { category: "LESSICO DELLA VELA", words: ["BOLINA", "ORZA", "POPPA", "VIRATA"] },
-    { category: "LESSICO DELL'ALPINISMO", words: ["CORDATA", "PARETE", "PICCOZZA", "RAMPONE"] }
+    { category: "LESSICO DELL'ALPINISMO", words: ["CORDATA", "PARETE", "PICCOZZA", "RAMPONE"] },
+    { category: "LESSICO DELLA TIPOGRAFIA", words: ["GRAZIE", "CORPO", "INTERLINEA", "MARGINI"] },
+    { category: "PARTI DEL VIOLINO", words: ["PONTICELLO", "RICCIO", "TASTIERA", "CORDE"] },
+    { category: "GENERI MUSICALI", words: ["JAZZ", "BLUES", "ROCK", "FUNK"] },
+    { category: "BALLI LATINO-AMERICANI", words: ["SALSA", "RUMBA", "BACHATA", "MERENGUE"] },
+    { category: "MONETE STORICHE", words: ["LIRA", "FIORINO", "DUCATO", "SESTERZIO"] },
+    { category: "UNITÀ DI TEMPO", words: ["LUSTRO", "DECENNIO", "SECOLO", "MILLENNIO"] },
+    { category: "FASE LUNARI", words: ["NOVILUNIO", "CRESCENTE", "PLENILUNIO", "CALANTE"] },
+    { category: "COSTELLAZIONI", words: ["ORIONE", "CASSIOPEA", "ANDROMEDA", "PEGASO"] },
+    { category: "ELEMENTI CHIMICI METALLICI", words: ["FERRO", "ZINCO", "PIOMBO", "STAGNO"] },
+    { category: "GAS NOBILI", words: ["ELIO", "NEON", "ARGON", "XENON"] },
+    { category: "PARTI DELLA CELLULA", words: ["NUCLEO", "MEMBRANA", "CITOPLASMA", "RIBOSOMA"] },
+    { category: "ORGANI DELL'APPARATO DIGERENTE", words: ["ESOFAGO", "STOMACO", "INTESTINO", "PANCREAS"] },
+    { category: "TEMPI VERBALI DELL'INDICATIVO", words: ["PRESENTE", "IMPERFETTO", "PASSATO", "FUTURO"] },
+    { category: "MODI DEL VERBO", words: ["INDICATIVO", "CONGIUNTIVO", "CONDIZIONALE", "IMPERATIVO"] },
+    { category: "GENERI TEATRALI", words: ["TRAGEDIA", "COMMEDIA", "FARSA", "DRAMMA"] },
+    { category: "EROI DELL'ILIADE", words: ["ACHILLE", "ETTORE", "AIACE", "PATROCLO"] },
+    { category: "PERSONAGGI DELL'ODISSEA", words: ["ULISSE", "PENELOPE", "TELEMACO", "CIRCE"] },
+    { category: "CITTÀ DELLO STATO PONTIFICIO", words: ["BOLOGNA", "FERRARA", "RAVENNA", "PERUGIA"] },
+    { category: "REPUBBLICHE MARINARE", words: ["VENEZIA", "GENOVA", "PISA", "AMALFI"] },
+    { category: "FILOSOFI GRECI", words: ["SOCRATE", "PLATONE", "ARISTOTELE", "EPICURO"] },
+    { category: "PITTORI DEL RINASCIMENTO", words: ["LEONARDO", "RAFFAELLO", "MICHELANGELO", "BOTTICELLI"] },
+    { category: "COMPOSITORI D'OPERA ITALIANI", words: ["VERDI", "PUCCINI", "ROSSINI", "BELLINI"] },
+    { category: "REGISTI DEL NEOREALISMO", words: ["ROSSELLINI", "DE SICA", "VISCONTI", "FELLINI"] },
+    { category: "LESSICO DEL GOLF", words: ["BIRDIE", "EAGLE", "BOGEY", "GREEN"] },
+    { category: "LESSICO DEL CICLISMO", words: ["VOLATA", "FUGA", "GREGARIO", "MAGLIA"] }
   ],
 
   purple: [
@@ -517,14 +593,118 @@ const CATEGORIES_DATA = {
       category: "COMPLETANO «SCATOLA ...»",
       words: ["NERA", "CHIUSA", "CRANICA", "CINESI"],
       note: "Scatola nera, a scatola chiusa, scatola cranica e scatole cinesi."
+    },
+    {
+      category: "COMPLETANO «BOCCA DI ...»",
+      words: ["LEONE", "LUPO", "FUOCO", "ROSA"],
+      note: "Bocca di leone (il fiore), in bocca al lupo, bocca di fuoco (cannone) e bocca di rosa."
+    },
+    {
+      category: "COMPLETANO «CUORE DI ...»",
+      words: ["PIETRA", "LEONE", "PANNA", "GHIACCIO"],
+      note: "Cuore di pietra, Riccardo Cuor di Leone, cuore di panna e cuore di ghiaccio."
+    },
+    {
+      category: "COMPLETANO «COLPO DI ...» (SPORT E VITA)",
+      words: ["TESTA", "TACCO", "FORTUNA", "SONNO"],
+      note: "Colpo di testa, colpo di tacco, colpo di fortuna e colpo di sonno."
+    },
+    {
+      category: "COMPLETANO «CASA ...»",
+      words: ["DOLCE", "MADRE", "EDITRICE", "BIANCA"],
+      note: "Casa dolce casa, casa madre, casa editrice e Casa Bianca."
+    },
+    {
+      category: "COMPLETANO «ORO ...»",
+      words: ["NERO", "BIANCO", "COLATO", "PURO"],
+      note: "Oro nero (petrolio), oro bianco, oro colato e oro puro."
+    },
+    {
+      category: "COMPLETANO «PANE ...»",
+      words: ["QUOTIDIANO", "TOSTATO", "PERDUTO", "INTEGRALE"],
+      note: "Il pane quotidiano, pane tostato, pan perduto e pane integrale."
+    },
+    {
+      category: "COMPLETANO «SALE IN ...» / «SALE ...»",
+      words: ["ZUCCA", "GROSSO", "MARINO", "GEMMA"],
+      note: "Avere sale in zucca, sale grosso, sale marino e salgemma."
+    },
+    {
+      category: "ANAGRAMMI DI «ARTE»",
+      words: ["RATE", "RETA", "ERTA", "ATRE"],
+      note: "Tutte e quattro le parole sono formate dalle stesse 4 lettere A-R-T-E."
+    },
+    {
+      category: "PAROLE CHE INIZIANO CON UN COLORE",
+      words: ["VERDERAME", "ROSSOSETTE", "BLUETTE", "NEROFUMO"],
+      note: "Verderame, rossosette, bluette e nerofumo nascondono ciascuna un colore in apertura."
+    },
+    {
+      category: "COMPLETANO «VIA DI ...»",
+      words: ["FUGA", "MEZZO", "USCITA", "SCAMPO"],
+      note: "Via di fuga, via di mezzo, via d'uscita e via di scampo."
+    },
+    {
+      category: "COMPLETANO «PEZZO DI ...»",
+      words: ["PANE", "CARTA", "MUSEO", "RICAMBIO"],
+      note: "Un pezzo di pane (persona buona), pezzo di carta, pezzo da museo e pezzo di ricambio."
+    },
+    {
+      category: "COMPLETANO «LUCE ...»",
+      words: ["VERDE", "PULSANTE", "SOLARE", "SOFFUSA"],
+      note: "Dare luce verde, luce pulsante, luce solare e luce soffusa."
+    },
+    {
+      category: "COMPLETANO «TEMPO ...»",
+      words: ["LIBERO", "PERSO", "REALE", "PIENO"],
+      note: "Tempo libero, tempo perso, tempo reale e tempo pieno."
+    },
+    {
+      category: "COMPLETANO «CARTA ...» (GIOCHI E UFFICIO)",
+      words: ["CARBONE", "STRACCIA", "VINCENTE", "IDENTITÀ"],
+      note: "Carta carbone, carta straccia, carta vincente e carta d'identità."
+    },
+    {
+      category: "PARTI DEL VISO IN MODO DI DIRE",
+      words: ["NASO", "OCCHIO", "ORECCHIO", "DENTE"],
+      note: "Avere naso, costare un occhio, fare orecchio da mercante e avere il dente avvelenato."
+    },
+    {
+      category: "COMPLETANO «SCALA ...»",
+      words: ["MOBILE", "REALE", "MUSICALE", "RICHTER"],
+      note: "Scala mobile, scala reale (poker), scala musicale e scala Richter."
+    },
+    {
+      category: "COMPLETANO «MARE ...»",
+      words: ["APERTO", "CALMO", "MOSSO", "MAGNUM"],
+      note: "Mare aperto, mare calmo, mare mosso e mare magnum (gran confusione)."
+    },
+    {
+      category: "COMPLETANO «PUNTO ...»",
+      words: ["FERMO", "DEBOLE", "CRITICO", "ESCLAMATIVO"],
+      note: "Punto fermo, punto debole, punto critico e punto esclamativo."
+    },
+    {
+      category: "FORMANO COMPOSTI CON «SOTTO-»",
+      words: ["MARINO", "PASSAGGIO", "VOCE", "TETTO"],
+      note: "Sottomarino, sottopassaggio, sottovoce e sottotetto."
+    },
+    {
+      category: "FORMANO COMPOSTI CON «SOPRA-»",
+      words: ["NOME", "ABITO", "MOBILE", "LUOGO"],
+      note: "Soprannome, soprabito, soprammobile e sopralluogo."
     }
   ]
 };
 
-// Normalizzazione preventiva del database
+// Normalizzazione preventiva del database e esposizione globale sicura
 Object.keys(CATEGORIES_DATA).forEach(tier => {
   CATEGORIES_DATA[tier].forEach(group => {
     group.category = group.category.trim().toUpperCase();
     group.words = group.words.map(w => w.trim().toUpperCase());
   });
 });
+
+if (typeof window !== 'undefined') {
+  window.CATEGORIES_DATA = CATEGORIES_DATA;
+}

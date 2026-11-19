@@ -1,6 +1,9 @@
 /**
- * CONNESSIONI - Motore di Gioco Quotidiano & Calendario Reale Mese per Mese
- * Data di inizio stagione: 19/11/2026
+ * CONNESSIONI - Hub Giochi Quotidiani (LEGAMI & INTRUSO)
+ * - Schermata iniziale minimale senza barra superiore
+ * - Modalità LEGAMI: associazioni quotidiane + calendario reale mese per mese + streak
+ * - Modalità INTRUSO: sfida blitz 60s in arancione (4 parole della categoria + 1 intruso)
+ * - Effetti sonori minimali sintetizzati con Web Audio API (con tasto mute)
  */
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -11,9 +14,14 @@ document.addEventListener('DOMContentLoaded', () => {
   const EPOCH_DATE = new Date(EPOCH_YEAR, EPOCH_MONTH, EPOCH_DAY);
 
   const MAX_MISTAKES = 4;
+  const INTRUSO_DURATION = 60;
+  const INTRUSO_PENALTY = 3;
+
   const STORAGE_KEY_GAMES = 'connessioni_games_v1';
   const STORAGE_KEY_THEME = 'connessioni_theme_v1';
-  const STORAGE_KEY_HELP = 'connessioni_help_seen_v1';
+  const STORAGE_KEY_SOUND = 'connessioni_sound_v1';
+  const STORAGE_KEY_HELP_LEGAMI = 'connessioni_help_legami_v1';
+  const STORAGE_KEY_INTRUSO_BEST = 'connessioni_intruso_best_v1';
 
   const TIER_ORDER = ['yellow', 'green', 'blue', 'purple'];
   const TIER_STYLES = {
@@ -49,7 +57,23 @@ document.addEventListener('DOMContentLoaded', () => {
   ];
   const WEEKDAYS_SHORT_IT = ['Lun', 'Mar', 'Mer', 'Gio', 'Ven', 'Sab', 'Dom'];
 
-  // ==================== STATO APPLICAZIONE ====================
+  // ==================== VERIFICA DATABASE ====================
+  function getCategoriesPool() {
+    if (typeof CATEGORIES_DATA !== 'undefined' && CATEGORIES_DATA) {
+      return CATEGORIES_DATA;
+    }
+    if (typeof window !== 'undefined' && window.CATEGORIES_DATA) {
+      return window.CATEGORIES_DATA;
+    }
+    return null;
+  }
+
+  // ==================== STATO GLOBALE & NAVIGAZIONE ====================
+  let activeMode = 'home'; // 'home' | 'legami' | 'intruso'
+  let soundEnabled = localStorage.getItem(STORAGE_KEY_SOUND) !== 'muted';
+  let audioCtx = null;
+
+  // Stato LEGAMI
   let todayDate = getNormalizedToday();
   let currentPuzzleDate = new Date(todayDate);
   let viewedCalYear = todayDate.getFullYear();
@@ -60,18 +84,207 @@ document.addEventListener('DOMContentLoaded', () => {
   let selectedWords = [];
   let solvedTiers = [];
   let mistakesLeft = MAX_MISTAKES;
-  let guessHistory = []; // Array di array di 4 tier (es. ['yellow', 'yellow', 'green', 'yellow'])
+  let guessHistory = [];
   let gameStatus = 'in_progress'; // 'in_progress' | 'won' | 'lost'
   let elapsedSeconds = 0;
   let stopwatchInterval = null;
   let countdownInterval = null;
   let isAnimating = false;
 
+  // Stato INTRUSO
+  let intrusoState = 'idle'; // 'idle' | 'playing' | 'gameover'
+  let intrusoTimeLeft = INTRUSO_DURATION;
+  let intrusoScore = 0;
+  let intrusoBest = parseInt(localStorage.getItem(STORAGE_KEY_INTRUSO_BEST) || '0', 10);
+  let intrusoTimerInterval = null;
+  let intrusoCurrentRound = null;
+  let intrusoLocked = false;
+
+  // ==================== MOTORE EFFETTI SONORI MINIMALI (WEB AUDIO API) ====================
+  function ensureAudioContext() {
+    if (!soundEnabled) return null;
+    if (!audioCtx) {
+      const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+      if (AudioContextClass) {
+        audioCtx = new AudioContextClass();
+      }
+    }
+    if (audioCtx && audioCtx.state === 'suspended') {
+      audioCtx.resume().catch(() => {});
+    }
+    return audioCtx;
+  }
+
+  function playTone({ freq = 440, endFreq = null, type = 'sine', duration = 0.09, volume = 0.08, delay = 0 }) {
+    if (!soundEnabled) return;
+    try {
+      const ctx = ensureAudioContext();
+      if (!ctx) return;
+
+      const now = ctx.currentTime + delay;
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+
+      osc.type = type;
+      osc.frequency.setValueAtTime(freq, now);
+      if (endFreq) {
+        osc.frequency.exponentialRampToValueAtTime(endFreq, now + duration);
+      }
+
+      gain.gain.setValueAtTime(0.0001, now);
+      gain.gain.exponentialRampToValueAtTime(volume, now + 0.012);
+      gain.gain.exponentialRampToValueAtTime(0.0001, now + duration);
+
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+
+      osc.start(now);
+      osc.stop(now + duration + 0.02);
+    } catch (err) {
+      // Ignora eventuali restrizioni autoplay del browser
+    }
+  }
+
+  const SoundFX = {
+    select() {
+      playTone({ freq: 520, endFreq: 640, type: 'sine', duration: 0.065, volume: 0.07 });
+    },
+    deselect() {
+      playTone({ freq: 440, endFreq: 340, type: 'sine', duration: 0.06, volume: 0.06 });
+    },
+    shuffle() {
+      playTone({ freq: 320, endFreq: 480, type: 'triangle', duration: 0.07, volume: 0.05 });
+      playTone({ freq: 420, endFreq: 560, type: 'triangle', duration: 0.07, volume: 0.05, delay: 0.05 });
+    },
+    groupSolved() {
+      playTone({ freq: 523.25, type: 'sine', duration: 0.14, volume: 0.08, delay: 0 });
+      playTone({ freq: 659.25, type: 'sine', duration: 0.14, volume: 0.08, delay: 0.08 });
+      playTone({ freq: 783.99, type: 'sine', duration: 0.22, volume: 0.09, delay: 0.16 });
+    },
+    victory() {
+      const notes = [523.25, 659.25, 783.99, 1046.5];
+      notes.forEach((n, idx) => {
+        playTone({ freq: n, type: 'triangle', duration: 0.22, volume: 0.09, delay: idx * 0.09 });
+      });
+    },
+    error() {
+      playTone({ freq: 185, endFreq: 135, type: 'sawtooth', duration: 0.14, volume: 0.06, delay: 0 });
+      playTone({ freq: 155, endFreq: 115, type: 'sawtooth', duration: 0.16, volume: 0.06, delay: 0.11 });
+    },
+    tick() {
+      playTone({ freq: 880, type: 'sine', duration: 0.04, volume: 0.04 });
+    }
+  };
+
+  function updateSoundUI() {
+    document.querySelectorAll('[data-sound-icon]').forEach((icon) => {
+      icon.className = soundEnabled
+        ? 'fa-solid fa-volume-high text-base'
+        : 'fa-solid fa-volume-xmark text-base text-gray-400';
+    });
+  }
+
+  function toggleSound() {
+    soundEnabled = !soundEnabled;
+    localStorage.setItem(STORAGE_KEY_SOUND, soundEnabled ? 'on' : 'muted');
+    updateSoundUI();
+    if (soundEnabled) {
+      SoundFX.select();
+      showToast('Effetti sonori attivati');
+    } else {
+      showToast('Audio disattivato');
+    }
+  }
+
+  // ==================== GESTIONE SCHERMATE (HOME / LEGAMI / INTRUSO) ====================
+  function switchScreen(mode) {
+    activeMode = mode;
+    stopStopwatch();
+    stopIntrusoTimer();
+
+    const homeScreen = document.getElementById('home-screen');
+    const gameHeader = document.getElementById('game-header');
+    const gameFooter = document.getElementById('game-footer');
+    const viewLegami = document.getElementById('view-legami');
+    const viewIntruso = document.getElementById('view-intruso');
+
+    const logoLegami = document.getElementById('logo-legami');
+    const logoIntruso = document.getElementById('logo-intruso');
+    const btnArchive = document.getElementById('btn-archive');
+    const btnStats = document.getElementById('btn-stats');
+    const headerStreak = document.getElementById('header-streak-badge');
+    const headerIntruso = document.getElementById('header-intruso-badge');
+    const footerArchive = document.getElementById('btn-footer-archive');
+    const footerSep = document.getElementById('footer-sep');
+
+    if (mode === 'home') {
+      homeScreen.classList.remove('hidden');
+      gameHeader.classList.add('hidden');
+      gameFooter.classList.add('hidden');
+      viewLegami.classList.add('hidden');
+      viewIntruso.classList.add('hidden');
+      updateHomeBadges();
+      return;
+    }
+
+    const db = getCategoriesPool();
+    if (!db) {
+      showToast('Errore: file data.js non caricato correttamente');
+      return;
+    }
+
+    homeScreen.classList.add('hidden');
+    gameHeader.classList.remove('hidden');
+    gameFooter.classList.remove('hidden');
+
+    if (mode === 'legami') {
+      viewLegami.classList.remove('hidden');
+      viewIntruso.classList.add('hidden');
+
+      logoLegami.classList.remove('hidden');
+      logoIntruso.classList.add('hidden');
+
+      btnArchive.classList.remove('hidden');
+      btnStats.classList.remove('hidden');
+      headerStreak.classList.remove('hidden');
+      headerIntruso.classList.add('hidden');
+      footerArchive.classList.remove('hidden');
+      footerSep.classList.remove('hidden');
+
+      loadPuzzleForDate(currentPuzzleDate);
+      if (!localStorage.getItem(STORAGE_KEY_HELP_LEGAMI)) {
+        openHelpModal();
+      }
+    } else if (mode === 'intruso') {
+      viewLegami.classList.add('hidden');
+      viewIntruso.classList.remove('hidden');
+
+      logoLegami.classList.add('hidden');
+      logoIntruso.classList.remove('hidden');
+
+      btnArchive.classList.add('hidden');
+      btnStats.classList.add('hidden');
+      headerStreak.classList.add('hidden');
+      headerIntruso.classList.remove('hidden');
+      footerArchive.classList.add('hidden');
+      footerSep.classList.add('hidden');
+
+      resetIntrusoToStart();
+    }
+  }
+
+  function updateHomeBadges() {
+    const stats = calculateStatsAndStreaks();
+    const homeStreak = document.getElementById('home-streak-val');
+    const homeBest = document.getElementById('home-intruso-best');
+    if (homeStreak) homeStreak.textContent = stats.currentStreak;
+    if (homeBest) homeBest.textContent = intrusoBest;
+  }
+
   // ==================== UTILITÀ DATE ====================
   function getNormalizedToday() {
     const now = new Date();
     const d = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-    // Se per qualsiasi motivo l'orologio di sistema fosse precedente al 19/11/2026, usa la data di lancio
     if (d < EPOCH_DATE) {
       return new Date(EPOCH_DATE);
     }
@@ -83,11 +296,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const m = String(date.getMonth() + 1).padStart(2, '0');
     const d = String(date.getDate()).padStart(2, '0');
     return `${y}-${m}-${d}`;
-  }
-
-  function fromDateKey(key) {
-    const [y, m, d] = key.split('-').map(Number);
-    return new Date(y, m - 1, d);
   }
 
   function formatDateIT(date) {
@@ -115,7 +323,7 @@ document.addEventListener('DOMContentLoaded', () => {
     return date >= EPOCH_DATE && date <= todayDate;
   }
 
-  // ==================== GENERATORE DETERMINISTICO ENIGMA ====================
+  // ==================== GENERATORE DETERMINISTICO LEGAMI ====================
   function mulberry32(seed) {
     return function () {
       let t = (seed += 0x6d2b79f5);
@@ -135,8 +343,8 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function generateDailyPuzzle(date) {
+    const db = getCategoriesPool();
     const puzzleNum = getPuzzleNumber(date);
-    // Seed univoco per data
     const baseSeed =
       date.getFullYear() * 10000 + (date.getMonth() + 1) * 100 + date.getDate();
     let attempt = 0;
@@ -148,7 +356,7 @@ document.addEventListener('DOMContentLoaded', () => {
       let collision = false;
 
       for (const tier of TIER_ORDER) {
-        const pool = CATEGORIES_DATA[tier];
+        const pool = db[tier];
         const shuffledPool = seededShuffle(pool, rng);
         const validGroup = shuffledPool.find(
           (g) => !g.words.some((w) => usedWords.has(w))
@@ -180,10 +388,9 @@ document.addEventListener('DOMContentLoaded', () => {
       attempt++;
     }
 
-    // Fallback garantito
     const fallbackGroups = {};
     TIER_ORDER.forEach((t, idx) => {
-      const g = CATEGORIES_DATA[t][idx % CATEGORIES_DATA[t].length];
+      const g = db[t][idx % db[t].length];
       fallbackGroups[t] = {
         tier: t,
         category: g.category,
@@ -235,11 +442,6 @@ document.addEventListener('DOMContentLoaded', () => {
     updateStreakUI();
   }
 
-  /**
-   * Calcola le statistiche e le streak reali scorrendo i giorni consecutivi del calendario.
-   * La streak corrente conta i giorni consecutivi vinti fino a oggi (o fino a ieri se oggi
-   * non è ancora stato completato).
-   */
   function calculateStatsAndStreaks() {
     const games = loadAllGames();
     let played = 0;
@@ -247,7 +449,6 @@ document.addEventListener('DOMContentLoaded', () => {
     let maxStreak = 0;
     let runningStreak = 0;
 
-    // Scorre giorno per giorno dal 19/11/2026 fino a oggi per record streak e totali
     const cursor = new Date(EPOCH_DATE);
     while (cursor <= todayDate) {
       const key = toDateKey(cursor);
@@ -265,7 +466,6 @@ document.addEventListener('DOMContentLoaded', () => {
           runningStreak = 0;
         }
       } else {
-        // Se non è oggi e non è stato vinto, la serie storica si interrompe
         if (!isSameDay(cursor, todayDate)) {
           runningStreak = 0;
         }
@@ -273,13 +473,11 @@ document.addEventListener('DOMContentLoaded', () => {
       cursor.setDate(cursor.getDate() + 1);
     }
 
-    // Calcolo preciso della streak attiva attuale (partendo da oggi o ieri)
     let currentStreak = 0;
     const checkDate = new Date(todayDate);
     const todayRecord = games[toDateKey(checkDate)];
 
     if (todayRecord && todayRecord.status === 'won') {
-      // Oggi vinto: conta a ritroso da oggi
       while (checkDate >= EPOCH_DATE) {
         const rec = games[toDateKey(checkDate)];
         if (rec && rec.status === 'won') {
@@ -290,7 +488,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       }
     } else if (!todayRecord || todayRecord.status === 'in_progress') {
-      // Oggi ancora in corso o non iniziato: controlla se ieri era vinto per mantenere viva la fiamma
       checkDate.setDate(checkDate.getDate() - 1);
       while (checkDate >= EPOCH_DATE) {
         const rec = games[toDateKey(checkDate)];
@@ -302,7 +499,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       }
     } else {
-      // Oggi perso: streak azzerata
       currentStreak = 0;
     }
 
@@ -331,17 +527,18 @@ document.addEventListener('DOMContentLoaded', () => {
     if (badge && flame) {
       if (stats.currentStreak > 0) {
         badge.className =
-          'inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-extrabold border border-orange-300 dark:border-orange-700 bg-orange-50 dark:bg-orange-950/50 text-orange-600 dark:text-orange-400 transition';
+          'inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-extrabold border border-orange-300 dark:border-orange-700 bg-orange-50 dark:bg-orange-950/50 text-orange-600 dark:text-orange-400 transition';
         flame.className = 'fa-solid fa-fire text-orange-500 animate-pulse';
       } else {
         badge.className =
-          'inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-extrabold border border-gray-300 dark:border-gray-700 bg-gray-100 dark:bg-nyt-cardDark text-gray-500 dark:text-gray-400 transition';
+          'inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-extrabold border border-gray-300 dark:border-gray-700 bg-gray-100 dark:bg-nyt-cardDark text-gray-500 dark:text-gray-400 transition';
         flame.className = 'fa-solid fa-fire text-gray-400';
       }
     }
+    updateHomeBadges();
   }
 
-  // ==================== INIZIALIZZAZIONE PARTITA ====================
+  // ==================== INIZIALIZZAZIONE PARTITA LEGAMI ====================
   function loadPuzzleForDate(date) {
     stopStopwatch();
     todayDate = getNormalizedToday();
@@ -370,7 +567,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     updateHeaderBadge();
     renderSolvedCategories();
-    renderGrid();
+    renderGrid(true);
     renderMistakes();
     updateControlButtons();
     updateStopwatchDisplay();
@@ -378,8 +575,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (gameStatus === 'in_progress') {
       startStopwatch();
-    } else {
-      setTimeout(() => openResultModal(false), 350);
+    } else if (activeMode === 'legami') {
+      setTimeout(() => openResultModal(), 350);
     }
   }
 
@@ -406,7 +603,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  // ==================== RENDERING GRIGLIA & CATEGORIE ====================
+  // ==================== RENDERING GRIGLIA & CATEGORIE LEGAMI ====================
   function renderSolvedCategories() {
     const container = document.getElementById('solved-categories');
     if (!container) return;
@@ -432,7 +629,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  function renderGrid() {
+  function renderGrid(withStagger = false) {
     const grid = document.getElementById('grid-words');
     if (!grid) return;
     grid.innerHTML = '';
@@ -443,11 +640,10 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     grid.classList.remove('hidden');
 
-    // Adatta l'aspect-ratio della griglia in base alle righe rimaste
     const rows = Math.ceil(remainingWords.length / 4);
     grid.style.aspectRatio = `4 / ${rows}`;
 
-    remainingWords.forEach((word) => {
+    remainingWords.forEach((word, index) => {
       const isSelected = selectedWords.includes(word);
       const btn = document.createElement('button');
       btn.type = 'button';
@@ -455,18 +651,21 @@ document.addEventListener('DOMContentLoaded', () => {
       btn.setAttribute('aria-pressed', isSelected ? 'true' : 'false');
 
       const baseClasses =
-        'rounded-xl font-extrabold uppercase flex items-center justify-center p-1.5 sm:p-2 transition-all duration-150 select-none cursor-pointer shadow-xs border card-fade';
+        'rounded-xl font-extrabold uppercase flex items-center justify-center p-1.5 sm:p-2 transition-all duration-150 select-none cursor-pointer shadow-xs border active:scale-95';
       const stateClasses = isSelected
-        ? 'bg-nyt-cardActive text-white border-nyt-cardActive scale-[0.97] shadow-inner'
+        ? 'bg-nyt-cardActive text-white border-nyt-cardActive scale-[0.96] shadow-inner'
         : 'bg-nyt-card dark:bg-nyt-cardDark text-gray-900 dark:text-gray-100 border-transparent hover:brightness-95 dark:hover:brightness-110';
+      const animClass = withStagger ? 'tile-pop' : '';
 
-      btn.className = `${baseClasses} ${stateClasses}`;
+      btn.className = `${baseClasses} ${stateClasses} ${animClass}`;
+      if (withStagger) {
+        btn.style.animationDelay = `${index * 22}ms`;
+      }
 
       const span = document.createElement('span');
       span.className = 'word-fit';
       span.textContent = word;
 
-      // Dimensione dinamica per parole lunghe
       if (word.length >= 12) {
         span.classList.add('text-[10px]', 'sm:text-xs');
       } else if (word.length >= 9) {
@@ -507,38 +706,43 @@ document.addEventListener('DOMContentLoaded', () => {
     if (btnSubmit) btnSubmit.disabled = isFinished || selectedWords.length !== 4;
   }
 
-  // ==================== INTERAZIONE DI GIOCO ====================
+  // ==================== INTERAZIONE DI GIOCO LEGAMI ====================
   function toggleWordSelection(word) {
     if (gameStatus !== 'in_progress' || isAnimating) return;
 
     const idx = selectedWords.indexOf(word);
     if (idx !== -1) {
       selectedWords.splice(idx, 1);
+      SoundFX.deselect();
     } else {
       if (selectedWords.length >= 4) {
+        SoundFX.error();
         showToast('Puoi selezionare al massimo 4 parole');
         return;
       }
       selectedWords.push(word);
+      SoundFX.select();
     }
 
-    renderGrid();
+    renderGrid(false);
     updateControlButtons();
   }
 
   function shuffleRemainingWords() {
     if (gameStatus !== 'in_progress' || isAnimating) return;
+    SoundFX.shuffle();
     for (let i = remainingWords.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
       [remainingWords[i], remainingWords[j]] = [remainingWords[j], remainingWords[i]];
     }
-    renderGrid();
+    renderGrid(true);
   }
 
   function deselectAll() {
     if (gameStatus !== 'in_progress' || isAnimating) return;
+    SoundFX.deselect();
     selectedWords = [];
-    renderGrid();
+    renderGrid(false);
     updateControlButtons();
   }
 
@@ -556,12 +760,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const guessTiers = selectedWords.map((w) => getWordTier(w));
 
-    // Controlla se la combinazione è già stata provata
     const sortedGuessKey = [...selectedWords].sort().join('|');
     const alreadyTried = guessHistory.some(
       (entry) => entry.words && [...entry.words].sort().join('|') === sortedGuessKey
     );
     if (alreadyTried) {
+      SoundFX.error();
       showToast('Combinazione già provata!');
       return;
     }
@@ -574,7 +778,6 @@ document.addEventListener('DOMContentLoaded', () => {
     isAnimating = true;
     await animateSelectedHop();
 
-    // Conta occorrenze per tier
     const counts = {};
     guessTiers.forEach((t) => {
       counts[t] = (counts[t] || 0) + 1;
@@ -583,7 +786,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const matchedTier = Object.keys(counts).find((t) => counts[t] === 4);
 
     if (matchedTier) {
-      // Gruppo corretto!
       solvedTiers.push(matchedTier);
       remainingWords = remainingWords.filter((w) => !selectedWords.includes(w));
       selectedWords = [];
@@ -594,27 +796,28 @@ document.addEventListener('DOMContentLoaded', () => {
         stopStopwatch();
         saveCurrentGameState();
         renderSolvedCategories();
-        renderGrid();
+        renderGrid(false);
         updateControlButtons();
+        SoundFX.victory();
         triggerConfetti();
-        setTimeout(() => openResultModal(true), 700);
+        setTimeout(() => openResultModal(), 700);
       } else {
+        SoundFX.groupSolved();
         saveCurrentGameState();
         renderSolvedCategories();
-        renderGrid();
+        renderGrid(false);
         updateControlButtons();
       }
     } else {
-      // Errore
       const isOneAway = Object.values(counts).some((c) => c === 3);
       mistakesLeft = Math.max(0, mistakesLeft - 1);
       renderMistakes();
+      SoundFX.error();
       animateSelectedShake();
 
       if (mistakesLeft === 0) {
         showToast('Tentativi esauriti!');
         await sleep(650);
-        // Rivela i gruppi rimanenti in ordine di difficoltà
         TIER_ORDER.forEach((t) => {
           if (!solvedTiers.includes(t)) {
             solvedTiers.push(t);
@@ -627,9 +830,9 @@ document.addEventListener('DOMContentLoaded', () => {
         isAnimating = false;
         saveCurrentGameState();
         renderSolvedCategories();
-        renderGrid();
+        renderGrid(false);
         updateControlButtons();
-        setTimeout(() => openResultModal(true), 850);
+        setTimeout(() => openResultModal(), 850);
       } else {
         if (isOneAway) {
           showToast('Quasi! Te ne manca solo una...');
@@ -652,6 +855,7 @@ document.addEventListener('DOMContentLoaded', () => {
       buttons.forEach((btn, idx) => {
         setTimeout(() => {
           btn.classList.add('tile-hop');
+          playTone({ freq: 440 + idx * 70, type: 'sine', duration: 0.06, volume: 0.05 });
         }, idx * 75);
       });
       setTimeout(resolve, buttons.length * 75 + 320);
@@ -683,6 +887,253 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
+  // ==================== MODALITÀ INTRUSO (BLITZ 60 SECONDI) ====================
+  function updateIntrusoHeaderBest() {
+    const headerBest = document.getElementById('header-intruso-best');
+    const cardBest = document.getElementById('intruso-best-text');
+    if (headerBest) headerBest.textContent = intrusoBest;
+    if (cardBest) cardBest.textContent = intrusoBest;
+    updateHomeBadges();
+  }
+
+  function resetIntrusoToStart() {
+    stopIntrusoTimer();
+    intrusoState = 'idle';
+    intrusoTimeLeft = INTRUSO_DURATION;
+    intrusoScore = 0;
+    intrusoLocked = false;
+
+    document.getElementById('intruso-timer-text').textContent = `${INTRUSO_DURATION}s`;
+    document.getElementById('intruso-streak-text').textContent = '0';
+    document.getElementById('intruso-timer-bar').style.width = '100%';
+    updateIntrusoHeaderBest();
+
+    document.getElementById('intruso-start-card').classList.remove('hidden');
+    document.getElementById('intruso-play-card').classList.add('hidden');
+    document.getElementById('intruso-gameover-card').classList.add('hidden');
+  }
+
+  function startIntrusoGame() {
+    SoundFX.select();
+    intrusoState = 'playing';
+    intrusoTimeLeft = INTRUSO_DURATION;
+    intrusoScore = 0;
+    intrusoLocked = false;
+
+    document.getElementById('intruso-timer-text').textContent = `${INTRUSO_DURATION}s`;
+    document.getElementById('intruso-streak-text').textContent = '0';
+    document.getElementById('intruso-timer-bar').style.width = '100%';
+    updateIntrusoHeaderBest();
+
+    document.getElementById('intruso-start-card').classList.add('hidden');
+    document.getElementById('intruso-gameover-card').classList.add('hidden');
+    document.getElementById('intruso-play-card').classList.remove('hidden');
+
+    nextIntrusoRound();
+
+    stopIntrusoTimer();
+    intrusoTimerInterval = setInterval(() => {
+      if (intrusoState !== 'playing') return;
+      intrusoTimeLeft = Math.max(0, intrusoTimeLeft - 1);
+      updateIntrusoTimerUI();
+
+      if (intrusoTimeLeft <= 10 && intrusoTimeLeft > 0) {
+        SoundFX.tick();
+      }
+      if (intrusoTimeLeft === 0) {
+        finishIntrusoGame();
+      }
+    }, 1000);
+  }
+
+  function stopIntrusoTimer() {
+    if (intrusoTimerInterval) {
+      clearInterval(intrusoTimerInterval);
+      intrusoTimerInterval = null;
+    }
+  }
+
+  function updateIntrusoTimerUI() {
+    const timerText = document.getElementById('intruso-timer-text');
+    const timerBar = document.getElementById('intruso-timer-bar');
+    const pct = Math.max(0, Math.min(100, (intrusoTimeLeft / INTRUSO_DURATION) * 100));
+
+    if (timerText) timerText.textContent = `${intrusoTimeLeft}s`;
+    if (timerBar) timerBar.style.width = `${pct}%`;
+  }
+
+  function generateIntrusoRound() {
+    const db = getCategoriesPool();
+    const allGroups = TIER_ORDER.flatMap((tier) =>
+      db[tier].map((g) => ({ ...g, tier }))
+    );
+
+    const mainGroup = allGroups[Math.floor(Math.random() * allGroups.length)];
+    const mainSet = new Set(mainGroup.words);
+
+    let candidateIntruderGroups = allGroups.filter(
+      (g) => g.category !== mainGroup.category && !g.words.some((w) => mainSet.has(w))
+    );
+    if (candidateIntruderGroups.length === 0) {
+      candidateIntruderGroups = allGroups.filter((g) => g.category !== mainGroup.category);
+    }
+
+    const intruderGroup =
+      candidateIntruderGroups[Math.floor(Math.random() * candidateIntruderGroups.length)];
+    const intruderWord =
+      intruderGroup.words[Math.floor(Math.random() * intruderGroup.words.length)];
+
+    const items = [
+      ...mainGroup.words.map((w) => ({ word: w, isIntruder: false })),
+      { word: intruderWord, isIntruder: true }
+    ];
+
+    for (let i = items.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [items[i], items[j]] = [items[j], items[i]];
+    }
+
+    return {
+      mainCategory: mainGroup.category,
+      intruderCategory: intruderGroup.category,
+      intruderWord,
+      items
+    };
+  }
+
+  function nextIntrusoRound() {
+    intrusoLocked = false;
+    intrusoCurrentRound = generateIntrusoRound();
+
+    const list = document.getElementById('intruso-words-list');
+    const feedback = document.getElementById('intruso-feedback-banner');
+    list.innerHTML = '';
+    feedback.innerHTML = '4 parole condividono un legame nascosto';
+
+    intrusoCurrentRound.items.forEach((item, idx) => {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.dataset.word = item.word;
+      btn.className =
+        'w-full py-3.5 px-4 rounded-2xl border-2 border-nyt-border dark:border-nyt-borderDark bg-white dark:bg-nyt-cardDark hover:border-orange-400 dark:hover:border-orange-500 font-extrabold uppercase tracking-wider text-sm sm:text-base text-gray-900 dark:text-white shadow-xs transition-all duration-150 active:scale-[0.98] tile-pop flex items-center justify-between';
+      btn.style.animationDelay = `${idx * 35}ms`;
+
+      btn.innerHTML = `
+        <span class="w-5"></span>
+        <span>${item.word}</span>
+        <span class="w-5 text-right text-xs opacity-40"><i class="fa-solid fa-chevron-right"></i></span>
+      `;
+
+      btn.addEventListener('click', () => handleIntrusoPick(item, btn));
+      list.appendChild(btn);
+    });
+  }
+
+  function spawnFloatingScore(text, colorClass) {
+    const anchor = document.getElementById('intruso-float-anchor');
+    if (!anchor) return;
+    const badge = document.createElement('span');
+    badge.className = `text-sm font-black ${colorClass} score-float`;
+    badge.textContent = text;
+    anchor.appendChild(badge);
+    setTimeout(() => badge.remove(), 680);
+  }
+
+  async function handleIntrusoPick(item, btnEl) {
+    if (intrusoState !== 'playing' || intrusoLocked) return;
+    intrusoLocked = true;
+
+    const feedback = document.getElementById('intruso-feedback-banner');
+    const allBtns = Array.from(document.querySelectorAll('#intruso-words-list button'));
+
+    if (item.isIntruder) {
+      intrusoScore++;
+      document.getElementById('intruso-streak-text').textContent = intrusoScore;
+      if (intrusoScore > intrusoBest) {
+        intrusoBest = intrusoScore;
+        localStorage.setItem(STORAGE_KEY_INTRUSO_BEST, String(intrusoBest));
+        updateIntrusoHeaderBest();
+      }
+
+      SoundFX.groupSolved();
+      spawnFloatingScore('+1', 'text-emerald-500');
+
+      btnEl.className =
+        'w-full py-3.5 px-4 rounded-2xl border-2 border-emerald-500 bg-emerald-500 text-white font-extrabold uppercase tracking-wider text-sm sm:text-base shadow-md tile-hop flex items-center justify-between';
+      btnEl.innerHTML = `
+        <span class="w-5"><i class="fa-solid fa-check"></i></span>
+        <span>${item.word}</span>
+        <span class="text-[10px] font-bold uppercase tracking-normal">Intruso!</span>
+      `;
+
+      feedback.innerHTML = `<span class="text-emerald-600 dark:text-emerald-400">Esatto! Le altre 4 erano: <strong>${intrusoCurrentRound.mainCategory}</strong></span>`;
+
+      await sleep(580);
+      if (intrusoState === 'playing') {
+        nextIntrusoRound();
+      }
+    } else {
+      SoundFX.error();
+      intrusoTimeLeft = Math.max(0, intrusoTimeLeft - INTRUSO_PENALTY);
+      updateIntrusoTimerUI();
+      spawnFloatingScore(`-${INTRUSO_PENALTY}s`, 'text-rose-500');
+
+      btnEl.className =
+        'w-full py-3.5 px-4 rounded-2xl border-2 border-rose-500 bg-rose-500/15 text-rose-700 dark:text-rose-300 font-extrabold uppercase tracking-wider text-sm sm:text-base shake-anim flex items-center justify-between';
+
+      const realBtn = allBtns.find((b) => b.dataset.word === intrusoCurrentRound.intruderWord);
+      if (realBtn) {
+        realBtn.className =
+          'w-full py-3.5 px-4 rounded-2xl border-2 border-orange-500 bg-orange-500 text-white font-extrabold uppercase tracking-wider text-sm sm:text-base flex items-center justify-between';
+      }
+
+      feedback.innerHTML = `<span class="text-rose-600 dark:text-rose-400">L'intruso era <strong>${intrusoCurrentRound.intruderWord}</strong> (${intrusoCurrentRound.mainCategory})</span>`;
+
+      await sleep(950);
+      if (intrusoTimeLeft === 0) {
+        finishIntrusoGame();
+      } else if (intrusoState === 'playing') {
+        nextIntrusoRound();
+      }
+    }
+  }
+
+  function finishIntrusoGame() {
+    stopIntrusoTimer();
+    intrusoState = 'gameover';
+    SoundFX.victory();
+
+    if (intrusoScore > 0 && intrusoScore >= intrusoBest) {
+      triggerConfetti();
+    }
+
+    document.getElementById('intruso-play-card').classList.add('hidden');
+    document.getElementById('intruso-gameover-card').classList.remove('hidden');
+
+    document.getElementById('intruso-final-score').textContent = intrusoScore;
+    document.getElementById('intruso-final-best').textContent = intrusoBest;
+    document.getElementById('intruso-final-subtitle').textContent =
+      intrusoScore >= intrusoBest && intrusoScore > 0
+        ? 'Nuovo record personale stabilito!'
+        : 'Sfida lampo completata!';
+  }
+
+  function shareIntrusoResult() {
+    const text = [
+      'Connessioni • INTRUSO ⚡',
+      `🧡 Intrusi scovati in 60s: ${intrusoScore}`,
+      `🏆 Record: ${intrusoBest}`,
+      '',
+      'Gioca su: https://futurewavee.github.io/connessioni/'
+    ].join('\n');
+
+    if (navigator.share) {
+      navigator.share({ title: 'Connessioni - Intruso', text }).catch(() => copyToClipboard(text));
+    } else {
+      copyToClipboard(text);
+    }
+  }
+
   // ==================== CALENDARIO REALE MESE PER MESE + STREAK ====================
   function openCalendarModal() {
     todayDate = getNormalizedToday();
@@ -692,10 +1143,6 @@ document.addEventListener('DOMContentLoaded', () => {
     openModal('modal-archive');
   }
 
-  /**
-   * Costruisce un calendario reale mese per mese (Lunedì - Domenica)
-   * con navigazione tra i mesi, indicatori di stato giornaliero e connessione visiva delle streak.
-   */
   function renderRealCalendar() {
     const container = document.getElementById('archive-grid');
     if (!container) return;
@@ -707,7 +1154,6 @@ document.addEventListener('DOMContentLoaded', () => {
       archiveStreakVal.textContent = `${stats.currentStreak} ${stats.currentStreak === 1 ? 'giorno' : 'giorni'}`;
     }
 
-    // Calcola il numero di giorni vinti nel mese visualizzato
     const daysInMonth = new Date(viewedCalYear, viewedCalMonth + 1, 0).getDate();
     let monthWins = 0;
     let monthPlayable = 0;
@@ -723,7 +1169,6 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     }
 
-    // Verifica limiti navigazione mesi (non prima di Novembre 2026, non oltre il mese corrente)
     const canGoPrev =
       viewedCalYear > EPOCH_YEAR ||
       (viewedCalYear === EPOCH_YEAR && viewedCalMonth > EPOCH_MONTH);
@@ -731,11 +1176,9 @@ document.addEventListener('DOMContentLoaded', () => {
       viewedCalYear < todayDate.getFullYear() ||
       (viewedCalYear === todayDate.getFullYear() && viewedCalMonth < todayDate.getMonth());
 
-    // Trasforma l'elenco griglia in contenitore strutturato del calendario mensile reale
     container.className = 'flex flex-col gap-2.5 overflow-y-auto pr-0.5 py-1 flex-1';
     container.innerHTML = '';
 
-    // 1. Barra Navigazione Mese / Anno + Riepilogo Mensile
     const navBar = document.createElement('div');
     navBar.className =
       'flex items-center justify-between bg-gray-100 dark:bg-nyt-darkBg px-3 py-2 rounded-xl border border-nyt-border dark:border-nyt-borderDark';
@@ -767,7 +1210,6 @@ document.addEventListener('DOMContentLoaded', () => {
     `;
     container.appendChild(navBar);
 
-    // 2. Intestazione Giorni della Settimana (Lun -> Dom)
     const weekdaysRow = document.createElement('div');
     weekdaysRow.className = 'grid grid-cols-7 gap-1 text-center';
     WEEKDAYS_SHORT_IT.forEach((dayName) => {
@@ -778,11 +1220,9 @@ document.addEventListener('DOMContentLoaded', () => {
     });
     container.appendChild(weekdaysRow);
 
-    // 3. Griglia Reale dei Giorni del Mese (7 colonne)
     const daysGrid = document.createElement('div');
     daysGrid.className = 'grid grid-cols-7 gap-1.5';
 
-    // Calcola offset del primo giorno del mese (0 = Lunedì ... 6 = Domenica)
     const firstDayOfMonth = new Date(viewedCalYear, viewedCalMonth, 1).getDay();
     const startOffset = (firstDayOfMonth + 6) % 7;
 
@@ -804,7 +1244,6 @@ document.addEventListener('DOMContentLoaded', () => {
       const record = games[dateKey];
       const status = record ? record.status : 'unplayed';
 
-      // Controlla se fa parte di una streak attiva con il giorno precedente o successivo
       const prevDate = new Date(viewedCalYear, viewedCalMonth, day - 1);
       const nextDate = new Date(viewedCalYear, viewedCalMonth, day + 1);
       const prevWon = games[toDateKey(prevDate)]?.status === 'won';
@@ -819,11 +1258,6 @@ document.addEventListener('DOMContentLoaded', () => {
         cellBtn.className =
           'aspect-square rounded-xl flex flex-col items-center justify-center text-xs font-semibold text-gray-300 dark:text-gray-700 bg-gray-50/50 dark:bg-nyt-darkBg/40 cursor-not-allowed select-none';
         cellBtn.innerHTML = `<span>${day}</span>`;
-        if (isFuture) {
-          cellBtn.title = 'Enigma non ancora disponibile';
-        } else {
-          cellBtn.title = 'Prima dell\'avvio della stagione (19/11/2026)';
-        }
       } else {
         let bgClass =
           'bg-gray-100 dark:bg-nyt-darkBg text-gray-800 dark:text-gray-200 border-gray-200 dark:border-gray-700 hover:border-gray-400';
@@ -861,6 +1295,7 @@ document.addEventListener('DOMContentLoaded', () => {
         `;
 
         cellBtn.addEventListener('click', () => {
+          SoundFX.select();
           closeModal('modal-archive');
           loadPuzzleForDate(cellDate);
         });
@@ -871,12 +1306,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
     container.appendChild(daysGrid);
 
-    // Eventi frecce navigazione mese
     const prevBtn = document.getElementById('cal-prev-month');
     const nextBtn = document.getElementById('cal-next-month');
 
     if (prevBtn && canGoPrev) {
       prevBtn.addEventListener('click', () => {
+        SoundFX.select();
         viewedCalMonth--;
         if (viewedCalMonth < 0) {
           viewedCalMonth = 11;
@@ -888,6 +1323,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (nextBtn && canGoNext) {
       nextBtn.addEventListener('click', () => {
+        SoundFX.select();
         viewedCalMonth++;
         if (viewedCalMonth > 11) {
           viewedCalMonth = 0;
@@ -899,6 +1335,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function playRandomAvailablePuzzle() {
+    SoundFX.shuffle();
     const games = loadAllGames();
     const unplayedDates = [];
     const allPlayableDates = [];
@@ -997,7 +1434,7 @@ document.addEventListener('DOMContentLoaded', () => {
     openModal('modal-stats');
   }
 
-  // ==================== MODALE RISULTATO & CONDIVISIONE ====================
+  // ==================== MODALE RISULTATO & CONDIVISIONE LEGAMI ====================
   function openResultModal() {
     const stats = calculateStatsAndStreaks();
     const comm = getSimulatedCommunityStats(currentPuzzle.number);
@@ -1019,7 +1456,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const comments = [
         'Perfezione assoluta! Zero errori!',
         'Brillante! Solo un piccolo passo falso.',
-        'Ottimo colpo d\'occhio!',
+        "Ottimo colpo d'occhio!",
         'Preso per un soffio, grande tenacia!'
       ];
       commentEl.textContent = comments[Math.min(mistakesMade, 3)];
@@ -1054,12 +1491,9 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('res-community-hardest').innerHTML =
       `Categoria più difficile: <strong>${hardestGroup.category}</strong>`;
 
-    // Griglia Emoji dei tentativi
     const emojiGrid = document.getElementById('result-emoji-grid');
     emojiGrid.innerHTML = guessHistory
-      .map((entry) =>
-        entry.tiers.map((t) => TIER_STYLES[t].emoji).join('')
-      )
+      .map((entry) => entry.tiers.map((t) => TIER_STYLES[t].emoji).join(''))
       .join('<br>');
 
     openModal('modal-result');
@@ -1072,7 +1506,7 @@ document.addEventListener('DOMContentLoaded', () => {
       .join('\n');
 
     const text = [
-      `Connessioni #${currentPuzzle.number} (${formatDateIT(currentPuzzleDate)})`,
+      `Connessioni • LEGAMI #${currentPuzzle.number} (${formatDateIT(currentPuzzleDate)})`,
       `🔥 Streak: ${stats.currentStreak} gg`,
       '',
       rows,
@@ -1083,7 +1517,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (navigator.share) {
       navigator
         .share({
-          title: `Connessioni #${currentPuzzle.number}`,
+          title: `Legami #${currentPuzzle.number}`,
           text
         })
         .catch(() => copyToClipboard(text));
@@ -1107,7 +1541,7 @@ document.addEventListener('DOMContentLoaded', () => {
   function startStopwatch() {
     stopStopwatch();
     stopwatchInterval = setInterval(() => {
-      if (gameStatus === 'in_progress') {
+      if (activeMode === 'legami' && gameStatus === 'in_progress') {
         elapsedSeconds++;
         updateStopwatchDisplay();
         if (elapsedSeconds % 10 === 0) {
@@ -1169,8 +1603,26 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function toggleTheme() {
+    SoundFX.select();
     const isDark = document.documentElement.classList.toggle('dark');
     localStorage.setItem(STORAGE_KEY_THEME, isDark ? 'dark' : 'light');
+  }
+
+  function openHelpModal() {
+    const legamiHelp = document.getElementById('help-content-legami');
+    const intrusoHelp = document.getElementById('help-content-intruso');
+    const title = document.getElementById('modal-help-title');
+
+    if (activeMode === 'intruso') {
+      title.textContent = 'Regole • Intruso';
+      legamiHelp.classList.add('hidden');
+      intrusoHelp.classList.remove('hidden');
+    } else {
+      title.textContent = 'Regole • Legami';
+      legamiHelp.classList.remove('hidden');
+      intrusoHelp.classList.add('hidden');
+    }
+    openModal('modal-help');
   }
 
   function openModal(id) {
@@ -1200,19 +1652,48 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // ==================== EVENT LISTENERS ====================
   function bindEvents() {
-    // Controlli griglia
+    // Schermata iniziale minimale
+    document.getElementById('btn-select-legami')?.addEventListener('click', () => {
+      SoundFX.select();
+      switchScreen('legami');
+    });
+    document.getElementById('btn-select-intruso')?.addEventListener('click', () => {
+      SoundFX.select();
+      switchScreen('intruso');
+    });
+    document.getElementById('home-btn-theme')?.addEventListener('click', toggleTheme);
+    document.getElementById('home-btn-sound')?.addEventListener('click', toggleSound);
+
+    // Ritorno alla schermata iniziale
+    document.getElementById('btn-back-home')?.addEventListener('click', () => {
+      SoundFX.deselect();
+      switchScreen('home');
+    });
+    document.getElementById('btn-footer-switch')?.addEventListener('click', () => {
+      SoundFX.deselect();
+      switchScreen('home');
+    });
+
+    // Controlli griglia LEGAMI
     document.getElementById('btn-shuffle')?.addEventListener('click', shuffleRemainingWords);
     document.getElementById('btn-deselect')?.addEventListener('click', deselectAll);
     document.getElementById('btn-submit')?.addEventListener('click', submitGuess);
 
-    // Header & Footer
+    // Controlli modalità INTRUSO
+    document.getElementById('btn-start-intruso')?.addEventListener('click', startIntrusoGame);
+    document.getElementById('btn-restart-intruso')?.addEventListener('click', startIntrusoGame);
+    document.getElementById('btn-share-intruso')?.addEventListener('click', shareIntrusoResult);
+
+    // Header & Footer di Gioco
     document.getElementById('btn-theme')?.addEventListener('click', toggleTheme);
-    document.getElementById('btn-how-to')?.addEventListener('click', () => openModal('modal-help'));
+    document.getElementById('btn-sound')?.addEventListener('click', toggleSound);
+    document.getElementById('btn-how-to')?.addEventListener('click', openHelpModal);
     document.getElementById('btn-archive')?.addEventListener('click', openCalendarModal);
     document.getElementById('btn-footer-archive')?.addEventListener('click', openCalendarModal);
     document.getElementById('header-streak-badge')?.addEventListener('click', openCalendarModal);
     document.getElementById('btn-stats')?.addEventListener('click', openStatsModal);
     document.getElementById('btn-back-today')?.addEventListener('click', () => {
+      SoundFX.select();
       loadPuzzleForDate(getNormalizedToday());
     });
 
@@ -1226,7 +1707,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Modale Regole
     const closeHelp = () => {
-      localStorage.setItem(STORAGE_KEY_HELP, '1');
+      if (activeMode === 'legami') {
+        localStorage.setItem(STORAGE_KEY_HELP_LEGAMI, '1');
+      }
       closeModal('modal-help');
     };
     document.getElementById('btn-close-help')?.addEventListener('click', closeHelp);
@@ -1253,7 +1736,12 @@ document.addEventListener('DOMContentLoaded', () => {
     document.addEventListener('keydown', (e) => {
       if (e.key === 'Escape') {
         ['modal-archive', 'modal-stats', 'modal-help', 'modal-result'].forEach(closeModal);
-      } else if (e.key === 'Enter' && gameStatus === 'in_progress' && selectedWords.length === 4) {
+      } else if (
+        e.key === 'Enter' &&
+        activeMode === 'legami' &&
+        gameStatus === 'in_progress' &&
+        selectedWords.length === 4
+      ) {
         submitGuess();
       }
     });
@@ -1261,11 +1749,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // ==================== AVVIO ====================
   initTheme();
+  updateSoundUI();
   bindEvents();
   startMidnightCountdown();
-  loadPuzzleForDate(todayDate);
-
-  if (!localStorage.getItem(STORAGE_KEY_HELP)) {
-    openModal('modal-help');
-  }
+  updateStreakUI();
+  updateIntrusoHeaderBest();
+  switchScreen('home');
 });
