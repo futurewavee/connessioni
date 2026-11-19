@@ -211,7 +211,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const logoLegami = document.getElementById('logo-legami');
     const logoIntruso = document.getElementById('logo-intruso');
     const btnArchive = document.getElementById('btn-archive');
-    const btnStats = document.getElementById('btn-stats');
     const headerStreak = document.getElementById('header-streak-badge');
     const headerIntruso = document.getElementById('header-intruso-badge');
     const footerArchive = document.getElementById('btn-footer-archive');
@@ -245,7 +244,6 @@ document.addEventListener('DOMContentLoaded', () => {
       logoIntruso.classList.add('hidden');
 
       btnArchive.classList.remove('hidden');
-      btnStats.classList.remove('hidden');
       headerStreak.classList.remove('hidden');
       headerIntruso.classList.add('hidden');
       footerArchive.classList.remove('hidden');
@@ -263,7 +261,6 @@ document.addEventListener('DOMContentLoaded', () => {
       logoIntruso.classList.remove('hidden');
 
       btnArchive.classList.add('hidden');
-      btnStats.classList.add('hidden');
       headerStreak.classList.add('hidden');
       headerIntruso.classList.remove('hidden');
       footerArchive.classList.add('hidden');
@@ -1181,29 +1178,29 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const navBar = document.createElement('div');
     navBar.className =
-      'flex items-center justify-between bg-gray-100 dark:bg-nyt-darkBg px-3 py-2 rounded-xl border border-nyt-border dark:border-nyt-borderDark';
+      'flex items-center justify-between bg-[#F6F1E7] dark:bg-[#141311] px-3 py-2.5 rounded-xl border-2 border-[#161412] dark:border-[#524B42]';
     navBar.innerHTML = `
       <button id="cal-prev-month" type="button" aria-label="Mese precedente"
-        class="w-8 h-8 rounded-lg flex items-center justify-center font-bold transition ${
+        class="w-8 h-8 rounded-lg border flex items-center justify-center font-bold transition ${
           canGoPrev
-            ? 'hover:bg-white dark:hover:bg-nyt-cardDark text-gray-800 dark:text-gray-100 cursor-pointer'
-            : 'opacity-30 pointer-events-none text-gray-400'
+            ? 'border-[#161412]/25 dark:border-[#524B42] bg-[#FFFDF9] dark:bg-[#26231F] text-[#161412] dark:text-[#F4EFE6] hover:scale-105 cursor-pointer'
+            : 'border-transparent opacity-30 pointer-events-none text-[#6E675F] dark:text-[#9E968B]'
         }">
         <i class="fa-solid fa-chevron-left text-xs"></i>
       </button>
       <div class="text-center">
-        <div class="text-sm font-extrabold uppercase tracking-wide text-gray-900 dark:text-white">
+        <div class="font-serif text-base font-black tracking-tight text-[#161412] dark:text-[#F6C945]">
           ${MONTHS_IT[viewedCalMonth]} ${viewedCalYear}
         </div>
-        <div class="text-[11px] font-semibold text-gray-500 dark:text-gray-400">
-          Completati nel mese: <span class="text-emerald-600 dark:text-emerald-400 font-bold">${monthWins}/${monthPlayable}</span>
+        <div class="text-[11px] font-mono font-semibold text-[#6E675F] dark:text-[#B8B0A4]">
+          Completati nel mese: <span class="text-emerald-700 dark:text-emerald-400 font-bold">${monthWins}/${monthPlayable}</span>
         </div>
       </div>
       <button id="cal-next-month" type="button" aria-label="Mese successivo"
-        class="w-8 h-8 rounded-lg flex items-center justify-center font-bold transition ${
+        class="w-8 h-8 rounded-lg border flex items-center justify-center font-bold transition ${
           canGoNext
-            ? 'hover:bg-white dark:hover:bg-nyt-cardDark text-gray-800 dark:text-gray-100 cursor-pointer'
-            : 'opacity-30 pointer-events-none text-gray-400'
+            ? 'border-[#161412]/25 dark:border-[#524B42] bg-[#FFFDF9] dark:bg-[#26231F] text-[#161412] dark:text-[#F4EFE6] hover:scale-105 cursor-pointer'
+            : 'border-transparent opacity-30 pointer-events-none text-[#6E675F] dark:text-[#9E968B]'
         }">
         <i class="fa-solid fa-chevron-right text-xs"></i>
       </button>
@@ -1256,37 +1253,37 @@ document.addEventListener('DOMContentLoaded', () => {
       if (!isPlayable) {
         cellBtn.disabled = true;
         cellBtn.className =
-          'aspect-square rounded-xl flex flex-col items-center justify-center text-xs font-semibold text-gray-300 dark:text-gray-700 bg-gray-50/50 dark:bg-nyt-darkBg/40 cursor-not-allowed select-none';
+          'aspect-square rounded-xl border border-[#161412]/10 dark:border-[#2B2722] flex flex-col items-center justify-center text-xs font-mono font-semibold text-[#161412]/25 dark:text-[#F4EFE6]/20 bg-[#EFE9DD]/60 dark:bg-[#161412] cursor-not-allowed select-none';
         cellBtn.innerHTML = `<span>${day}</span>`;
       } else {
         let bgClass =
-          'bg-gray-100 dark:bg-nyt-darkBg text-gray-800 dark:text-gray-200 border-gray-200 dark:border-gray-700 hover:border-gray-400';
-        let iconHtml = '<i class="fa-regular fa-circle text-[9px] text-gray-400"></i>';
+          'bg-paper-bg dark:bg-[#23201C] text-paper-ink dark:text-paper-darkInk border-[#161412]/35 dark:border-[#4A443B] hover:border-[#161412] dark:hover:border-paper-darkInk';
+        let iconHtml = '<i class="fa-regular fa-circle text-[9px] text-paper-muted dark:text-paper-darkMuted"></i>';
 
         if (status === 'won') {
           bgClass =
-            'bg-emerald-500/15 dark:bg-emerald-500/20 text-emerald-900 dark:text-emerald-200 border-emerald-500/60';
+            'bg-[#70B77E]/25 dark:bg-emerald-950/60 text-emerald-950 dark:text-emerald-200 border-[#161412] dark:border-emerald-500/70';
           iconHtml = isPartOfStreak
             ? '<i class="fa-solid fa-fire text-[10px] text-orange-500"></i>'
             : '<i class="fa-solid fa-circle-check text-[10px] text-emerald-500"></i>';
         } else if (status === 'lost') {
           bgClass =
-            'bg-rose-500/15 dark:bg-rose-500/20 text-rose-900 dark:text-rose-200 border-rose-500/60';
+            'bg-rose-500/20 dark:bg-rose-950/50 text-rose-950 dark:text-rose-200 border-[#161412] dark:border-rose-500/70';
           iconHtml = '<i class="fa-solid fa-circle-xmark text-[10px] text-rose-500"></i>';
         } else if (status === 'in_progress') {
           bgClass =
-            'bg-amber-500/15 dark:bg-amber-500/20 text-amber-900 dark:text-amber-200 border-amber-500/60';
+            'bg-[#F6C945]/25 dark:bg-amber-950/50 text-amber-950 dark:text-amber-200 border-[#161412] dark:border-amber-500/70';
           iconHtml = '<i class="fa-solid fa-clock text-[10px] text-amber-500"></i>';
         }
 
         const ringClass = isSelected
-          ? 'ring-2 ring-black dark:ring-white ring-offset-1 dark:ring-offset-nyt-cardDark scale-[1.03]'
+          ? 'ring-2 ring-[#161412] dark:ring-[#F6C945] ring-offset-1 dark:ring-offset-[#1F1D1A] scale-[1.04] shadow-[2px_2px_0px_#161412]'
           : '';
         const todayDot = isToday
-          ? '<span class="w-1 h-1 rounded-full bg-orange-500 absolute top-1 right-1" title="Oggi"></span>'
+          ? '<span class="w-1.5 h-1.5 rounded-full bg-[#FF6B2C] absolute top-1 right-1" title="Oggi"></span>'
           : '';
 
-        cellBtn.className = `relative aspect-square rounded-xl border flex flex-col items-center justify-center gap-0.5 transition active:scale-95 cursor-pointer ${bgClass} ${ringClass}`;
+        cellBtn.className = `relative aspect-square rounded-xl border-2 flex flex-col items-center justify-center gap-0.5 transition active:scale-95 cursor-pointer ${bgClass} ${ringClass}`;
         cellBtn.title = `${formatDateIT(cellDate)} • Enigma #${getPuzzleNumber(cellDate)}`;
         cellBtn.innerHTML = `
           ${todayDot}
@@ -1358,68 +1355,6 @@ document.addEventListener('DOMContentLoaded', () => {
     closeModal('modal-archive');
     loadPuzzleForDate(chosen);
     showToast(`Enigma #${getPuzzleNumber(chosen)} (${formatDateIT(chosen)})`);
-  }
-
-  // ==================== STATISTICHE PERSONALI REALI ====================
-  function getPersonalDistribution() {
-    const games = loadAllGames();
-    const counts = { 0: 0, 1: 0, 2: 0, 3: 0 };
-
-    Object.values(games).forEach((rec) => {
-      if (rec && rec.status === 'won') {
-        const mistakes = Math.min(3, Math.max(0, MAX_MISTAKES - (rec.mistakesLeft ?? MAX_MISTAKES)));
-        counts[mistakes]++;
-      }
-    });
-
-    const maxVal = Math.max(1, ...Object.values(counts));
-    return [
-      { label: '0 errori (Perfetto)', count: counts[0], pct: Math.round((counts[0] / maxVal) * 100), color: 'bg-emerald-500' },
-      { label: '1 errore', count: counts[1], pct: Math.round((counts[1] / maxVal) * 100), color: 'bg-lime-500' },
-      { label: '2 errori', count: counts[2], pct: Math.round((counts[2] / maxVal) * 100), color: 'bg-amber-500' },
-      { label: '3 errori', count: counts[3], pct: Math.round((counts[3] / maxVal) * 100), color: 'bg-orange-500' }
-    ];
-  }
-
-  function openStatsModal() {
-    const stats = calculateStatsAndStreaks();
-    const personalDist = getPersonalDistribution();
-
-    document.getElementById('stat-played').textContent = stats.played;
-    document.getElementById('stat-win-rate').textContent = `${stats.winRate}%`;
-    document.getElementById('stat-streak').textContent = stats.currentStreak;
-    document.getElementById('stat-max-streak').textContent = stats.maxStreak;
-
-    const bigStreak = document.getElementById('stats-streak-big');
-    const subStreak = document.getElementById('stats-streak-sub');
-    if (bigStreak) bigStreak.textContent = `${stats.currentStreak} gg`;
-    if (subStreak) {
-      subStreak.textContent =
-        stats.currentStreak > 0
-          ? stats.todayCompleted
-            ? 'Ottimo lavoro! Hai mantenuto viva la fiamma oggi.'
-            : 'Completa lo schema di oggi per allungare la tua serie!'
-          : 'Risolvi lo schema di oggi per iniziare una nuova serie.';
-    }
-
-    const barsContainer = document.getElementById('stats-personal-bars');
-    if (barsContainer) {
-      barsContainer.innerHTML = '';
-      personalDist.forEach((row) => {
-        const div = document.createElement('div');
-        div.className = 'flex items-center gap-2';
-        div.innerHTML = `
-          <span class="w-32 text-[11px] font-semibold text-gray-600 dark:text-gray-300 truncate">${row.label}</span>
-          <div class="flex-1 h-2.5 bg-gray-200 dark:bg-gray-800 rounded-full overflow-hidden">
-            <div class="h-full ${row.color} rounded-full transition-all duration-300" style="width: ${row.count > 0 ? Math.max(8, row.pct) : 0}%"></div>
-          </div>
-          <span class="w-6 text-right font-mono font-bold text-[11px]">${row.count}</span>
-        `;
-        barsContainer.appendChild(div);
-      });
-    }
-
-    openModal('modal-stats');
   }
 
   // ==================== MODALE RISULTATO & CONDIVISIONE LEGAMI ====================
@@ -1658,7 +1593,6 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('btn-archive')?.addEventListener('click', openCalendarModal);
     document.getElementById('btn-footer-archive')?.addEventListener('click', openCalendarModal);
     document.getElementById('header-streak-badge')?.addEventListener('click', openCalendarModal);
-    document.getElementById('btn-stats')?.addEventListener('click', openStatsModal);
     document.getElementById('btn-back-today')?.addEventListener('click', () => {
       SoundFX.select();
       loadPuzzleForDate(getNormalizedToday());
@@ -1667,10 +1601,6 @@ document.addEventListener('DOMContentLoaded', () => {
     // Modale Calendario
     document.getElementById('btn-close-archive')?.addEventListener('click', () => closeModal('modal-archive'));
     document.getElementById('btn-random-puzzle')?.addEventListener('click', playRandomAvailablePuzzle);
-
-    // Modale Statistiche
-    document.getElementById('btn-close-stats')?.addEventListener('click', () => closeModal('modal-stats'));
-    document.getElementById('btn-confirm-stats')?.addEventListener('click', () => closeModal('modal-stats'));
 
     // Modale Regole
     const closeHelp = () => {
@@ -1691,7 +1621,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // Chiusura modali cliccando sullo sfondo
-    ['modal-archive', 'modal-stats', 'modal-help', 'modal-result'].forEach((id) => {
+    ['modal-archive', 'modal-help', 'modal-result'].forEach((id) => {
       document.getElementById(id)?.addEventListener('click', (e) => {
         if (e.target.id === id) {
           closeModal(id);
@@ -1702,7 +1632,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Scorciatoie da tastiera
     document.addEventListener('keydown', (e) => {
       if (e.key === 'Escape') {
-        ['modal-archive', 'modal-stats', 'modal-help', 'modal-result'].forEach(closeModal);
+        ['modal-archive', 'modal-help', 'modal-result'].forEach(closeModal);
       } else if (
         e.key === 'Enter' &&
         activeMode === 'legami' &&
